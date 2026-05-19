@@ -1,10 +1,24 @@
-export interface IUser {
-    eamil: string,
-    firstname: string,
-    lastname: string
+export interface ISkill {
+    id: number
+    name: string
 }
 
-export interface IUserProfile {
-    user: IUser,
-    role: "ADMIN" | "USER"
+export interface IUserHasSkill {
+    skillId: number
+    skill: ISkill
 }
+
+export interface IUser {
+    id: number
+    firstname: string
+    lastname: string
+    email: string
+    password: string
+    role: Role
+    isOnboarded: boolean
+    mustChangePassword: boolean
+    userHasSkills: IUserHasSkill[]
+}
+
+
+export type Role = "admin" | "benevole"

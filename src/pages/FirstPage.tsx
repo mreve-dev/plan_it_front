@@ -6,7 +6,7 @@ const FirstPage = () => {
     return (
         <div>
             <div className="h-screen flex flex-col  p-3">
-                <div className="h-[8%] flex justify-end items-center" >
+                <div className="flex justify-end items-center" >
                     <MdOutlineSettings size={55} color="#4f9288" />
                 </div>
 
@@ -24,7 +24,7 @@ const FirstPage = () => {
 
             </div>
 
-            <div >
+            <div className="flex justify-center">
                 <Footer />
             </div>
 

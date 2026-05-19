@@ -1,2 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+
+
+.label-register{
+    color: #9b6581;
+    font-size: medium;
+    font-weight: 700;
+}
