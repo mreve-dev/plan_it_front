@@ -45,11 +45,17 @@ const LoginPage = () => {
 
           //recupération du token 
           const token = await loginUser(data.email, data.password) 
+          console.log("token reçu:", token)
           const userData = await getMe(token.data.accessToken)
           console.log(userData)
           if (userData) {
             login(userData, token.data.accessToken)
-            navigate("/home")
+             
+            if(userData.mustChangePassword || !userData.isOnboarded) {
+              navigate("/onboarding")
+            } else {
+              navigate("/home")
+            }
           }
           else console.log("Identifiants incorrects");
 

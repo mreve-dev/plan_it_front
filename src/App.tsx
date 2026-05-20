@@ -11,6 +11,7 @@ import PublicLayout from "./layouts/PublicLayout"
 import PrivateLayout from "./layouts/PrivateLayout"
 import AdminVolunteersPage from "./pages/admin/AdminVolunteersPage"
 import UserVolunteerPage from "./pages/users/UserVolunteerPage"
+import OnboardingPage from "./pages/auth/OnboardingPage"
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         </Route>
 
         <Route element={<PrivateRoute />}>
+          <Route path="/onboarding" element={<OnboardingPage />} />
           <Route element={<PrivateLayout />}>
             <Route path="/profile" element={<ProfileDetailsPage />} />
             <Route path="/profile/edit" element={<ProfileEditPage />} />
