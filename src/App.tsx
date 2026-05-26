@@ -12,6 +12,8 @@ import PrivateLayout from "./layouts/PrivateLayout"
 import AdminVolunteersPage from "./pages/admin/AdminVolunteersPage"
 import UserVolunteerPage from "./pages/users/UserVolunteerPage"
 import OnboardingPage from "./pages/auth/OnboardingPage"
+import ChangePasswordPage from "./pages/auth/ChangePasswordPage"
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
 
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
 
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/changepassword" element={<ChangePasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           <Route path="/" element={<FirstPage />} />
         </Route>

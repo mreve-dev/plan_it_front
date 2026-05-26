@@ -191,13 +191,7 @@ const OnboardingModal = () => {
                                 className="flex items-center gap-3 bg-[#4f9288] w-fit justify-center rounded-lg px-6 py-3 transition-transform active:scale-95 disabled:opacity-50">Terminer</button>
 
                         </div>
-
-
-
                     </form>
-
-
-
                 )}
 
 
