@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { FaArrowRight, FaEye, FaEyeSlash } from "react-icons/fa"
+import { FaEye, FaEyeSlash } from "react-icons/fa"
 import z from "zod"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { resetPassword } from "../services/api/auth"
@@ -67,8 +67,7 @@ const ResetPasswordModal = () => {
 
 
                 <form noValidate onSubmit={handleSubmit(async (data) => {
-                    console.log("token:", token)
-                    console.log("data:", data)
+                    
                     await resetPassword(token!, data.newPassword)
                     navigate("/login")
                 })} className="flex flex-col gap-5">

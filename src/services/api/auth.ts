@@ -111,3 +111,17 @@ export const forgotPassword = async (email: string) => {
 
     return response.data
 }
+
+export const deleteUser = async (id: number, accessToken: string) => {
+
+    console.log("token:", accessToken)
+    console.log("id:", id)
+    const response = await axiosInstance.delete(`/user/${id}`, {
+        // Pour le que le back sache qui fait la requête et puisse vérifier que c'est bien un admin
+        headers: {
+            "Authorization": `Bearer ${accessToken}`
+        }
+    })
+
+    return response.data
+}

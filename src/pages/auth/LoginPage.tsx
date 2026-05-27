@@ -26,13 +26,13 @@ const LoginPage = () => {
   const { login } = useAuthStore()
 
   return (
-    <div className="h-screen flex flex-col p-3">
+    <div className="min-h-screen flex flex-col p-3">
 
-      <div className="h-[8%] flex justify-end items-center" >
+      <div className="flex justify-end items-center" >
         <MdOutlineSettings size={55} color="#4f9288" />
       </div>
 
-      <div className="h-[92%] flex flex-col justify-center items-center gap-8">
+      <div className="flex flex-col flex-1 justify-center items-center gap-8 py-4">
         <Link to={"/"}>
           <figure className="w-90">
             <img src="./src/assets/logo_classic.png" alt="" />
