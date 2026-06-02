@@ -4,8 +4,10 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Footer from "../../components/Footer";
-import { getMe, loginUser } from "../../services/api/auth";
+import { loginUser } from "../../services/api/auth";
 import { useAuthStore } from "../../stores/authStore";
+import { getMe } from "../../services/api/user";
+import { useApi } from "../../hook/useApi";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -17,6 +19,8 @@ const loginSchema = z.object({
 
 
 const LoginPage = () => {
+
+  const api = useApi()
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema)
@@ -40,25 +44,27 @@ const LoginPage = () => {
         </Link>
 
         <form noValidate onSubmit={handleSubmit(async (data) => {
-          console.log("submit")
-          console.log(data)
-
+        
           //recupération du token 
-          const token = await loginUser(data.email, data.password) 
-          console.log("token reçu:", token)
-          const userData = await getMe(token.data.accessToken)
-          console.log(userData)
+          const token = await loginUser(data.email, data.password)
+
+          //stocker le token d'abord
+          useAuthStore.getState().setAccessToken(token.data.accessToken)
+
+          // ensuite getMe peut utiliser le token via l'api
+          const userData = await getMe(api)
+          
+
           if (userData) {
             login(userData, token.data.accessToken)
-             
-            if(userData.mustChangePassword || !userData.isOnboarded) {
+
+            if (userData.mustChangePassword || !userData.isOnboarded) {
               navigate("/onboarding")
             } else {
               navigate("/home")
             }
           }
           else console.log("Identifiants incorrects");
-
 
         })} className="fieldset rounded-box outline-4 outline-dashed outline-[#52998e] w-xs gap-5 p-4 bg-[#c0a7b4] text-black text-md font-bold">
 

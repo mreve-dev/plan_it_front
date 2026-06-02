@@ -1,40 +1,33 @@
-import { useEffect, useState } from "react"
 import type { IUser } from "../../types/user.type"
-import { useAuthStore } from "../../stores/authStore"
-import { getAllUsers } from "../../services/api/auth"
 import { GiSandsOfTime } from "react-icons/gi";
 import RegisterForm from "../../components/RegisterForm";
 import VolunteerDetailsModal from "../../components/VolunteerDetailsModal";
+import { useApi } from "../../hook/useApi";
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { getAllUsers } from "../../services/api/user";
+import { useState } from "react";
 
 
 const AdminVolunteersPage = () => {
 
 
-  // Permet de stocker les données récupérées depuis l'API
-  const [users, setUsers] = useState<IUser[]>([])
+  const api = useApi()
+  const queryClient = useQueryClient()
+
+  const { data: users = [], isLoading } = useQuery<IUser[]>({
+    queryKey: ['users'],
+    queryFn: () => getAllUsers(api)
+  })
+
   //Stocker l'utilisateur cliqué
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
-  const accessToken = useAuthStore((state) => state.accessToken)
 
-  useEffect(() => {
-    const loadUsers = async () => {
-      if (!accessToken) return
-      const data = await getAllUsers(accessToken)
-      setUsers(data)
-      console.log(data);
-    }
-    loadUsers()
-
-
-
-  }, [])
-
-  const refreshUsers = async () => {
-    if (!accessToken) return
-    const data = await getAllUsers(accessToken)
-    setUsers(data)
-
+  const refreshUsers = () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] })
   }
+
+
+  if(isLoading) return <p className="text-black text-2xl">Chargement...</p>
 
   return (
 
@@ -54,8 +47,8 @@ const AdminVolunteersPage = () => {
       {selectedUser && (
         <VolunteerDetailsModal
           user={selectedUser}
-          onClose={() => setSelectedUser(null)} 
-          onDelete={refreshUsers}/>
+          onClose={() => setSelectedUser(null)}
+          onDelete={refreshUsers} />
       )}
 
       {users.map((user) => (

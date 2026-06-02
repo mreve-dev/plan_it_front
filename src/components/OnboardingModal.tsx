@@ -3,10 +3,11 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { FaArrowLeft, FaArrowRight, FaEye, FaEyeSlash } from "react-icons/fa"
 import z from "zod"
-import { changePassword, getSkills, onBoarding } from "../services/api/auth"
-import { useAuthStore } from "../stores/authStore"
+import { changePassword } from "../services/api/auth"
 import { GiCheckMark } from "react-icons/gi"
 import { useNavigate } from "react-router-dom"
+import { useApi } from "../hook/useApi"
+import { getSkills, onBoarding } from "../services/api/skill"
 
 
 const registerSchema = z.object({
@@ -50,7 +51,7 @@ const OnboardingModal = () => {
 
     const navigate = useNavigate()
 
-    const accessToken = useAuthStore((state) => state.accessToken)
+    const api = useApi()
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(registerSchema)
@@ -59,7 +60,7 @@ const OnboardingModal = () => {
     //récupérer les skills au montage
     useEffect(() => {
         const displaySkills = async () => {
-            const data = await getSkills(accessToken!)
+            const data = await getSkills(api)
             setSkills(data)
         }
         displaySkills()
@@ -81,8 +82,8 @@ const OnboardingModal = () => {
     //s'execute quand on clqiue sur terminer
     const HandleOnboarding = async () => {
 
-        await changePassword(accessToken!, newPasswordData!.password, newPasswordData!.newPassword)
-        await onBoarding(accessToken!, selectedSkills)
+        await changePassword(api, newPasswordData!.password, newPasswordData!.newPassword)
+        await onBoarding(api, selectedSkills)
 
             ; (document.getElementById('onboarding_modal') as HTMLDialogElement).close()
         navigate("/home")

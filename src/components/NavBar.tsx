@@ -5,14 +5,21 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "../stores/authStore"
 import { PiSignOutBold } from "react-icons/pi"
 import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io"
-import { FaHome, FaListUl } from "react-icons/fa"
+import { FaHome } from "react-icons/fa"
 import type { ReactNode } from "react"
 import { logout } from "../services/api/auth"
+import { useApi } from "../hook/useApi"
 
 const NavBar = ({ children }: { children: ReactNode }) => {
 
+    const api = useApi()
+
+
     const navigate = useNavigate()
-    const { clearAuth, user, accessToken } = useAuthStore()
+    const closeSidebar = () => {
+        (document.getElementById('my-drawer-4') as HTMLInputElement).checked = false
+    }
+    const { clearAuth, user } = useAuthStore()
 
     return (
         <div className="drawer lg:drawer-open bg-[#e6dabb]">
@@ -33,9 +40,13 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </figure>
                     </div>
 
-                    <figure className="w-40 md:hidden">
-                        <img src="./src/assets/mobile_logo.png" alt="" />
-                    </figure>
+                    <Link to={'/home'}>
+                        <figure className="w-40 md:hidden">
+                            <img src="./src/assets/mobile_logo.png" alt="" />
+                        </figure>
+                    </Link>
+
+
 
                     <figure className="w-15 md:hidden">
                         <img src="./src/assets/logo_mobile.png" alt="" />
@@ -54,22 +65,36 @@ const NavBar = ({ children }: { children: ReactNode }) => {
 
 
                     <figure className="hidden lg:flex lg:justify-center lg:items-center lg:w-full ">
-                        <img src="./src/assets/logo_classic1.png" alt="Logo de l'application plan'it avec un volant de badminton rose à la place du A" className="w-50"/>
+                        <img src="./src/assets/logo_classic1.png" alt="Logo de l'application plan'it avec un volant de badminton rose à la place du A" className="w-50" />
                     </figure>
 
                     <ul className="menu w-full text-base text-cyan-900 font-semibold flex justify-start">
                         {/* Sidebar content here */}
 
-                        <li ><a><FaHome size={25} /> Accueil</a></li>
-                        <li><Link to={user?.role === "admin" ? "/volunteersforadmin" : "/volunteersforuser"}><MdOutlineVolunteerActivism size={25} /> {user?.role === "admin" ? " Gérer les bénévoles" : " Liste des bénévoles"}</Link></li>
-                        <li><a><MdEventAvailable size={25} /> Gestion des évènements</a></li>
-                        <li><a><IoPersonCircleOutline size={25} />Profil</a></li>
+                        <li >
+                            <Link to={'/home'}
+                                onClick={closeSidebar}><FaHome size={25} />Accueil
+                            </Link>
 
-                        
+                        </li>
 
-                        {/* Affichage différent pour cette option en fonction de si l'utilisateur est un admin ou un bénévole */}
-                        <li><a><FaListUl size={23} />{user?.role === "admin" ? " Gérer les bénévoles" : " Liste des bénévoles"}</a></li>
-                        <li><a><MdEventAvailable size={25} /> Evènements du club</a></li>
+                        <li>
+                            <a><IoPersonCircleOutline size={25} />Profil</a>
+                        </li>
+
+                        <li>
+                            <Link to={user?.role === "admin" ? "/volunteersforadmin" : "/volunteersforuser"}
+                                onClick={closeSidebar}><MdOutlineVolunteerActivism size={25} /> {user?.role === "admin" ? " Gérer les bénévoles" : " Liste des bénévoles"}</Link>
+                        </li>
+
+                        <li>
+                            <Link
+                                to={"/event"}
+                                onClick={closeSidebar}>
+                                <MdEventAvailable size={25} /> Gestion des évènements
+                            </Link>
+                        </li>
+
 
                     </ul>
 
@@ -77,12 +102,12 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                     <ul className="menu w-full text-base text-cyan-900 font-semibold flex justify-end flex-4">
                         {/* Sidebar content here */}
 
-                        
+
                         <li><a><IoMdSettings size={25} /> Paramètres</a></li>
                         <li><a><IoMdInformationCircleOutline size={25} /> A propos</a></li>
 
                         <li className="text-[#D4391C]"><a onClick={async () => {
-                            await logout(accessToken!)
+                            await logout(api)
                             clearAuth()
                             navigate("/")
                         }}><PiSignOutBold size={25} color="#D4391C" /> Se déconnecter</a></li>

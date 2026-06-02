@@ -14,6 +14,7 @@ import UserVolunteerPage from "./pages/users/UserVolunteerPage"
 import OnboardingPage from "./pages/auth/OnboardingPage"
 import ChangePasswordPage from "./pages/auth/ChangePasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
+import EventListPage from "./pages/event/EventListPage"
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/profile/edit" element={<ProfileEditPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/volunteersforuser" element={<UserVolunteerPage />} />
+          <Route path="/event" element={<EventListPage />}/>
           </Route>
         </Route>
 

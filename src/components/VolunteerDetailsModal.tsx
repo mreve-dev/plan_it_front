@@ -5,8 +5,8 @@ import { MdMailOutline } from "react-icons/md"
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import { LuCalendar1 } from "react-icons/lu";
 import { FaPenToSquare, FaTrashCan } from "react-icons/fa6";
-import { deleteUser } from "../services/api/auth";
-import { useAuthStore } from "../stores/authStore";
+import { deleteUser } from "../services/api/user";
+import { useApi } from "../hook/useApi";
 
 
 
@@ -19,8 +19,9 @@ interface IVolunteerDetailsModalProps {
 
 const VolunteerDetailsModal = ({ user, onClose, onDelete }: IVolunteerDetailsModalProps) => {
 
-    const accessToken = useAuthStore((state) => state.accessToken)
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
+
+    const api = useApi()
 
 
     useEffect(() => {
@@ -92,11 +93,11 @@ const VolunteerDetailsModal = ({ user, onClose, onDelete }: IVolunteerDetailsMod
                 </div>
 
                 <div className="flex justify-between items-center gap-2">
-                    <button className="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2 bg-[#4f9288] transition-transform active:scale-95">
-                        <FaPenToSquare />Modifier
-                    </button>
                     <button onClick={() => setShowConfirm(true)} className="flex-1 flex items-center justify-center rounded-xl px-3 py-2 gap-2 text-red-900 border-2 border-red-900 transition-transform active:scale-95">
                         <FaTrashCan />Supprimer
+                    </button>
+                    <button className="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2 bg-[#4f9288] transition-transform active:scale-95">
+                        <FaPenToSquare />Modifier
                     </button>
                 </div>
 
@@ -124,7 +125,7 @@ const VolunteerDetailsModal = ({ user, onClose, onDelete }: IVolunteerDetailsMod
                                     Annuler
                                 </button>
                                 <button onClick={async () => {
-                                    await deleteUser(user.id, accessToken!)
+                                    await deleteUser(user.id, api)
                                     onDelete()
                                     handleClose()
                                 }} className="flex-1 px-3 py-2 rounded-xl font-semibold bg-red-900 transition-transform active:scale-95">

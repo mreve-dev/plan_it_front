@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import z from "zod"
-import { signup } from "../services/api/auth"
 import { useState } from "react"
+import { signup } from "../services/api/auth"
+import { useApi } from "../hook/useApi"
 
 
 const registerSchema = z.object({
@@ -21,6 +22,8 @@ interface RegisterFormProps {
 
 const RegisterForm = ({onSuccess}: RegisterFormProps) => {
 
+    const api = useApi()
+
     const [showPwd, setShowPawd] = useState<boolean>(false)
 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -30,7 +33,7 @@ const RegisterForm = ({onSuccess}: RegisterFormProps) => {
     return (
         <div className="flex flex-col gap-3 m-2">
             <form noValidate onSubmit={handleSubmit(async (data) => {
-                await signup(data.lastname, data.firstname, data.email, data.password, data.role);
+                await signup(api,data.lastname, data.firstname, data.email, data.password, data.role);
                 
                 (document.getElementById('my_modal_1') as HTMLDialogElement).close()
                 onSuccess?.()
