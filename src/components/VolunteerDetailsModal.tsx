@@ -23,7 +23,6 @@ const VolunteerDetailsModal = ({ user, onClose, onDelete }: IVolunteerDetailsMod
 
     const api = useApi()
 
-
     useEffect(() => {
         (document.getElementById('volunteer_modal') as HTMLDialogElement).showModal()
     }, [])

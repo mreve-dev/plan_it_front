@@ -17,10 +17,10 @@ const registerSchema = z.object({
 })
 
 interface RegisterFormProps {
-    onSuccess? : () => void
+    onSuccess?: () => void
 }
 
-const RegisterForm = ({onSuccess}: RegisterFormProps) => {
+const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
     const api = useApi()
 
@@ -33,8 +33,8 @@ const RegisterForm = ({onSuccess}: RegisterFormProps) => {
     return (
         <div className="flex flex-col gap-3 m-2">
             <form noValidate onSubmit={handleSubmit(async (data) => {
-                await signup(api,data.lastname, data.firstname, data.email, data.password, data.role);
-                
+                await signup(api, data.lastname, data.firstname, data.email, data.password, data.role);
+
                 (document.getElementById('my_modal_1') as HTMLDialogElement).close()
                 onSuccess?.()
             })}>
@@ -62,7 +62,7 @@ const RegisterForm = ({onSuccess}: RegisterFormProps) => {
 
                     <label className="label label-register">Mot de passe</label>
                     <input {...register("password")} type={showPwd ? "text" : "password"} className="input bg-[#104e64] font-bold text-base text-[#e6dabb]/50" placeholder="mot de passe temporaire" />
-                    
+
                     {errors.password && <p className="text-red-800 font-bold text-sm">{errors.password.message}</p>}
 
                     <label className="label label-register">Rôle</label>

@@ -13,8 +13,6 @@ import { useApi } from "../hook/useApi"
 const NavBar = ({ children }: { children: ReactNode }) => {
 
     const api = useApi()
-
-
     const navigate = useNavigate()
     const closeSidebar = () => {
         (document.getElementById('my-drawer-4') as HTMLInputElement).checked = false
