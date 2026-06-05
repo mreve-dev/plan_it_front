@@ -1,16 +1,17 @@
-import { datetimeRegex, makeIssue } from "zod/v3"
-import { categoryBorder, categoryColors, type IEventCardProps } from "./eventcard.config"
-import { date } from "zod"
+import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "./eventcard.config"
+
+
 
 
 
 const EventCardDesktop = ({ event }: IEventCardProps) => {
+
   return (
     <div className="p-3">
-      <div className={`bg-[#e6dabb] flex gap-2 justify-between flex-col h-full p-4 rounded-2xl font-bold border border-[#104e64]/10 border-l-4 ${categoryBorder[event.category.name] ?? "border-l-[#9b6581]"} `}>
+      <div className={`bg-[#e6dabb] flex gap-2 justify-between flex-col h-full p-4 rounded-2xl font-bold border border-[#104e64]/10 border-l-4 ${getCategoryBorder(event.category.name)} `}>
 
         <div className={`flex justify-between`}>
-          <p className={`${categoryColors[event.category.name] ?? "bg-[#ecece6] text-[#104e64]"} rounded-full text-sm px-3 py-2`}>
+          <p className={`${getCategoryColor(event.category.name)} rounded-full text-sm px-3 py-2`}>
             {event.category.name}
           </p>
 

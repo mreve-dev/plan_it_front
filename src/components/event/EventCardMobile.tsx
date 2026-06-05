@@ -1,4 +1,4 @@
-import { categoryBorder, categoryColors, type IEventCardProps } from "./eventcard.config"
+import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "./eventcard.config"
 
 
 
@@ -7,13 +7,13 @@ import { categoryBorder, categoryColors, type IEventCardProps } from "./eventcar
 const EventCardMobile = ({ event }: IEventCardProps) => {
     return (
         <div className="flex flex-col p-3 justify-between w-full ">
-            <div className={`bg-[#e6dabb] p-4 rounded-2xl font-bold border border-[#104e64]/10 border-l-4 ${categoryBorder[event.category.name] ?? "border-l-[#9b6581]"} `}>
+            <div className={`bg-[#e6dabb] p-4 rounded-2xl font-bold border border-[#104e64]/10 border-l-4 ${getCategoryBorder(event.category.name)} `}>
                 <div className={`flex justify-between `}>
                     <h4 className="text-[#9b6581] text-lg">
                         {event.name}
                     </h4>
 
-                    <p className={`${categoryColors[event.category.name] ?? "bg-[#ecece6] text-[#104e64]"} rounded-full text-xs font-bold md:text-sm px-3 py-2`}>
+                    <p className={`${getCategoryColor(event.category.name)} rounded-full text-xs font-bold md:text-sm px-3 py-2`}>
                         {event.category.name}
                     </p>
                 </div>

@@ -3,77 +3,19 @@ import EventCardMobile from "../../components/event/EventCardMobile"
 import type { IEvent } from "../../types/event.type"
 import CreateEventModal from "../../components/event/CreateEventModal"
 import { IoCloseCircleOutline } from "react-icons/io5"
+import { useApi } from "../../hook/useApi"
+import { useQuery } from "@tanstack/react-query"
+import { getEvents } from "../../services/api/event"
 
 const EventListPage = () => {
 
-  const events: IEvent[] = [
-    {
-      id: 1,
-      name: "Le petit tournoi des familles",
-      description: "Premier tournoi où petits et grands peuvent venir s'amuser en famille",
-      date: new Date("2026-06-15"),
-      start_hour: new Date("1970-01-01T09:00:00"),
-      end_hour: new Date("1970-01-01T18:00:00"),
-      location: "Gymnase Leclerc",
-      categoryId: 1,
-      category: { id: 1, name: "Compétition", createdAt: new Date() },
-      creatorId: 1,
-      documentId: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      missions: []
-    },
-    {
-      id: 2,
-      name: "Gala de fin de saison",
-      description: "Premier tournoi où petits et grands peuvent venir s'amuser en famille",
-      date: new Date("2026-06-28"),
-      start_hour: new Date("1970-01-01T19:00:00"),
-      end_hour: new Date("1970-01-01T23:00:00"),
-      location: "Salle des fêtes",
-      categoryId: 2,
-      category: { id: 2, name: "Cérémonie", createdAt: new Date() },
-      creatorId: 1,
-      documentId: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      missions: []
-    },
+  const api = useApi()
 
-    {
-      id: 1,
-      name: "Le petit tournoi des amis",
-      description: "Premier tournoi où petits et grands peuvent venir s'amuser en famille",
-      date: new Date("2026-06-15"),
-      start_hour: new Date("1970-01-01T09:00:00"),
-      end_hour: new Date("1970-01-01T18:00:00"),
-      location: "Gymnase Leclerc",
-      categoryId: 1,
-      category: { id: 1, name: "Compétition", createdAt: new Date() },
-      creatorId: 1,
-      documentId: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      missions: []
-    },
-    {
-      id: 2,
-      name: "Gala de fin de saison 2",
-      description: "Premier tournoi où petits et grands peuvent venir s'amuser en famille",
-      date: new Date("2026-06-28"),
-      start_hour: new Date("1970-01-01T19:00:00"),
-      end_hour: new Date("1970-01-01T23:00:00"),
-      location: "Salle des fêtes",
-      categoryId: 2,
-      category: { id: 2, name: "Cérémonie", createdAt: new Date() },
-      creatorId: 1,
-      documentId: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      missions: []
-    }
-  ]
-
+  const {data: events} = useQuery<IEvent[]>({
+    queryKey: ['events'],
+    queryFn: () => getEvents(api)
+  })
+  
   const handleClose = () => {
     (document.getElementById('event_modal') as HTMLDialogElement).close()
   }
@@ -120,14 +62,14 @@ const EventListPage = () => {
         </section>
 
         <div className="md:hidden">
-          {events.map((events) => (
-            <EventCardMobile key={events.name} event={events} />
+          {(events ?? []).map((events) => (
+            <EventCardMobile key={events.id} event={events} />
           ))}
         </div>
 
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3">
-          {events.map((events) => (
-            <EventCardDesktop key={events.name} event={events} />
+          {(events ?? []).map((events) => (
+            <EventCardDesktop key={events.id} event={events} />
           ))}
         </div>
 

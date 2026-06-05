@@ -1,8 +1,9 @@
 @import "tailwindcss";
-@plugin "daisyui" ;
+@source inline("bg-[#4f9288] text-[#e6f4f1] bg-[#9b6581] bg-[#c8c4a0] bg-[#104e64] bg-[#7a9e9f] text-[#e6dabb] border-l-[#4f9288] border-l-[#9b6581] border-l-[#c8c4a0] border-l-[#104e64] border-l-[#7a9e9f]");
+@plugin "daisyui";
 
 
-.label-register{
+.label-register {
     color: #9b6581;
     font-size: medium;
     font-weight: 700;
