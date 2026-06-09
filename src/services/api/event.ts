@@ -8,7 +8,7 @@ export const createEvent = async (
     date: Date,
     start_hour: string,
     end_hour: string,
-    location: string,
+    location: string | undefined,
     creatorId: number
 ) => {
 
@@ -42,8 +42,26 @@ export const deleteEvent = async (id: number, api: AxiosInstance) => {
     return response.data
 }
 
-export const updateEvent = async (id: number, api:AxiosInstance) => {
-    const response = await api.patch(`/event/${id}`)
+export const updateEvent = async (
+    id: number,
+    api: AxiosInstance,
+    name: string | undefined,
+    description: string | undefined,
+    categoryId: number | undefined,
+    date: Date | undefined,
+    start_hour: string | undefined,
+    end_hour: string | undefined,
+    location: string | undefined
+) => {
+    const response = await api.patch(`/event/${id}`, {
+        name,
+        description,
+        categoryId,
+        date,
+        start_hour,
+        end_hour,
+        location
+    })
 
     return response.data
 }

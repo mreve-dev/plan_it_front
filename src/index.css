@@ -8,3 +8,20 @@
     font-size: medium;
     font-weight: 700;
 }
+
+.react-day-picker {
+    background-color: #e6dabb;
+    color: #104e64;
+    border-radius: 12px;
+    border-color: #9b6581;
+    padding: 8px;
+}
+
+.react-day-picker button {
+    color: #104e64;
+}
+
+.react-day-picker button:hover {
+    background-color: #9b6581;
+    color: white;
+}

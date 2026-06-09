@@ -7,7 +7,7 @@ export interface IEvent {
     date: Date
     start_hour: Date
     end_hour: Date
-    location: string | null
+    location?: string | null
     categoryId: number
     category: ICategory
     creatorId: number

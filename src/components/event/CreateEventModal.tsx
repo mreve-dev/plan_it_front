@@ -17,7 +17,7 @@ const createEventSchema = z.object({
     date: z.date(),
     start_hour: z.string().min(1, "L'heure de début est requise"),
     end_hour: z.string().min(1, "L'heure de fin est requise"),
-    location: z.string().min(1, "Le lieu est requis"),
+    location: z.string().min(1, "Le lieu est requis").optional(),
 }).refine((data) => data.end_hour > data.start_hour, {
     message: "L'heure de fin doit être après l'heure de début",
     path: ['end_hour']

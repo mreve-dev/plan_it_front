@@ -11,13 +11,13 @@ import { LuCalendar1 } from "react-icons/lu"
 import type { IMission, IUserHasMission } from "../../types/mission.type"
 import type { IEventHasDocument } from "../../types/document.type"
 import DeleteEventModal from "../../components/event/DeleteEventModal"
+import UpdateEventModal from "../../components/event/UpdateEventModal"
 
 
 
 const EventDetailPage = () => {
 
     const api = useApi()
-    const navigate = useNavigate()
 
     // hook de React Router qui lit les paramètres dans l'URL. ex : pour la route /event/:id et que l'utilisateur va sur /event/3, useParams donne { id: "3" }
     const { id } = useParams()
@@ -25,7 +25,7 @@ const EventDetailPage = () => {
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
     const { data: event } = useQuery({
-        queryKey: ['event'],
+        queryKey: ['event', id],
         queryFn: () => getOneEvent(api, +id!)
     })
 
@@ -106,13 +106,27 @@ const EventDetailPage = () => {
 
                         <div className="flex items-start gap-2">
 
-                            <button className="flex items-center justify-center w-15 p-4 lg:w-40 lg:h-10 text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
+                            <dialog id="update_modal" className="modal">
+
+                                <div className="modal-box bg-[#e6dabb]">
+                                    <UpdateEventModal event={event} onClose={() => (document.getElementById('update_modal') as HTMLDialogElement).close()} onSuccess={() => console.log('évènement modifié')
+                                    } />
+                                </div>
+
+                                <form method="dialog" className="modal-backdrop">
+
+                                    <button className="text-cyan-700"></button>
+                                </form>
+                            </dialog>
+
+                            <button onClick={() => (document.getElementById('update_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center w-15 p-4 lg:w-40 lg:h-10 text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
                                 <FaPenToSquare />
 
                                 <p className="hidden lg:block">
                                     Modifier
                                 </p>
                             </button>
+
 
                             <button onClick={() => (document.getElementById('delete_modal') as HTMLDialogElement).showModal()} className=" flex items-center justify-center rounded-xl w-15 p-4 lg:w-40 lg:h-10 gap-2 text-red-900 border-2 border-red-900 transition-transform active:scale-95">
                                 <FaTrashCan />
