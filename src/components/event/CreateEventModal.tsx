@@ -5,7 +5,7 @@ import { DayPicker } from "react-day-picker";
 import z from "zod"
 import { useApi } from "../../hook/useApi";
 import { createEvent } from "../../services/api/event";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createCategory, getCategories } from "../../services/api/category";
 import type { ICategory } from "../../types/event.type";
 import { useAuthStore } from "../../stores/authStore";
@@ -13,11 +13,14 @@ import { useAuthStore } from "../../stores/authStore";
 const createEventSchema = z.object({
     name: z.string().min(1, "Le nom est requis"),
     description: z.string().min(1, "La description est requise"),
-    categoryId: z.union([z.number(), z.literal("new")]),
+    categoryId: z.coerce.number().min(1, "La catégorie est requise"),
     date: z.date(),
     start_hour: z.string().min(1, "L'heure de début est requise"),
     end_hour: z.string().min(1, "L'heure de fin est requise"),
     location: z.string().min(1, "Le lieu est requis"),
+}).refine((data) => data.end_hour > data.start_hour, {
+    message: "L'heure de fin doit être après l'heure de début",
+    path: ['end_hour']
 })
 
 
@@ -39,10 +42,12 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
         queryFn: () => getCategories(api)
     })
 
+    const queryClient = useQueryClient()
+
     const [showNewCategory, setShowNewCategory] = useState(false)
     const [newCategoryName, setNewCategoryName] = useState("")
 
-    const { register, handleSubmit, setValue, control, watch, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, control, watch, formState: { errors } } = useForm({
         resolver: zodResolver(createEventSchema)
     })
 
@@ -57,15 +62,17 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                 const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
 
                 await createEvent(api, data.name, data.description, categoryId, data.date, data.start_hour, data.end_hour, data.location, user!.id);
+                queryClient.invalidateQueries({ queryKey: ['events'] });
+                reset(),
 
                 (document.getElementById('event_modal') as HTMLDialogElement).close()
                 onSuccess?.()
                 onClose()
             },
-            (errors)=> {
-                console.log("error", errors);
-                
-            })} className="w-full">
+                (errors) => {
+                    console.log("error", errors);
+
+                })} className="w-full">
 
                 <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 w-full">
                     <legend className="fieldset-legend text-2xl text-cyan-900">Créer un évènement</legend>
@@ -106,7 +113,9 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
                         {!showNewCategory ? (
                             <div className="flex justify-center">
-                                <button type="button" onClick={() => setShowNewCategory(true)}
+                                <button type="button" onClick={() => {
+                                    setShowNewCategory(true)
+                                }}
                                     className="text-white bg-[#9b6581] btn btn-neutral border-none w-50 text-xs  self-start hover:underline">
                                     ＋ Nouvelle catégorie
                                 </button>
@@ -167,12 +176,14 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                             onSelect={(date) => {
                                                 field.onChange(date)
                                                 document.getElementById('rdp-popover')?.hidePopover()
-                                            }  }
+                                            }}
                                         />
                                     </div>
                                 </>
                             )}
                         />
+
+
                     </div>
 
                     <div className="flex justify-between gap-3">
@@ -184,25 +195,29 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                         </div>
 
                         <div className="w-full flex flex-col gap-2">
-                            <label className="label text-sm font-bold text-[#104e64]">Heure de fin</label>
-                            <input {...register("end_hour")} type="time" className={`bg-white input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black` : `text-black/50`} scheme-light`} />
+                            <div className="w-full flex flex-col gap-2">
+                                <label className="label text-sm font-bold text-[#104e64]">Heure de fin</label>
+                                <input {...register("end_hour")} type="time" className={`bg-white input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black` : `text-black/50`} scheme-light`} />
+
+                            </div>
+                            {errors.end_hour && <p className="text-red-800 font-bold text-sm">{errors.end_hour.message}</p>}
 
                         </div>
+
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <label className="label text-sm font-bold text-[#104e64]">Lieu</label>
                         <input {...register("location")} type="text" className="bg-white rounded-xl border-2 border-[#9b6581] text-base input text-black w-full" placeholder="Ex: Gymnase Leclerc" />
+                        {errors.location && <p className="text-red-800 font-bold text-sm">{errors.location.message}</p>}
                     </div>
 
 
                 </fieldset>
 
                 <div className="flex justify-center">
-                    <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-fit" onClick={() => {
-                        setShowNewCategory(true)
-                        setValue("categoryId", "new")
-                    }}>Enregistrer</button>
+                    <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-fit" 
+                    >Enregistrer</button>
                 </div>
 
 

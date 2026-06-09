@@ -1,6 +1,8 @@
 import type { IEvent } from "../../types/event.type"
 
-export const getCategoryColor = (name: string): string => {
+export const getCategoryColor = (name: string | undefined): string => {
+    if (!name) return "bg-[#104e64] text-[#e6dabb]"
+
     const colors = [
         "bg-[#4f9288] text-[#e6f4f1]",
         "bg-[#9b6581] text-white",
@@ -15,7 +17,10 @@ export const getCategoryColor = (name: string): string => {
     return colors[index]
 }
 
-export const getCategoryBorder = (name: string): string => {
+export const getCategoryBorder = (name: string | undefined): string | undefined=> {
+
+    if (!name) return "border-l-[#104e64]"
+
     const borders = [
         "border-l-[#4f9288]",
         "border-l-[#9b6581]",

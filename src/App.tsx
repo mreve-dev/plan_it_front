@@ -15,6 +15,7 @@ import OnboardingPage from "./pages/auth/OnboardingPage"
 import ChangePasswordPage from "./pages/auth/ChangePasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
 import EventListPage from "./pages/event/EventListPage"
+import EventDetailPage from "./pages/event/EventDetailPage"
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/onboarding" element={<OnboardingPage />} />
           <Route element={<PrivateLayout />}>
+          <Route path="/event/:id" element={<EventDetailPage />}/>
             <Route path="/profile" element={<ProfileDetailsPage />} />
             <Route path="/profile/edit" element={<ProfileEditPage />} />
             <Route path="/home" element={<HomePage />} />

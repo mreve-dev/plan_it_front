@@ -17,6 +17,11 @@ export interface IMission {
 export interface IUserHasMission {
     userId: number
     missionId: number
+    user: {
+        id: number
+        firstname: string
+        lastname: string
+    }
     createdAt: Date
 }
 

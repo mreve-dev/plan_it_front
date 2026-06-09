@@ -36,3 +36,14 @@ export const getOneEvent = async (api: AxiosInstance, id:number) => {
     const response = await api.get(`/event/${id}`)
     return response.data
 }
+
+export const deleteEvent = async (id: number, api: AxiosInstance) => {
+    const response = await api.delete(`/event/${id}`)
+    return response.data
+}
+
+export const updateEvent = async (id: number, api:AxiosInstance) => {
+    const response = await api.patch(`/event/${id}`)
+
+    return response.data
+}

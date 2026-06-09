@@ -7,7 +7,7 @@ import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "./eve
 const EventCardDesktop = ({ event }: IEventCardProps) => {
 
   return (
-    <div className="p-3">
+    <div className="p-3 h-full">
       <div className={`bg-[#e6dabb] flex gap-2 justify-between flex-col h-full p-4 rounded-2xl font-bold border border-[#104e64]/10 border-l-4 ${getCategoryBorder(event.category.name)} `}>
 
         <div className={`flex justify-between`}>
@@ -15,16 +15,16 @@ const EventCardDesktop = ({ event }: IEventCardProps) => {
             {event.category.name}
           </p>
 
-          <a className="text-[#104e64] text-sm">
+          <span className="text-[#104e64] text-sm">
             {event.missions.length} missions
-          </a>
+          </span>
         </div>
 
         <div className="text-[#104e64]/50 pb-2 text-sm flex gap-2 flex-col">
 
-          <h4 className="text-[#9b6581] text-lg">
+          <h3 className="text-[#9b6581] text-lg">
             {event.name}
-          </h4>
+          </h3>
 
           <div className="flex flex-col ">
             <p>
@@ -89,10 +89,9 @@ const EventCardDesktop = ({ event }: IEventCardProps) => {
         </div>
 
         <div className="flex justify-between pt-2 items-center ">
-
-          <a className="text-[#4f9288] text-center w-full">
+          <span className="text-[#4f9288] text-center w-full">
             Voir les missions
-          </a>
+          </span>
         </div>
 
       </div>

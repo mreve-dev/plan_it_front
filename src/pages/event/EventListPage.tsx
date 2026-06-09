@@ -6,16 +6,18 @@ import { IoCloseCircleOutline } from "react-icons/io5"
 import { useApi } from "../../hook/useApi"
 import { useQuery } from "@tanstack/react-query"
 import { getEvents } from "../../services/api/event"
+import { Link } from "react-router-dom"
 
 const EventListPage = () => {
 
   const api = useApi()
 
-  const {data: events} = useQuery<IEvent[]>({
+  const { data: events } = useQuery<IEvent[]>({
     queryKey: ['events'],
     queryFn: () => getEvents(api)
   })
   
+
   const handleClose = () => {
     (document.getElementById('event_modal') as HTMLDialogElement).close()
   }
@@ -62,14 +64,23 @@ const EventListPage = () => {
         </section>
 
         <div className="md:hidden">
-          {(events ?? []).map((events) => (
-            <EventCardMobile key={events.id} event={events} />
+          {(events ?? []).map((event) => (
+
+            <Link key={event.id} to={`/event/${event.id}`}>
+              <EventCardMobile event={event} />
+            </Link>
+
           ))}
         </div>
 
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3">
-          {(events ?? []).map((events) => (
-            <EventCardDesktop key={events.id} event={events} />
+          {(events ?? []).map((event) => (
+
+            <Link key={event.id} to={`/event/${event.id}`}>
+              <EventCardDesktop event={event} />
+            </Link>
+
+
           ))}
         </div>
 

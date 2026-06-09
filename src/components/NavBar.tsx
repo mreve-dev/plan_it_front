@@ -9,6 +9,9 @@ import { FaHome } from "react-icons/fa"
 import type { ReactNode } from "react"
 import { logout } from "../services/api/auth"
 import { useApi } from "../hook/useApi"
+import logo from "../assets/logo_classic1.png"
+import logoMobile from "../assets/mobile_logo.png"
+import logoMobileSmall from "../assets/logo_mobile.png"
 
 const NavBar = ({ children }: { children: ReactNode }) => {
 
@@ -34,20 +37,20 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </label>
 
                         <figure className="hidden md:flex md:w-35">
-                            <img src="./src/assets/logo_classic1.png" alt="" />
+                            <img src={logo} alt="" />
                         </figure>
                     </div>
 
                     <Link to={'/home'}>
                         <figure className="w-40 md:hidden">
-                            <img src="./src/assets/mobile_logo.png" alt="" />
+                            <img src={logoMobile} alt="" />
                         </figure>
                     </Link>
 
 
 
                     <figure className="w-15 md:hidden">
-                        <img src="./src/assets/logo_mobile.png" alt="" />
+                        <img src={logoMobileSmall} alt="" />
                     </figure>
 
                 </nav>
@@ -63,7 +66,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
 
 
                     <figure className="hidden lg:flex lg:justify-center lg:items-center lg:w-full ">
-                        <img src="./src/assets/logo_classic1.png" alt="Logo de l'application plan'it avec un volant de badminton rose à la place du A" className="w-50" />
+                        <img src={logo} alt="Logo de l'application plan'it avec un volant de badminton rose à la place du A" className="w-50" />
                     </figure>
 
                     <ul className="menu w-full text-base text-cyan-900 font-semibold flex justify-start">
@@ -101,8 +104,16 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         {/* Sidebar content here */}
 
 
-                        <li><a><IoMdSettings size={25} /> Paramètres</a></li>
-                        <li><a><IoMdInformationCircleOutline size={25} /> A propos</a></li>
+                        <li>
+                            <a>
+                                <IoMdSettings size={25} /> Paramètres
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <IoMdInformationCircleOutline size={25} /> A propos
+                            </a>
+                        </li>
 
                         <li className="text-[#D4391C]"><a onClick={async () => {
                             await logout(api)

@@ -9,9 +9,9 @@ const EventCardMobile = ({ event }: IEventCardProps) => {
         <div className="flex flex-col p-3 justify-between w-full ">
             <div className={`bg-[#e6dabb] p-4 rounded-2xl font-bold border border-[#104e64]/10 border-l-4 ${getCategoryBorder(event.category.name)} `}>
                 <div className={`flex justify-between `}>
-                    <h4 className="text-[#9b6581] text-lg">
+                    <h3 className="text-[#9b6581] text-lg">
                         {event.name}
-                    </h4>
+                    </h3>
 
                     <p className={`${getCategoryColor(event.category.name)} rounded-full text-xs font-bold md:text-sm px-3 py-2`}>
                         {event.category.name}
@@ -46,13 +46,13 @@ const EventCardMobile = ({ event }: IEventCardProps) => {
                 </div>
 
                 <div className="flex justify-between pt-2 ">
-                    <a className="text-[#104e64]">
+                    <span className="text-[#104e64]">
                         {event.missions.length} missions
-                    </a>
+                    </span>
 
-                    <a className="text-[#396962]">
+                    <span className="text-[#396962]">
                         Voir les missions
-                    </a>
+                    </span>
                 </div>
 
             </div>
