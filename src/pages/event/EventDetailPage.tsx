@@ -1,17 +1,17 @@
 import { FaArrowLeft, FaRegClock } from "react-icons/fa"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { useApi } from "../../hook/useApi"
-import { useQuery } from "@tanstack/react-query"
-import { deleteEvent, getOneEvent } from "../../services/api/event"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { getOneEvent } from "../../services/api/event"
 import { getCategoryBorder, getCategoryColor } from "../../components/event/eventcard.config"
 import { FaPenToSquare, FaTrashCan } from "react-icons/fa6"
-import { useState } from "react"
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { LuCalendar1 } from "react-icons/lu"
 import type { IMission, IUserHasMission } from "../../types/mission.type"
 import type { IEventHasDocument } from "../../types/document.type"
 import DeleteEventModal from "../../components/event/DeleteEventModal"
 import UpdateEventModal from "../../components/event/UpdateEventModal"
+import CreateMissionModal from "../../components/mission/CreateMissionModal"
 
 
 
@@ -22,7 +22,8 @@ const EventDetailPage = () => {
     // hook de React Router qui lit les paramètres dans l'URL. ex : pour la route /event/:id et que l'utilisateur va sur /event/3, useParams donne { id: "3" }
     const { id } = useParams()
 
-    const [showConfirm, setShowConfirm] = useState<boolean>(false)
+    const queryClient = useQueryClient()
+
 
     const { data: event } = useQuery({
         queryKey: ['event', id],
@@ -32,10 +33,11 @@ const EventDetailPage = () => {
     if (!event) return null
 
     const volunteers = event.missions.flatMap((mission: IMission) => mission.userHasMission ?? [])
+
     const totalPlaces = event.missions.reduce((acc: number, mission: IMission) => acc + mission.max_volunteers, 0)
 
     return (
-        <div className="flex flex-col p-3 gap-3 bg-[#ecece6] flex-1">
+        <div className="flex flex-col h-full p-3 gap-3 bg-[#ecece6] flex-1">
             <div className="m-1 h-full flex flex-col gap-4 text-[#104e64]">
 
                 <Link to={'/event'} className="flex items-center gap-2  font-semibold">
@@ -56,11 +58,11 @@ const EventDetailPage = () => {
 
 
 
-                            <h3 className="text-[#9b6581] text-2xl font-bold">
+                            <h3 className="text-[#9b6581] text-lg md:text-2xl font-bold">
                                 {event.name}
                             </h3>
 
-                            <div className="flex flex-col gap-2 md:flex-row md:gap-5 ">
+                            <div className="flex flex-col gap-2 xl:flex-row">
                                 <p className="flex items-center gap-2">
                                     <LuCalendar1 size={18} />
 
@@ -106,18 +108,10 @@ const EventDetailPage = () => {
 
                         <div className="flex items-start gap-2">
 
-                            <dialog id="update_modal" className="modal">
 
-                                <div className="modal-box bg-[#e6dabb]">
-                                    <UpdateEventModal event={event} onClose={() => (document.getElementById('update_modal') as HTMLDialogElement).close()} onSuccess={() => console.log('évènement modifié')
-                                    } />
-                                </div>
+                            <UpdateEventModal event={event} onClose={() => (document.getElementById('update_modal') as HTMLDialogElement).close()} onSuccess={() => console.log('évènement modifié')
+                            } />
 
-                                <form method="dialog" className="modal-backdrop">
-
-                                    <button className="text-cyan-700"></button>
-                                </form>
-                            </dialog>
 
                             <button onClick={() => (document.getElementById('update_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center w-15 p-4 lg:w-40 lg:h-10 text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
                                 <FaPenToSquare />
@@ -163,40 +157,60 @@ const EventDetailPage = () => {
                 )}
 
 
+                <section className="h-[80%] grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+                    <section className={`bg-[#e6dabb] flex gap-4 justify-between flex-col h-full p-4 rounded-2xl font-bold`}>
 
-                <section className="h-[80%] grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <section className={`bg-[#e6dabb] flex gap-2 justify-between flex-col h-full p-4 rounded-2xl font-bold`}>
+                        <div className="flex justify-between items-center">
 
-                        <div className="flex justify-between">
                             <h4 className="text-lg text-[#104e64] font-bold">
                                 Missions(s)
                             </h4>
 
-                            <button onClick={() => setShowConfirm(true)} className="text-white gap-2 rounded-xl bg-[#4f9288] p-2 transition-transform active:scale-95">
+                            <button onClick={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).showModal()} className="btn border-none text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
                                 + Nouvelle mission
                             </button>
+
+                            <CreateMissionModal
+                                eventId={event.id}
+                                onClose={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).close}
+                                onSuccess={() => queryClient.refetchQueries({ queryKey: ['event', id] })} />
 
                         </div>
 
 
 
-                        <div className="flex-1">
+                        <div className="flex-1 flex flex-col gap-3">
                             {event.missions.length > 0 ? (
-                                event.missions.slice(0, 2).map((mission: IMission) => (
-                                    <div>
-                                        <p>{mission.name}</p>
 
-                                        <p>
-                                            {new Date(mission.start_hour).toLocaleTimeString('fr-FR', {
-                                                hour: "2-digit",
-                                                minute: "2-digit"
-                                            })} - {new Date(mission.end_hour).toLocaleTimeString('fr-FR', {
-                                                hour: "2-digit",
-                                                minute: "2-digit"
-                                            })}
-                                        </p>
-                                    </div>
-                                ))
+                                <>
+                                    {
+                                        event.missions.slice(0, 3).map((mission: IMission) => (
+                                            <div className="bg-[#9b6581]/40 p-2 rounded-xl flex justify-between items-center">
+
+                                                <div>
+                                                    <p>{mission.name}</p>
+
+                                                    <p className="text-sm text-[#104e64]/65">
+                                                        {new Date(mission.start_hour).toLocaleTimeString('fr-FR', {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit"
+                                                        })} - {new Date(mission.end_hour).toLocaleTimeString('fr-FR', {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit"
+                                                        })}
+                                                    </p>
+                                                </div>
+
+                                                <p className="text-lg">
+                                                    {mission.userHasMission?.length} / {mission.max_volunteers}
+                                                </p>
+
+                                            </div>
+                                        ))
+                                    }
+
+                                </>
+
                             ) : (
 
                                 <div className="flex justify-center items-center h-full">
@@ -215,7 +229,7 @@ const EventDetailPage = () => {
 
                     </section>
 
-                    <section className="flex-1 bg-[#e6dabb] flex gap-2 justify-between flex-col h-full p-4 rounded-2xl font-bold">
+                    <section className="hidden flex-1 bg-[#e6dabb] md:flex md:gap-2 justify-between flex-col h-full p-4 rounded-2xl font-bold">
                         <h4 className="text-lg text-[#104e64] font-bold">
                             Bénévole(s) inscrit(s)
                         </h4>
@@ -241,7 +255,7 @@ const EventDetailPage = () => {
 
                     </section>
 
-                    <section className="hidden lg:flex-1 lg:bg-[#e6dabb] lg:flex lg:gap-4 lg:justify-start lg:flex-col lg:h-full lg:p-4 lg:rounded-2xl lg:font-bold">
+                    <section className="hidden xl:flex-1 xl:bg-[#e6dabb] xl:flex lg:gap-4 xl:justify-start xl:flex-col xl:h-full lg:p-4 xl:rounded-2xl xl:font-bold">
                         <h4 className="text-lg text-[#104e64] font-bold">
                             Statistiques
                         </h4>

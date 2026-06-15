@@ -27,21 +27,19 @@ const AdminVolunteersPage = () => {
   }
 
 
-  if(isLoading) return <p className="text-black text-2xl">Chargement...</p>
+  if (isLoading) return <p className="text-black text-2xl">Chargement...</p>
 
   return (
 
 
-    <div className="flex flex-col p-2 gap-3 bg-[#ecece6] flex-1">
+    <div className="flex flex-col h-full p-3 gap-3 bg-[#ecece6] flex-1">
 
       <div>
         {/* Open the modal using document.getElementById('ID').showModal() method */}
-        <button className="btn w-fit bg-[#104e64]" onClick={() => (document.getElementById('my_modal_1') as HTMLDialogElement).showModal()}>Créer un utilisateur</button>
-        <dialog id="my_modal_1" className="modal">
-          <div className="modal-box p-3 bg-[#e6dabb] w-fit ">
-            <RegisterForm onSuccess={refreshUsers} />
-          </div>
-        </dialog>
+        <button className="btn w-fit bg-[#104e64]" onClick={() => (document.getElementById('register_modal') as HTMLDialogElement).showModal()}>Créer un utilisateur</button>
+
+        <RegisterForm onSuccess={refreshUsers} />
+
       </div>
 
       {selectedUser && (

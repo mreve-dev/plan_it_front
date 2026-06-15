@@ -18,11 +18,11 @@ const DeleteEventModal = ({ eventId, eventName }: IDeleteEventModalProps) => {
             <div className="modal-box bg-[#e6dabb] w-100 flex flex-col gap-4 items-center">
                 <div className="bg-[#e6dabb] flex flex-col gap-8 justify-between items-center rounded-lg p-6 h-full">
 
+
                     <div className="flex-1 flex items-center">
                         <div className="rounded-full h-fit bg-[#ece3e3] p-7">
                             <FaTrashCan color="#751C0D" size={30} />
                         </div>
-
                     </div>
 
 

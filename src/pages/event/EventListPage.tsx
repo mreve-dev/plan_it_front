@@ -25,7 +25,7 @@ const EventListPage = () => {
 
 
   return (
-    <div className="flex flex-col p-3 gap-3 bg-[#ecece6] flex-1">
+    <div className="flex flex-col p-3 h-full gap-3 bg-[#ecece6] flex-1">
       <div>
 
         <section className="flex justify-between items-center ">

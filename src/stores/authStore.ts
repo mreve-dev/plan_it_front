@@ -13,10 +13,12 @@ import { persist } from "zustand/middleware" // sauvegarde automatiquement le co
 interface AuthStore {
     user: IUser | null // utilisateur connecté ou null si personne
     accessToken: string | null;
-    login: (user: IUser, token : string) => void
+    sidebarPosition: 'left' | 'right'
+    login: (user: IUser, token: string) => void
     setUser: (user: IUser | null) => void;
     setAccessToken: (token: string | null) => void;
     setRole: (role: Role) => void;
+    setSidebarPosition: (position: 'left' | 'right') => void
     clearAuth: () => void;
 
 }
@@ -29,8 +31,9 @@ export const useAuthStore = create<AuthStore>()(
             // valeur initiale : personne n'est connecté
             user: null,
             accessToken: null,
+            sidebarPosition: 'left',
 
-            login: (user, token) => 
+            login: (user, token) =>
                 set({
                     user,
                     accessToken: token
@@ -43,7 +46,7 @@ export const useAuthStore = create<AuthStore>()(
                 set((state) => ({
                     user: state.user ? { ...state.user, role } : null,
                 })),
-
+            setSidebarPosition: (position) => set({ sidebarPosition: position }),
             clearAuth: () => set({ user: null, accessToken: null })
 
         }),

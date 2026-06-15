@@ -8,7 +8,7 @@ const HomePage = () => {
 
     return (
         // Permet d'afficher un visuel différent en fonction de si l'utilisateur est un bénévole ou un admin. Tout est restant sur la page /home 
-        <div>
+        <div className="contents">
             {user?.role === "admin" ? <AdminHomePage /> : <UserHomePage />}
         </div>
     )

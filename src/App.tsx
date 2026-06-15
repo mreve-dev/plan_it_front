@@ -16,6 +16,7 @@ import ChangePasswordPage from "./pages/auth/ChangePasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
 import EventListPage from "./pages/event/EventListPage"
 import EventDetailPage from "./pages/event/EventDetailPage"
+import SettingsPage from "./pages/settings/SettingsPage"
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
             <Route path="/profile/edit" element={<ProfileEditPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/volunteersforuser" element={<UserVolunteerPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/event" element={<EventListPage />}/>
           </Route>
         </Route>

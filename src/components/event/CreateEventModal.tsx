@@ -134,17 +134,11 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                     placeholder="Nom de la nouvelle catégorie"
                                 />
 
-
-
-
                                 <button type="button"
                                     onClick={() => setShowNewCategory(false)}
                                     className="btn bg-[#104e64] text-white rounded-xl px-4">
                                     ✕
                                 </button>
-
-
-
 
                             </div>
                         )}

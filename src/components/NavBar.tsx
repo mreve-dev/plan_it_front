@@ -20,38 +20,62 @@ const NavBar = ({ children }: { children: ReactNode }) => {
     const closeSidebar = () => {
         (document.getElementById('my-drawer-4') as HTMLInputElement).checked = false
     }
-    const { clearAuth, user } = useAuthStore()
+    const { clearAuth, user, sidebarPosition } = useAuthStore()
 
     return (
-        <div className="drawer lg:drawer-open bg-[#e6dabb]">
+        <div className={`${sidebarPosition === 'left' ? 'drawer' : 'drawer drawer-end'} lg:drawer-open bg-[#e6dabb]`}>
             <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content h-screen flex flex-col">
                 {/* Navbar */}
                 <nav className="navbar w-full flex justify-between bg-[#e6dabb] lg:hidden">
 
-                    <div className="flex items-center gap-3 lg:hidden">
+                    {sidebarPosition === 'left' ? (
+                        <>
+                            <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
+                                {/* Sidebar toggle icon */}
+                                <TiThMenu size={30} color="#4f9288" />
+                            </label>
 
-                        <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
-                            {/* Sidebar toggle icon */}
-                            <TiThMenu size={30} color="#4f9288" />
-                        </label>
+                            <Link to={'/home'}>
+                                <figure className="w-30 md:hidden">
+                                    <img src={logoMobile} alt="" />
+                                </figure>
+                            </Link>
 
-                        <figure className="hidden md:flex md:w-35">
-                            <img src={logo} alt="" />
-                        </figure>
-                    </div>
+                            <figure className="hidden md:flex md:w-35">
+                                <img src={logo} alt="" />
+                            </figure>
 
-                    <Link to={'/home'}>
-                        <figure className="w-40 md:hidden">
-                            <img src={logoMobile} alt="" />
-                        </figure>
-                    </Link>
+                            <figure className="w-15 md:hidden">
+                                <img src={logoMobileSmall} alt="" />
+                            </figure>
+                        </>
 
+                    ) : (
 
+                        <>
 
-                    <figure className="w-15 md:hidden">
-                        <img src={logoMobileSmall} alt="" />
-                    </figure>
+                            <figure className="w-15 md:hidden">
+                                <img src={logoMobileSmall} alt="" />
+                            </figure>
+
+                            <figure className="hidden md:flex md:w-35">
+                                <img src={logo} alt="" />
+                            </figure>
+
+                            <Link to={'/home'}>
+                                <figure className="w-40 md:hidden">
+                                    <img src={logoMobile} alt="" />
+                                </figure>
+                            </Link>
+
+                            <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
+                                {/* Sidebar toggle icon */}
+                                <TiThMenu size={30} color="#4f9288" />
+                            </label>
+                        </>
+
+                    )}
 
                 </nav>
 
@@ -105,9 +129,9 @@ const NavBar = ({ children }: { children: ReactNode }) => {
 
 
                         <li>
-                            <a>
+                            <Link to={'/settings'}>
                                 <IoMdSettings size={25} /> Paramètres
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <a>

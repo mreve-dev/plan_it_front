@@ -5,7 +5,7 @@ export default function PrivateLayout() {
   return (
 
       <NavBar>
-        <main className="flex-1 flex flex-col overflow-auto">
+        <main className="h-full">
           <Outlet />
         </main>
       </NavBar>

@@ -11,7 +11,7 @@ export interface IMission {
     createdAt: Date
     updatedAt: Date
     userHasMission?: IUserHasMission[]
-    missionHasSkills?: IMissionsHasSkill[]
+    missionHasSkills: IMissionsHasSkill[]
 }
 
 export interface IUserHasMission {
