@@ -15,20 +15,20 @@ const DeleteEventModal = ({ eventId, eventName }: IDeleteEventModalProps) => {
 
     return (
         <dialog id="delete_modal" className="modal">
-            <div className="modal-box bg-[#e6dabb] w-100 flex flex-col gap-4 items-center">
-                <div className="bg-[#e6dabb] flex flex-col gap-8 justify-between items-center rounded-lg p-6 h-full">
+            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] w-100 flex flex-col gap-4 items-center">
+                <div className="bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-8 justify-between items-center rounded-lg p-6 h-full">
 
 
                     <div className="flex-1 flex items-center">
-                        <div className="rounded-full h-fit bg-[#ece3e3] p-7">
+                        <div className="rounded-full h-fit bg-[#ece3e3] dark:bg-[#2a3142] p-7">
                             <FaTrashCan color="#751C0D" size={30} />
                         </div>
                     </div>
 
 
-                    <div className="flex flex-col gap-3 text-center text-[#104e64]">
+                    <div className="flex flex-col gap-3 text-center text-[#104e64] dark:text-[#e6dabb]">
                         <p className="text-xl font-semibold">Supprimer cet évènement ?</p>
-                        <p className="text-red-900">
+                        <p className="text-red-900 dark:text-red-400">
                             Cette action est irréversible.
                         </p>
                         <div className="font-semibold">
@@ -44,9 +44,9 @@ const DeleteEventModal = ({ eventId, eventName }: IDeleteEventModalProps) => {
 
                     <div className="flex items-center w-full gap-2">
                         <button onClick={() => {
-                           (document.getElementById('delete_modal') as HTMLDialogElement).close()
+                            (document.getElementById('delete_modal') as HTMLDialogElement).close()
 
-                        }} className="flex-1 rounded-xl px-3 py-2 border-2 border-zinc-400/30 text-[#104e64] transition-transform active:scale-95">
+                        }} className="flex-1 rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
                             Annuler
                         </button>
                         <button onClick={async () => {

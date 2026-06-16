@@ -2,21 +2,30 @@ export interface IMission {
     id: number
     name: string
     description: string
-    max_volunteers: number
+    eventId: number
+    creatorId: number
+    updateById?: number | null
+    createdAt: Date
+    updatedAt: Date
+    missionSlots: IMissionSlot[]
+    missionHasSkills: IMissionsHasSkill[]
+}
+
+export interface IMissionSlot {
+    id: number
     date: Date
     start_hour: Date
     end_hour: Date
-    eventId: number
-    creatorId: number
+    max_volunteers: number
+    missionId: number
     createdAt: Date
     updatedAt: Date
-    userHasMission?: IUserHasMission[]
-    missionHasSkills: IMissionsHasSkill[]
+    userHasMissions?: IUserHasMission[]
 }
 
 export interface IUserHasMission {
     userId: number
-    missionId: number
+    slotId: number
     user: {
         id: number
         firstname: string

@@ -14,12 +14,11 @@ const registerSchema = z.object({
     password: z.string(),
     newPassword: z.string()
         .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=(?:.*\d){3,})(?=.*?[#?!@$ %^&*-]).{6,}$/, "Minimum 6 caractères, une min, une maj, au moins 3 chiffres et un caractère spécial !"),
-    //Lettre maj comprises entre A et Z + "Message d'erreur"
     confirmPassword: z.string()
 }).refine(data => data.newPassword === data.confirmPassword, {
     message: "Les mots de passent ne correspondent pas",
     path: ["confirmPassword"]
-}) // .refine pour vérifier que deux mots de passes sont identiques
+})
 
 type PasswordField = "password" | "newPassword" | "confirmPassword"
 
@@ -57,7 +56,6 @@ const OnboardingModal = () => {
         resolver: zodResolver(registerSchema)
     })
 
-    //récupérer les skills au montage
     useEffect(() => {
         const displaySkills = async () => {
             const data = await getSkills(api)
@@ -67,19 +65,16 @@ const OnboardingModal = () => {
     }, [])
 
 
-    //showmodal ouvvre la modal par l'element <dialog>
     useEffect(() => {
         (document.getElementById('onboarding_modal') as HTMLDialogElement).showModal()
     }, [])
 
 
-    // Gère la selection/deselction d'un skill quand on clique sur un tag
     const toggleSkill = (id: number) => {
         setSelectedSkills(state => state.includes(id) ? state.filter(s => s !== id) : [...state, id])
     }
 
 
-    //s'execute quand on clqiue sur terminer
     const HandleOnboarding = async () => {
 
         await changePassword(api, newPasswordData!.password, newPasswordData!.newPassword)
@@ -91,23 +86,22 @@ const OnboardingModal = () => {
 
     return (
         <dialog id="onboarding_modal" className="modal">
-            <div className="modal-box bg-[#e6dabb] flex flex-col gap-10 justify-center w-fit p-8">
+            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-10 justify-center w-fit p-8">
 
 
 
                 {/* Etape 1 : changement de mot de passe */}
                 {step === 1 && (
                     <form noValidate onSubmit={handleSubmit(async (data) => {
-                        // "!" signifie que l'accesToken existe bel et bien
                         setNewPasswordData({ password: data.password, newPassword: data.newPassword })
                         setStep(2)
                     })} className="flex flex-col gap-5">
                         <div className="flex flex-col  gap-5">
 
                             <div>
-                                <h3 className="text-xl font-bold text-[#104e64]">Changez votre mot de passe</h3>
+                                <h3 className="text-xl font-bold text-[#104e64] dark:text-[#e6dabb]">Changez votre mot de passe</h3>
 
-                                <p className="text-[#879191] text-sm font-semibold">Choisissez un mot de passe sécurisé</p>
+                                <p className="text-[#879191] dark:text-[#a0a8a8] text-sm font-semibold">Choisissez un mot de passe sécurisé</p>
 
                             </div>
 
@@ -119,8 +113,7 @@ const OnboardingModal = () => {
                                     <div key={field.name} className="flex w-full flex-col gap-4 justify-center items-center">
 
                                         <div className="relative w-full">
-                                            {/*Pour le onclick: on recopie tout l'objet et on change juste la valeur du champ sur lequel on a cliqué. */}
-                                            <input {...register(field.name)} type={showPwd[field.name] ? "text" : "password"} className="input w-full bg-[#104e64] font-bold text-base text-[#e6dabb]/50" placeholder={field.placeholder} />
+                                            <input {...register(field.name)} type={showPwd[field.name] ? "text" : "password"} className="input w-full bg-[#104e64] dark:bg-[#2a3547] font-bold text-base text-[#e6dabb]/50" placeholder={field.placeholder} />
 
                                             <button
                                                 type="button"
@@ -133,7 +126,7 @@ const OnboardingModal = () => {
 
 
                                         {errors[field.name as keyof typeof errors] &&
-                                            (<p className="w-80 text-red-800 font-bold text-sm">{errors[field.name as keyof typeof errors]?.message as string}</p>)}
+                                            (<p className="w-80 text-red-800 dark:text-red-400 font-bold text-sm">{errors[field.name as keyof typeof errors]?.message as string}</p>)}
                                     </div>
                                 ))}
 
@@ -154,9 +147,9 @@ const OnboardingModal = () => {
                     <form noValidate className="flex flex-col gap-6">
                         <div className="">
 
-                            <h3 className="text-xl font-bold text-[#104e64]">Choisissez vos compétences</h3>
+                            <h3 className="text-xl font-bold text-[#104e64] dark:text-[#e6dabb]">Choisissez vos compétences</h3>
 
-                            <p className="text-[#879191] text-sm font-semibold">Sélectionnez au moins deux compétences</p>
+                            <p className="text-[#879191] dark:text-[#a0a8a8] text-sm font-semibold">Sélectionnez au moins deux compétences</p>
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-2">
@@ -170,7 +163,7 @@ const OnboardingModal = () => {
                                         onClick={() => toggleSkill(skill.id)}
                                         className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-colors ${isSelected
                                             ? "bg-[#4f9288] text-white"
-                                            : "bg-white text-[#104e64] border border-[#104e64]/20"
+                                            : "bg-white dark:bg-[#2a3547] text-[#104e64] dark:text-[#e6dabb] border border-[#104e64]/20 dark:border-[#e6dabb]/20"
                                             }`}>
                                         {skill.name} {isSelected && <GiCheckMark />}
                                     </button>
@@ -203,15 +196,15 @@ const OnboardingModal = () => {
                         <button
                             type="button"
                             onClick={() => setStep(1)}
-                            className="text-[#104e64] transition-transform active:scale-95"
+                            className="text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95"
                         >
                             <FaArrowLeft />
                         </button>
                     )}
 
                     <div className="flex gap-2">
-                        <div className={`w-3 h-3 rounded-full ${step === 1 ? "bg-[#104e64]" : "bg-[#c8c4a0]"}`}></div>
-                        <div className={`w-3 h-3 rounded-full ${step === 2 ? "bg-[#104e64]" : "bg-[#c8c4a0]"}`}></div>
+                        <div className={`w-3 h-3 rounded-full ${step === 1 ? "bg-[#104e64] dark:bg-[#e6dabb]" : "bg-[#c8c4a0] dark:bg-[#3a4557]"}`}></div>
+                        <div className={`w-3 h-3 rounded-full ${step === 2 ? "bg-[#104e64] dark:bg-[#e6dabb]" : "bg-[#c8c4a0] dark:bg-[#3a4557]"}`}></div>
                     </div>
 
 

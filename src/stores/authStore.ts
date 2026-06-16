@@ -14,11 +14,13 @@ interface AuthStore {
     user: IUser | null // utilisateur connecté ou null si personne
     accessToken: string | null;
     sidebarPosition: 'left' | 'right'
+    theme: 'light' | 'dark' | 'system'
     login: (user: IUser, token: string) => void
     setUser: (user: IUser | null) => void;
     setAccessToken: (token: string | null) => void;
     setRole: (role: Role) => void;
     setSidebarPosition: (position: 'left' | 'right') => void
+    setTheme: (theme: 'light' | 'dark' |'system') => void
     clearAuth: () => void;
 
 }
@@ -32,6 +34,7 @@ export const useAuthStore = create<AuthStore>()(
             user: null,
             accessToken: null,
             sidebarPosition: 'left',
+            theme: 'light',
 
             login: (user, token) =>
                 set({
@@ -47,6 +50,7 @@ export const useAuthStore = create<AuthStore>()(
                     user: state.user ? { ...state.user, role } : null,
                 })),
             setSidebarPosition: (position) => set({ sidebarPosition: position }),
+            setTheme: (theme) => set({theme}),
             clearAuth: () => set({ user: null, accessToken: null })
 
         }),

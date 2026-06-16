@@ -6,7 +6,6 @@ import { IoCloseCircleOutline } from "react-icons/io5"
 import { useApi } from "../../hook/useApi"
 import { useQuery } from "@tanstack/react-query"
 import { getEvents } from "../../services/api/event"
-import { Link } from "react-router-dom"
 
 const EventListPage = () => {
 
@@ -16,74 +15,58 @@ const EventListPage = () => {
     queryKey: ['events'],
     queryFn: () => getEvents(api)
   })
-  
 
   const handleClose = () => {
     (document.getElementById('event_modal') as HTMLDialogElement).close()
   }
 
-
-
   return (
-    <div className="flex flex-col p-3 h-full gap-3 bg-[#ecece6] flex-1">
-      <div>
+    <div className="flex flex-col p-3 h-full gap-3 bg-[#ecece6] dark:bg-[#161b27] flex-1 overflow-hidden">
 
-        <section className="flex justify-between items-center ">
-          <h3 className="text-[#104e64] text-2xl font-bold" >
-            Evènements du club
-          </h3>
+      <section className="flex justify-between items-center shrink-0">
+        <h3 className="text-[#104e64] dark:text-[#e6dabb] text-xl md:text-2xl font-bold">
+          Evènements du club
+        </h3>
 
-          <div>
-            <button onClick={() => (document.getElementById('event_modal') as HTMLDialogElement).showModal()} className="btn w-fit rounded-lg md:text-lg bg-[#104e64]">
-              + Créer
-            </button>
+        <div>
+          <button
+            onClick={() => (document.getElementById('event_modal') as HTMLDialogElement).showModal()}
+            className="btn text-left text-xs md:text-sm flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#5e2c45] font-bold">
+            + Nouvel évènement
+          </button>
 
-            <dialog id="event_modal" className="modal">
-              <div className="modal-box p-3 bg-[#e6dabb] max-w-lg">
+          <dialog id="event_modal" className="modal">
+            <div className="modal-box p-3 bg-[#e6dabb] dark:bg-[#1e2433] max-w-lg">
 
-                <button onClick={handleClose} className="btn btn-sm btn-circle btn-ghost absolute text-[#104e64] right-2 top-2 lg:hidden">
-                  <IoCloseCircleOutline size={30} />
-                </button>
-                <CreateEventModal
-                  onClose={() => (document.getElementById('event_modal') as HTMLDialogElement).close()}
+              <button onClick={handleClose} className="btn btn-sm btn-circle btn-ghost absolute text-[#104e64] dark:text-[#e6dabb] right-2 top-2 lg:hidden">
+                <IoCloseCircleOutline size={30} />
+              </button>
+              <CreateEventModal
+                onClose={() => (document.getElementById('event_modal') as HTMLDialogElement).close()}
+                onSuccess={() => console.log('évènement créé')} />
+            </div>
 
-                  onSuccess={() => console.log('évènement créé')
-                  } />
-              </div>
+            <form method="dialog" className="modal-backdrop">
+              <button className="text-cyan-700"></button>
+            </form>
+          </dialog>
 
-              <form method="dialog" className="modal-backdrop">
+        </div>
 
-                <button className="text-cyan-700"></button>
-              </form>
-            </dialog>
+      </section>
 
-          </div>
-
-
-
-        </section>
-
+      <div className="overflow-y-auto flex-1">
         <div className="md:hidden">
           {(events ?? []).map((event) => (
-
-            <Link key={event.id} to={`/event/${event.id}`}>
-              <EventCardMobile event={event} />
-            </Link>
-
+            <EventCardMobile key={event.id} event={event} />
           ))}
         </div>
 
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3">
           {(events ?? []).map((event) => (
-
-            <Link key={event.id} to={`/event/${event.id}`}>
-              <EventCardDesktop event={event} />
-            </Link>
-
-
+            <EventCardDesktop key={event.id} event={event} />
           ))}
         </div>
-
       </div>
 
     </div>

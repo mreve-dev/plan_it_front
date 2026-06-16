@@ -48,7 +48,8 @@ export const updateEvent = async (
     name: string | undefined,
     description: string | undefined,
     categoryId: number | undefined,
-    date: Date | undefined,
+    start_date: Date | undefined,
+    end_date: Date | undefined,
     start_hour: string | undefined,
     end_hour: string | undefined,
     location: string | undefined
@@ -57,7 +58,8 @@ export const updateEvent = async (
         name,
         description,
         categoryId,
-        date,
+        start_date,
+        end_date,
         start_hour,
         end_hour,
         location

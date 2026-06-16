@@ -1,29 +1,69 @@
 import type { AxiosInstance } from "axios";
 
+export interface ICreateMissionSlot {
+    date: Date
+    start_hour: string
+    end_hour: string
+    max_volunteers: number
+}
 
 export const createMission = async (
     api: AxiosInstance,
     name: string,
     description: string,
-    max_volunteers: number,
-    date: Date,
-    start_hour: string,
-    end_hour: string,
     eventId: number,
-    creatorId: number
+    creatorId: number,
+    slots: ICreateMissionSlot[]
 ) => {
 
     const response = await api.post('/mission', {
         name,
         description,
-        max_volunteers,
-        date,
-        start_hour,
-        end_hour,
         eventId,
-        creatorId
+        creatorId,
+        slots
     })
 
     return response.data
 
+}
+
+export const updateMission = async (
+    api: AxiosInstance,
+    id: number,
+    name?: string,
+    description?: string
+) => {
+    const response = await api.patch(`/mission/${id}`,
+        { name, description }
+    )
+    return response.data
+}
+
+export const deleteMission = async (api: AxiosInstance, id: number) => {
+    const response = await api.delete(`/mission/${id}`)
+    return response.data
+}
+
+export const updateMissionSlot = async (
+    api: AxiosInstance,
+    id: number,
+    date?: Date,
+    start_hour?: string,
+    end_hour?: string,
+    max_volunteers?: number
+) => {
+    const response = await api.patch(`/mission-slot/${id}`, {
+        date,
+        start_hour,
+        end_hour,
+        max_volunteers
+    })
+
+    return response.data
+}
+
+export const deleteMissionSlot = async (api: AxiosInstance, id: number) => {
+    const response = await api.delete(`/mission-slot/${id}`)
+    return response.data
 }

@@ -23,17 +23,17 @@ const NavBar = ({ children }: { children: ReactNode }) => {
     const { clearAuth, user, sidebarPosition } = useAuthStore()
 
     return (
-        <div className={`${sidebarPosition === 'left' ? 'drawer' : 'drawer drawer-end'} lg:drawer-open bg-[#e6dabb]`}>
+        <div className={`${sidebarPosition === 'left' ? 'drawer' : 'drawer drawer-end'} lg:drawer-open bg-[#e6dabb] dark:bg-[#1e2433]`}>
             <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content h-screen flex flex-col">
+            <div className="drawer-content h-screen flex flex-col overflow-hidden">
                 {/* Navbar */}
-                <nav className="navbar w-full flex justify-between bg-[#e6dabb] lg:hidden">
+                <nav className="navbar w-full flex justify-between bg-[#e6dabb] dark:bg-[#1e2433] shrink-0 lg:hidden">
 
                     {sidebarPosition === 'left' ? (
                         <>
                             <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
                                 {/* Sidebar toggle icon */}
-                                <TiThMenu size={30} color="#4f9288" />
+                                <TiThMenu size={30} className="text-[#4f9288] dark:text-[#6ab5a8]" />
                             </label>
 
                             <Link to={'/home'}>
@@ -71,7 +71,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
 
                             <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
                                 {/* Sidebar toggle icon */}
-                                <TiThMenu size={30} color="#4f9288" />
+                                <TiThMenu size={30} className="text-[#4f9288] dark:text-[#6ab5a8]" />
                             </label>
                         </>
 
@@ -79,13 +79,17 @@ const NavBar = ({ children }: { children: ReactNode }) => {
 
                 </nav>
 
-                {children}
+                <div className="flex-1 overflow-hidden">
+                    {children}
+                </div>
+
+                
 
             </div>
 
             <div className="drawer-side is-drawer-close:overflow-visible">
                 <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-                <div className="flex min-h-full flex-col items-center py-2 bg-[#e6dabb]  ">
+                <div className="flex min-h-full flex-col items-center py-2 bg-[#e6dabb] dark:bg-[#1e2433]">
                     {/* Sidebar content here */}
 
 
@@ -93,7 +97,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         <img src={logo} alt="Logo de l'application plan'it avec un volant de badminton rose à la place du A" className="w-50" />
                     </figure>
 
-                    <ul className="menu w-full text-base text-cyan-900 font-semibold flex justify-start">
+                    <ul className="menu w-full text-base text-cyan-900 dark:text-[#e6dabb] font-semibold flex justify-start">
                         {/* Sidebar content here */}
 
                         <li >
@@ -124,7 +128,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                     </ul>
 
 
-                    <ul className="menu w-full text-base text-cyan-900 font-semibold flex justify-end flex-4">
+                    <ul className="menu w-full text-base text-cyan-900 dark:text-[#e6dabb] font-semibold flex justify-end flex-4">
                         {/* Sidebar content here */}
 
 

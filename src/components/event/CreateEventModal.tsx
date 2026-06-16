@@ -75,26 +75,26 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                 })} className="w-full">
 
                 <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 w-full">
-                    <legend className="fieldset-legend text-2xl text-cyan-900">Créer un évènement</legend>
+                    <legend className="fieldset-legend text-2xl text-cyan-900 dark:text-[#e6dabb]">Créer un évènement</legend>
 
 
                     <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64]">Nom de l'évènement</label>
-                        <input {...register("name")} type="text" className="bg-white rounded-xl border-2 border-[#9b6581] text-base input text-black w-full" placeholder="Ex: tournoi départemental" />
+                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Nom de l'évènement</label>
+                        <input {...register("name")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full" placeholder="Ex: tournoi départemental" />
                     </div>
 
 
 
                     <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64]">Description</label>
-                        <textarea {...register("description")} className="bg-white resize-none whitespace-pre-wrap rounded-xl border-2 border-[#9b6581] text-base input text-black w-full h-15 py-2" placeholder="Décrivez l'évènement" >
+                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Description</label>
+                        <textarea {...register("description")} className="bg-white dark:bg-[#2a3142] resize-none whitespace-pre-wrap rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full h-15 py-2" placeholder="Décrivez l'évènement" >
                         </textarea>
                         {errors.description && <p className="text-red-800 font-bold text-sm">{errors.description.message}</p>}
                     </div>
 
 
                     <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64]">Catégorie</label>
+                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Catégorie</label>
                         <select {...register("categoryId")}
                             onChange={(e) => {
                                 if (e.target.value === "new") {
@@ -104,7 +104,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                 }
                                 register("categoryId").onChange(e)
                             }}
-                            defaultValue="Sélectionner une catégorie" className="select bg-white rounded-xl border-2 border-[#9b6581] text-base input text-black/50 w-full">
+                            defaultValue="Sélectionner une catégorie" className="select bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black/50 dark:text-[#e6dabb]/50 w-full">
                             <option disabled={true} className="text-[#e6e3e3d7]">Sélectionner une catégorie</option>
                             {categories?.map((cat) => (
                                 <option key={cat.id} value={cat.id} className="text-[#9b6581] font-semibold">{cat.name}</option>
@@ -130,13 +130,13 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                     type="text"
                                     value={newCategoryName}
                                     onChange={(e) => setNewCategoryName(e.target.value)}
-                                    className="bg-white rounded-xl border-2 border-[#9b6581] text-base input text-black w-full "
+                                    className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full "
                                     placeholder="Nom de la nouvelle catégorie"
                                 />
 
                                 <button type="button"
                                     onClick={() => setShowNewCategory(false)}
-                                    className="btn bg-[#104e64] text-white rounded-xl px-4">
+                                    className="btn bg-[#104e64] dark:bg-[#4f9288] text-white rounded-xl px-4">
                                     ✕
                                 </button>
 
@@ -146,7 +146,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
 
                     <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64]">Date</label>
+                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date</label>
 
                         <Controller
                             name="date"
@@ -156,7 +156,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                     <button
                                         type="button"
                                         popoverTarget="rdp-popover"
-                                        className={`bg-white rounded-xl border-2 border-[#9b6581] text-base input text-black w-full py-2 ${field.value ? `text-black` : `text-black/50`}`}
+                                        className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
                                         style={{ anchorName: "--rdp" } as React.CSSProperties}>
                                         {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
 
@@ -182,16 +182,16 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
                     <div className="flex justify-between gap-3">
                         <div className="w-full flex flex-col gap-2">
-                            <label className="label text-sm font-bold text-[#104e64]">Heure de début</label>
-                            <input {...register('start_hour')} type="time" className={`bg-white input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black` : `text-black/50`} scheme-light`} />
+                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de début</label>
+                            <input {...register('start_hour')} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
 
 
                         </div>
 
                         <div className="w-full flex flex-col gap-2">
                             <div className="w-full flex flex-col gap-2">
-                                <label className="label text-sm font-bold text-[#104e64]">Heure de fin</label>
-                                <input {...register("end_hour")} type="time" className={`bg-white input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black` : `text-black/50`} scheme-light`} />
+                                <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de fin</label>
+                                <input {...register("end_hour")} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
 
                             </div>
                             {errors.end_hour && <p className="text-red-800 font-bold text-sm">{errors.end_hour.message}</p>}
@@ -201,8 +201,8 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64]">Lieu</label>
-                        <input {...register("location")} type="text" className="bg-white rounded-xl border-2 border-[#9b6581] text-base input text-black w-full" placeholder="Ex: Gymnase Leclerc" />
+                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Lieu</label>
+                        <input {...register("location")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full" placeholder="Ex: Gymnase Leclerc" />
                         {errors.location && <p className="text-red-800 font-bold text-sm">{errors.location.message}</p>}
                     </div>
 

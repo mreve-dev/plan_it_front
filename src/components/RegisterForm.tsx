@@ -14,7 +14,6 @@ const registerSchema = z.object({
     email: z.string().email(),
     password: z.string()
         .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=(?:.*\d){3,})(?=.*?[#?!@$ %^&*-]).{6,}$/, "Minimum 6 caractères, une min, une maj, au moins 3 chiffres et un caractère spécial !")
-    //Lettre maj comprises entre A et Z + "Message d'erreur"
 })
 
 interface RegisterFormProps {
@@ -39,74 +38,64 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
         <dialog id="register_modal" className="modal">
 
-            <div className="modal-box p-3 bg-[#e6dabb] w-fit">
+            <div className="modal-box p-3 bg-[#e6dabb] dark:bg-[#1e2433] w-fit">
                 <div className="flex flex-col gap-4 m-2 px-4 pt-4">
 
-                    <button onClick={handleClose} className="btn btn-sm btn-circle btn-ghost absolute text-[#104e64] right-2 top-2 lg:hidden">
+                    <button onClick={handleClose} className="btn btn-sm btn-circle btn-ghost absolute text-[#104e64] dark:text-[#e6dabb] right-2 top-2 lg:hidden">
                         <IoCloseCircleOutline size={30} />
                     </button>
 
-                    <form 
-                    noValidate 
-                    onSubmit={handleSubmit(async (data) => {
-                        await signup(api, data.lastname, data.firstname, data.email, data.password, data.role);
+                    <form
+                        noValidate
+                        onSubmit={handleSubmit(async (data) => {
+                            await signup(api, data.lastname, data.firstname, data.email, data.password, data.role);
 
-                        (document.getElementById('register_modal') as HTMLDialogElement).close()
-                        onSuccess?.()
-                    })}
-                    className="flex flex-col gap-3">
+                            (document.getElementById('register_modal') as HTMLDialogElement).close()
+                            onSuccess?.()
+                        })}
+                        className="flex flex-col gap-3">
 
                         <fieldset className="fieldset flex gap-4 flex-col rounded-box w-xs">
 
-                            <h3 className="fieldset-legend text-2xl text-cyan-900">Créer un nouvel utilisateur</h3>
+                            <h3 className="fieldset-legend text-2xl text-cyan-900 dark:text-[#e6dabb]">Créer un nouvel utilisateur</h3>
 
                             <div className="flex flex-col gap-4">
                                 <div className="flex gap-3">
 
                                     <div>
                                         <label className="label label-register">Nom</label>
-                                        <input {...register("lastname")} type="text" className="bg-[#104e64] font-bold text-base input text-[#e6dabb]/50" placeholder="Nom" />
-
+                                        <input {...register("lastname")} type="text" className="bg-[#104e64] dark:bg-[#2a3547] font-bold text-base input text-[#e6dabb]/50" placeholder="Nom" />
                                     </div>
 
                                     <div>
                                         <label className="label label-register">Prénom</label>
-                                        <input {...register("firstname")} type="text" className="bg-[#104e64] font-bold text-base input text-[#e6dabb]/50" placeholder="Prénom" />
+                                        <input {...register("firstname")} type="text" className="bg-[#104e64] dark:bg-[#2a3547] font-bold text-base input text-[#e6dabb]/50" placeholder="Prénom" />
                                     </div>
 
-
-
                                 </div>
-
 
                                 <div>
                                     <label className="label label-register">Email</label>
-                                    <input {...register("email")} type="email" className="bg-[#104e64] font-bold text-base input text-[#e6dabb]/50 " placeholder="nom@email.com" />
-                                    {errors.email && <p className="text-red-800 font-bold text-sm">{errors.email.message}</p>}
-
+                                    <input {...register("email")} type="email" className="bg-[#104e64] dark:bg-[#2a3547] font-bold text-base input text-[#e6dabb]/50" placeholder="nom@email.com" />
+                                    {errors.email && <p className="text-red-800 dark:text-red-400 font-bold text-sm">{errors.email.message}</p>}
                                 </div>
 
                                 <div>
-
                                     <label className="label label-register">Mot de passe</label>
-                                    <input {...register("password")} type={showPwd ? "text" : "password"} className="input bg-[#104e64] font-bold text-base text-[#e6dabb]/50" placeholder="mot de passe temporaire" />
-                                    {errors.password && <p className="text-red-800 font-bold text-sm">{errors.password.message}</p>}
-
+                                    <input {...register("password")} type={showPwd ? "text" : "password"} className="input bg-[#104e64] dark:bg-[#2a3547] font-bold text-base text-[#e6dabb]/50" placeholder="mot de passe temporaire" />
+                                    {errors.password && <p className="text-red-800 dark:text-red-400 font-bold text-sm">{errors.password.message}</p>}
                                 </div>
 
                                 <div>
                                     <label className="label label-register">Rôle</label>
 
                                     <div>
-                                        <select {...register("role")} defaultValue="Choisissez un rôle" className="select bg-[#104e64] font-bold text-base text-[#e9e8e4]">
+                                        <select {...register("role")} defaultValue="Choisissez un rôle" className="select bg-[#104e64] dark:bg-[#2a3547] font-bold text-base text-[#e9e8e4]">
                                             <option disabled={true} className="text-[#e6e3e3d7]">Choisissez un rôle</option>
                                             <option value={"benevole"}>Bénévole</option>
                                             <option value={"admin"}>Administrateur</option>
                                         </select>
-
                                     </div>
-
-
                                 </div>
 
                             </div>
@@ -120,14 +109,11 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
                     </form>
 
                 </div>
-
-
             </div>
 
             <form method="dialog" className="modal-backdrop">
                 <button></button>
             </form>
-
 
         </dialog>
 

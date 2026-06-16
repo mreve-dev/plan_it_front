@@ -10,12 +10,11 @@ import { resetPassword } from "../services/api/auth"
 const registerSchema = z.object({
     newPassword: z.string()
         .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=(?:.*\d){3,})(?=.*?[#?!@$ %^&*-]).{6,}$/, "Minimum 6 caractères, une min, une maj, au moins 3 chiffres et un caractère spécial !"),
-    //Lettre maj comprises entre A et Z + "Message d'erreur"
     confirmPassword: z.string()
 }).refine(data => data.newPassword === data.confirmPassword, {
     message: "Les mots de passent ne correspondent pas",
     path: ["confirmPassword"]
-}) // .refine pour vérifier que deux mots de passes sont identiques
+})
 
 type PasswordField = "newPassword" | "confirmPassword"
 
@@ -34,7 +33,7 @@ const passwordFields: IPasswordField[] = [
 const ResetPasswordModal = () => {
 
     const [searcheParams] = useSearchParams()
-    const token = searcheParams.get('token') //récupère le token depuis l'url
+    const token = searcheParams.get('token')
     const navigate = useNavigate()
 
     const [showPwd, setShowPwd] = useState<Record<PasswordField, boolean>>({
@@ -55,19 +54,18 @@ const ResetPasswordModal = () => {
 
     return (
         <dialog id="reset_modal" className="modal">
-            <div className="modal-box bg-[#e6dabb] flex flex-col gap-10 justify-center w-fit p-8">
+            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-10 justify-center w-fit p-8">
 
                 <div>
-                    <h3 className="text-xl font-bold text-[#104e64]">Changez votre mot de passe</h3>
+                    <h3 className="text-xl font-bold text-[#104e64] dark:text-[#e6dabb]">Changez votre mot de passe</h3>
 
-                    <p className="text-[#879191] text-sm font-semibold">Choisissez un mot de passe sécurisé</p>
+                    <p className="text-[#879191] dark:text-[#a0a8a8] text-sm font-semibold">Choisissez un mot de passe sécurisé</p>
 
                 </div>
 
 
 
                 <form noValidate onSubmit={handleSubmit(async (data) => {
-                    
                     await resetPassword(token!, data.newPassword)
                     navigate("/login")
                 })} className="flex flex-col gap-5">
@@ -79,8 +77,7 @@ const ResetPasswordModal = () => {
                                 <div key={field.name} className="flex w-full flex-col gap-4 justify-center items-center">
 
                                     <div className="relative w-full">
-                                        {/*Pour le onclick: on recopie tout l'objet et on change juste la valeur du champ sur lequel on a cliqué. */}
-                                        <input {...register(field.name)} type={showPwd[field.name] ? "text" : "password"} className="input w-full bg-[#104e64] font-bold text-base text-[#e6dabb]/50" placeholder={field.placeholder} />
+                                        <input {...register(field.name)} type={showPwd[field.name] ? "text" : "password"} className="input w-full bg-[#104e64] dark:bg-[#2a3547] font-bold text-base text-[#e6dabb]/50" placeholder={field.placeholder} />
 
                                         <button
                                             type="button"
@@ -93,7 +90,7 @@ const ResetPasswordModal = () => {
 
 
                                     {errors[field.name as keyof typeof errors] &&
-                                        (<p className="w-80 text-red-800 font-bold text-sm">{errors[field.name as keyof typeof errors]?.message as string}</p>)}
+                                        (<p className="w-80 text-red-800 dark:text-red-400 font-bold text-sm">{errors[field.name as keyof typeof errors]?.message as string}</p>)}
                                 </div>
                             ))}
                         </div>
