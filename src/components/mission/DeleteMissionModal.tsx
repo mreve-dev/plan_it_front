@@ -1,22 +1,24 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useApi } from "../../hook/useApi"
 import { FaTrashCan } from "react-icons/fa6"
-import { deleteEvent } from "../../services/api/event"
+import { deleteMission } from "../../services/api/mission"
 
 
 interface IDeleteEventModalProps {
-    eventId: number
-    eventName: string
+    missionId: number
+    missionName: string
     onSuccess: () => void
     onClose: () => void
 }
 
-const DeleteEventModal = ({ eventId, eventName, onClose, onSuccess }: IDeleteEventModalProps) => {
+const DeleteMissionModal = ({ missionId, missionName, onClose, onSuccess }: IDeleteEventModalProps) => {
+
+    const {id} = useParams()
     const api = useApi()
     const navigate = useNavigate()
 
     return (
-        <dialog id="delete_modal" className="modal">
+        <dialog id={`delete_mission_modal_${missionId}`} className="modal">
             <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] w-100 flex flex-col gap-4 items-center">
                 <div className="bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-8 justify-between items-center rounded-lg p-6 h-full">
 
@@ -35,23 +37,23 @@ const DeleteEventModal = ({ eventId, eventName, onClose, onSuccess }: IDeleteEve
                         </p>
                         <div className="font-semibold">
                             <p>
-                                L'évènement :
+                                La mission :
                             </p>
-                            <p className="text-lg font-bold">{eventName}</p>
-                            <p>sera définitivement supprimé.</p>
+                            <p className="text-lg font-bold">{missionName}</p>
+                            <p>sera définitivement supprimée.</p>
 
                         </div>
 
                     </div>
 
                     <div className="flex items-center w-full gap-2">
-                        <button onClick={() => {onClose}} className="flex-1 rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
+                        <button onClick={() => {onClose()}} className="flex-1 rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 cursor-pointer text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
                             Annuler
                         </button>
                         <button onClick={async () => {
-                            await deleteEvent(eventId, api)
+                            await deleteMission(api, missionId)
                             onSuccess()
-                            navigate('/event')
+                            navigate(`/event/${id}/missions`)
                         }} className="flex-1 px-3 py-2 rounded-xl font-semibold bg-red-900 text-white transition-transform active:scale-95">
                             Supprimer
                         </button>
@@ -68,4 +70,4 @@ const DeleteEventModal = ({ eventId, eventName, onClose, onSuccess }: IDeleteEve
     )
 }
 
-export default DeleteEventModal
+export default DeleteMissionModal

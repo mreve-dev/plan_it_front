@@ -35,9 +35,9 @@ const AdminHomePage = () => {
   if (!event) return null
 
   return (
-    <div className="h-full bg-[#ecece6] dark:bg-[#161b27] p-5 rounded flex flex-col gap-5">
+    <div className="h-full bg-[#ecece6] dark:bg-[#161b27] p-5 rounded flex flex-col gap-5 overflow-y-auto md:overflow-hidden">
 
-      <div className="text-[#4f9288] flex justify-between items-center">
+      <div className="text-[#4f9288] flex justify-between items-center ">
         <h2 className="text-2xl md:text-3xl font-bold">
           Tableau de Bord
         </h2>
@@ -56,7 +56,7 @@ const AdminHomePage = () => {
       </div>
 
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 h-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:h-full">
 
         <section className="flex flex-col gap-3 md:order-last">
 

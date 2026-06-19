@@ -62,11 +62,17 @@ const VolunteerDetailsModal = ({ user, onClose, onDelete }: IVolunteerDetailsMod
 
                 <ul className="text-[#104e64] dark:text-[#e6dabb] flex flex-col gap-2 border-b-2 pb-4 border-zinc-400/60">
                     <li className="flex items-center gap-3"><MdMailOutline /> {user.email}</li>
-                    <li className="flex items-center gap-3"><LiaBirthdayCakeSolid /> {new Date(user.date_of_birth).toLocaleDateString('fr-FR', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                    })}</li>
+                    <li className="flex items-center gap-3">
+                        <LiaBirthdayCakeSolid />
+                        {user.date_of_birth
+                            ? new Date(user.date_of_birth).toLocaleDateString('fr-FR', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            })
+                            : 'Non renseignée'
+                        }
+                    </li>
                     <li className="flex items-center gap-3"><LuCalendar1 /> Membre depuis le {new Date(user.createdAt).toLocaleDateString('fr-FR', {
                         day: 'numeric',
                         month: 'long',

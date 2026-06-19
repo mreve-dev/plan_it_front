@@ -25,8 +25,8 @@ const EventCardDesktop = ({ event }: IEventCardProps) => {
   return (
     <div
       onClick={() => navigate(`/event/${event.id}`)}
-      className="p-3 h-full cursor-pointer">
-      <div className={`bg-[#e6dabb] dark:bg-[#1e2433] flex gap-3 justify-between flex-col h-full p-4 rounded-2xl font-bold border border-[#104e64]/10 dark:border-[#e6dabb]/10 border-l-4 ${getCategoryBorder(event.category.name)} `}>
+      className="h-full flex-1 cursor-pointer">
+      <div className={`bg-[#e6dabb] dark:bg-[#1e2433]  gap-3 justify-between flex-col h-full p-4 flex rounded-2xl font-bold border border-[#104e64]/10 dark:border-[#e6dabb]/10 border-l-4 ${getCategoryBorder(event.category.name)} `}>
 
         <div className={`flex items-center justify-between`}>
           <p className={`${getCategoryColor(event.category.name)} rounded-full text-sm px-3 py-2`}>
@@ -83,7 +83,7 @@ const EventCardDesktop = ({ event }: IEventCardProps) => {
             Missions(s)
           </p>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col h-full gap-2">
 
             {event.missions.length > 0 ? (
               missionsArray.slice(0, 3).map(([nom, { inscrits, total }]) => {
@@ -114,11 +114,17 @@ const EventCardDesktop = ({ event }: IEventCardProps) => {
                 )
               })
             ) : (
-              <p className="text-center text-xs text-[#4f9288] dark:text-[#6ab5a8] font-bold flex h-full items-center justify-center gap-1 pt-2 mt-auto cursor-pointer">
-                Aucune mission pour le moment
-              </p>
-            )}
+              <div className="flex h-full justify-center items-center">
+                <div>
+                  <p className="text-center text-xs text-[#4f9288] dark:text-[#6ab5a8] font-bold flex h-full items-center justify-center gap-1 pt-2 mt-auto cursor-pointer">
+                    Aucune mission pour le moment
+                  </p>
 
+                </div>
+
+
+              </div>
+            )}
           </div>
 
           {event.missions.length > 3 && (

@@ -12,12 +12,15 @@ import type { IEventHasDocument } from "../../types/document.type"
 import DeleteEventModal from "../../components/event/DeleteEventModal"
 import UpdateEventModal from "../../components/event/UpdateEventModal"
 import CreateMissionModal from "../../components/mission/CreateMissionModal"
+import { useAuthStore } from "../../stores/authStore"
 
 
 
 const EventDetailPage = () => {
 
     const api = useApi()
+    const { user: currentUser } = useAuthStore()
+    const isAdmin = currentUser?.role === 'admin'
 
     const { id } = useParams()
 
@@ -144,6 +147,8 @@ const EventDetailPage = () => {
 
                                 <div className="flex flex-col gap-2">
 
+                                    {/* affichage des infos du tournoi: date, heures, nom, descriptions, catégorie */}
+
                                     <div className="flex font-bold gap-2 items-center flex-wrap">
 
                                         <div className="flex md:hidden items-center gap-2 text-sm">
@@ -214,24 +219,41 @@ const EventDetailPage = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-2">
 
-                                <UpdateEventModal event={event} onClose={() => (document.getElementById('update_modal') as HTMLDialogElement).close()} onSuccess={() => console.log('évènement modifié')} />
-
-                                <button onClick={() => (document.getElementById('update_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center w-15 p-4 lg:w-40 lg:h-10 text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
-                                    <FaPenToSquare />
-                                    <p className="hidden lg:block">Modifier</p>
-                                </button>
-
-                                <button onClick={() => (document.getElementById('delete_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center rounded-xl w-15 p-4 lg:w-40 lg:h-10 gap-2 text-red-900 dark:text-red-400 border-2 border-red-900 dark:border-red-400 transition-transform active:scale-95">
-                                    <FaTrashCan />
-                                    <p className="hidden lg:block">Supprimer</p>
-                                </button>
-
+                            {isAdmin && (
                                 <div>
-                                    <DeleteEventModal eventId={event.id} eventName={event.name} />
+                                    <div className="flex gap-3">
+                                        <button onClick={() => (document.getElementById('update_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center w-15 p-4 lg:w-40 lg:h-10 text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
+                                            <FaPenToSquare />
+                                            <p className="hidden lg:block">Modifier</p>
+                                        </button>
+
+                                        <UpdateEventModal
+                                            event={event}
+                                            onClose={() => (document.getElementById('update_event_modal') as HTMLDialogElement).close()}
+                                            onSuccess={() => queryClient.refetchQueries({ queryKey: ['event', id] })}
+                                        />
+
+                                        <button onClick={() => (document.getElementById('delete_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center rounded-xl w-15 p-4 lg:w-40 lg:h-10 gap-2 text-red-900 dark:text-red-400 border-2 border-red-900 dark:border-red-400 transition-transform active:scale-95">
+                                            <FaTrashCan />
+                                            <p className="hidden lg:block">Supprimer</p>
+                                        </button>
+
+                                        <DeleteEventModal
+                                            eventId={event.id}
+                                            eventName={event.name}
+                                            onClose={() => (document.getElementById('delete_modal') as HTMLDialogElement).close()}
+                                            onSuccess={() => {
+                                                queryClient.invalidateQueries({ queryKey: ['events'] })
+                                            }}
+                                        />
+
+                                    </div>
+
                                 </div>
-                            </div>
+                            )}
+
+
 
                         </div>
                         <p className="font-normal text-center xl:text-left">
@@ -245,18 +267,27 @@ const EventDetailPage = () => {
                     <section className="bg-[#e6dabb] dark:bg-[#1e2433] flex gap-4 justify-between flex-col h-full p-4 rounded-2xl font-bold">
 
                         <div className="flex justify-between items-center">
-                            <h4 className="text-lg text-[#104e64] dark:text-[#e6dabb] font-bold">
-                                Missions(s)
-                            </h4>
+                            <Link to={`/event/${id}/missions`}>
+                                <h4 className="text-lg text-[#104e64] dark:text-[#e6dabb] font-bold">
+                                    Missions(s)
+                                </h4>
+                            </Link>
 
-                            <button onClick={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).showModal()} className="btn border-none text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
-                                + Nouvelle mission
-                            </button>
+                            {isAdmin && (
+                                <div>
+                                    <button onClick={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).showModal()} className="btn border-none text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95">
+                                        + Nouvelle mission
+                                    </button>
 
-                            <CreateMissionModal
-                                eventId={event.id}
-                                onClose={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).close}
-                                onSuccess={() => queryClient.refetchQueries({ queryKey: ['event', id] })} />
+                                    <CreateMissionModal
+                                        eventId={event.id}
+                                        onClose={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).close}
+                                        onSuccess={() => queryClient.refetchQueries({ queryKey: ['event', id] })} />
+                                </div>
+
+                            )}
+
+
                         </div>
 
                         <div className="flex-1 flex flex-col gap-3">

@@ -94,13 +94,13 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
 
     // Ferme la modale et remet tout à zéro
     const handleClose = () => {
-            ; (document.getElementById('update_modal') as HTMLDialogElement).close()
+            ; (document.getElementById('update_event_modal') as HTMLDialogElement).close()
     }
 
 
 
     return (
-        <dialog id="update_modal" className="modal">
+        <dialog id="update_event_modal" className="modal">
             <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433]">
 
                 <div className="flex items-center justify-end lg:hidden px-2">
@@ -112,20 +112,19 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
                 <div>
                     <form noValidate onSubmit={handleSubmit(async (data) => {
 
-                        console.log("✅ data", data)
 
                         const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
                         const startDateToSend = data.start_date ? new Date(data.start_date.getTime() - data.start_date.getTimezoneOffset() * 60000) : undefined
                         const endDateToSend = data.end_date ? new Date(data.end_date.getTime() - data.end_date.getTimezoneOffset() * 60000) : undefined
 
                         await updateEvent(event.id, api, data.name, data.description, categoryId, startDateToSend, endDateToSend, data.start_hour, data.end_hour, data.location);
-                        console.log("✅ updateEvent done")
+                       
                         queryClient.refetchQueries({ queryKey: ['events'] });
-                        console.log("✅ refetch done")
+                     
                         reset();
                         queryClient.refetchQueries({ queryKey: ['event', String(event.id)] }),
 
-                            (document.getElementById('update_modal') as HTMLDialogElement).close()
+                            (document.getElementById('update_event_modal') as HTMLDialogElement).close()
                         onSuccess?.()
                         onClose()
                     },
@@ -269,7 +268,7 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
 
                         <div className="flex justify-center item-center gap-3">
                             <button onClick={() => {
-                                (document.getElementById('update_modal') as HTMLDialogElement).close()
+                                (document.getElementById('update_event_modal') as HTMLDialogElement).close()
                             }} className="rounded-xl px-3 py-2 border-2 border-zinc-400/30 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95 md:hidden">
                                 Annuler
                             </button>

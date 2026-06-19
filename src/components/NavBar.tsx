@@ -64,7 +64,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                             </figure>
 
                             <Link to={'/home'}>
-                                <figure className="w-40 md:hidden">
+                                <figure className="w-30 md:hidden">
                                     <img src={logoMobile} alt="" />
                                 </figure>
                             </Link>
@@ -83,7 +83,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                     {children}
                 </div>
 
-                
+
 
             </div>
 
@@ -112,7 +112,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </li>
 
                         <li>
-                            <Link to={user?.role === "admin" ? "/volunteersforadmin" : "/volunteersforuser"}
+                            <Link to={'/volunteers'}
                                 onClick={closeSidebar}><MdOutlineVolunteerActivism size={25} /> {user?.role === "admin" ? " Gérer les bénévoles" : " Liste des bénévoles"}</Link>
                         </li>
 
@@ -120,7 +120,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                             <Link
                                 to={"/event"}
                                 onClick={closeSidebar}>
-                                <MdEventAvailable size={25} /> Gestion des évènements
+                                <MdEventAvailable size={25} /> Evènements du club
                             </Link>
                         </li>
 
@@ -133,7 +133,9 @@ const NavBar = ({ children }: { children: ReactNode }) => {
 
 
                         <li>
-                            <Link to={'/settings'}>
+                            <Link
+                                to={'/settings'}
+                                onClick={closeSidebar}>
                                 <IoMdSettings size={25} /> Paramètres
                             </Link>
                         </li>

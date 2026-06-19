@@ -37,7 +37,6 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
 
     const [step, setStep] = useState<number>(1)
     const api = useApi()
-    const user = useAuthStore((state) => state.user)
     const queryClient = useQueryClient()
 
 
@@ -115,7 +114,8 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
         date: undefined as Date | undefined,
         start_hour: '',
         duration: 60, // en minutes
-        count: 2
+        count: 2,
+        max_volunteers: 1
     })
 
 
@@ -138,7 +138,7 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                 date: slots[0]?.date,
                 start_hour: toHHmm(startMinutes),
                 end_hour: toHHmm(endMinutes),
-                max_volunteers: 1
+                max_volunteers: autoConfig.max_volunteers
             })
         }
         setSlots(generatedSlots)
@@ -186,7 +186,6 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                     <button onClick={handleClose} className="btn btn-sm bg-transparent text-base btn-ghost text-[#104e64] dark:text-[#e6dabb] ">
                         Fermer
                     </button>
-
                 </div>
 
 
@@ -207,7 +206,7 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                             console.log("data", data)
 
                             try {
-                                await createMission(api, data.name, data.description, eventId, user!.id, slotsToSend)
+                                await createMission(api, data.name, data.description, eventId, slotsToSend)
                             } catch (error: any) {
                                 console.log("erreur back", error.response?.data)
                                 return
@@ -310,8 +309,10 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                                                 </button>
                                             </div>
 
-                                            <div className="bg-[#d5d0b8] dark:bg-[#2a3142] rounded-xl p-3 flex flex-col gap-2">
-                                                <div className="flex flex-col gap-1">
+                                            <div className="bg-[#d5d0b8] dark:bg-[#2a3142] rounded-xl p-3 flex flex-col gap-3">
+
+                                                {/* Choix de la date de la mission */}
+                                                <div className="flex flex-col gap-2">
                                                     <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Date</label>
                                                     <button type="button" popoverTarget="rdp-auto"
                                                         className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl border-3 border-[#dbd5b2] text-base input w-full py-2 text-left"
@@ -330,26 +331,39 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                                                     </div>
                                                 </div>
 
-                                                <div className="flex flex-col gap-1">
+                                                {/* Heure de début pour calcul de l'interval */}
+
+                                                <div className="flex flex-col gap-2">
                                                     <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de début</label>
                                                     <input type="time" value={autoConfig.start_hour}
                                                         onChange={(e) => setAutoConfig(prev => ({ ...prev, start_hour: e.target.value }))}
                                                         className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] input rounded-xl border-3 border-[#dbd5b2] w-full scheme-light" />
                                                 </div>
 
+
+                                                {/* GEstion des créneaux nombre et interval de temps */}
                                                 <div className="flex gap-2">
-                                                    <div className="flex-1 flex flex-col gap-1">
+                                                    <div className="flex-1 flex flex-col gap-2">
                                                         <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Durée (minutes)</label>
                                                         <input type="number" min={15} step={15} value={autoConfig.duration}
                                                             onChange={(e) => setAutoConfig(prev => ({ ...prev, duration: parseInt(e.target.value) }))}
                                                             className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl border-3 border-[#dbd5b2] input w-full" />
                                                     </div>
-                                                    <div className="flex-1 flex flex-col gap-1">
+                                                    <div className="flex-1 flex flex-col gap-2">
                                                         <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Nombre de créneaux</label>
-                                                        <input type="number" min={1} max={20} value={autoConfig.count}
+                                                        <input type="number" min={1} max={10} value={autoConfig.count}
                                                             onChange={(e) => setAutoConfig(prev => ({ ...prev, count: parseInt(e.target.value) }))}
                                                             className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl border-3 border-[#dbd5b2] input w-full" />
                                                     </div>
+                                                </div>
+
+                                                {/* Choix du nombre max de volontaire par créneau */}
+                                                <div className="flex flex-col gap-2">
+                                                    <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Nombre de volontaires</label>
+                                                    <input type="number" min={1} max={10} value={autoConfig.max_volunteers}
+                                                        onChange={(e) => setAutoConfig(prev => ({ ...prev, max_volunteers: parseInt(e.target.value) }))}
+                                                        className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl border-3 border-[#dbd5b2] input w-full" />
+
                                                 </div>
                                             </div>
                                             <div className="flex justify-center items-center">

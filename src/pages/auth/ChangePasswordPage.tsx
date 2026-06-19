@@ -30,8 +30,7 @@ const ChangePasswordPage = () => {
       const interval = setInterval(() => {
         setCountdown(actualCounter => {
           if (actualCounter <= 1) {
-            clearInterval(interval)
-            navigate('/login')
+            clearInterval(interval) // ok de garder ça ici, ce n'est pas un setState
             return 0
           }
           return actualCounter - 1
@@ -40,6 +39,12 @@ const ChangePasswordPage = () => {
       return () => clearInterval(interval)
     }
   }, [emailSent])
+
+  useEffect(() => {
+    if (countdown === 0 && emailSent) {
+      navigate('/login')
+    }
+  }, [countdown, emailSent])
 
   return (
     <div className="h-screen flex flex-col p-3 bg-white dark:bg-[#161b27]">

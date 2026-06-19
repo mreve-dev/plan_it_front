@@ -1,3 +1,5 @@
+import { int } from "zod"
+
 export interface ISkill {
     id: number
     name: string
@@ -8,18 +10,26 @@ export interface IUserHasSkill {
     skill: ISkill
 }
 
-export interface IUser {
+export interface IUserBase {
     id: number
     firstname: string
     lastname: string
-    date_of_birth: Date
-    email: string
-    password: string
     role: Role
     isOnboarded: boolean
     mustChangePassword: boolean
     userHasSkills: IUserHasSkill[]
     createdAt: Date
+    date_of_birth: Date | null
+}
+
+// Vue complète : reçue par un admin consultant n'importe qui, ou par n'importe qui consultant SON PROPRE profil
+export interface IUser extends IUserBase {
+    email: string
+}
+
+// Vue restreinte : reçue par un non-admin consultant le profil de quelqu'un d'autre
+export interface IUserPublic extends IUserBase {
+    email?: never
 }
 
 

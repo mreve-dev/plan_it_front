@@ -12,7 +12,6 @@ export const createMission = async (
     name: string,
     description: string,
     eventId: number,
-    creatorId: number,
     slots: ICreateMissionSlot[]
 ) => {
 
@@ -20,12 +19,10 @@ export const createMission = async (
         name,
         description,
         eventId,
-        creatorId,
         slots
     })
 
     return response.data
-
 }
 
 export const updateMission = async (
@@ -44,6 +41,9 @@ export const deleteMission = async (api: AxiosInstance, id: number) => {
     const response = await api.delete(`/mission/${id}`)
     return response.data
 }
+
+
+
 
 export const updateMissionSlot = async (
     api: AxiosInstance,

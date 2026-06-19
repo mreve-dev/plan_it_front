@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom"
 import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "./eventcard.config"
+import { FaArrowRight } from "react-icons/fa"
+import { Link } from "react-router-dom"
 
 
 const EventCardMobile = ({ event }: IEventCardProps) => {
 
     const navigate = useNavigate()
-    
+
     return (
         <div
             onClick={() => navigate(`/event/${event.id}`)}
@@ -60,9 +62,17 @@ const EventCardMobile = ({ event }: IEventCardProps) => {
                         {event.missions.length} missions
                     </span>
 
-                    <span className="text-[#396962] dark:text-[#6ab5a8]">
-                        Voir les missions
-                    </span>
+                    {event.missions.length > 3 && (
+                        <Link
+                            to={`/event/${event.id}/missions`}
+                            onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-between items-center">
+                                <span className="text-[#4f9288] dark:text-[#6ab5a8] flex items-center justify-center gap-2 text-center w-full">
+                                    Voir les missions <FaArrowRight />
+                                </span>
+                            </div>
+                        </Link>
+                    )}
                 </div>
 
             </div>
