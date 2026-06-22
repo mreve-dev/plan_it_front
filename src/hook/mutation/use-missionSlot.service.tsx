@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/react-query"
 import { useApi } from "../useApi"
-import { createMissionSlot, deleteMissionSlot, updateMissionSlot } from "../../services/api/mission"
+import { createManyMissionSlots, createMissionSlot, deleteMissionSlot, updateMissionSlot, type ICreateManySlot } from "../../services/api/mission"
 import type { AxiosError } from "axios"
 
 
@@ -21,6 +21,11 @@ interface IUpdateSlotPayload {
     max_volunteers?: number
 }
 
+interface ICreateManyPayload {
+    missionId: number
+    slots: ICreateManySlot[]
+}
+
 export const useMissionSlotMutation = (
     eventId: string | undefined,
     onSuccess?: () => void) => {
@@ -36,12 +41,25 @@ export const useMissionSlotMutation = (
         onSuccess?.()
     }
 
+    // Créer un seul créneau
+
     const create: UseMutationResult<any, AxiosError, ICreateSlotPayload> = useMutation({
         mutationFn: (data: { max_volunteers: number, date: Date, start_hour: string, end_hour: string, missionId: number }) =>
             createMissionSlot(api, data.max_volunteers, data.date, data.start_hour, data.end_hour, data.missionId),
         onSuccess: invalidate,
         onError: (error) => {
             console.log("Erreur création slot:", error)
+        }
+    })
+
+    // Créer plusieurs créneaux
+
+    const createMany: UseMutationResult<any, AxiosError, ICreateManyPayload> = useMutation({
+        mutationFn: (data: ICreateManyPayload) => createManyMissionSlots(api, data.missionId, data.slots),
+        onSuccess: invalidate,
+        onError: (error) => {
+            console.log("Erreur lors de la création groupée:", error);
+            
         }
     })
 
@@ -63,5 +81,5 @@ export const useMissionSlotMutation = (
     })
 
 
-    return { create, update, remove }
+    return { create, createMany, update, remove }
 }

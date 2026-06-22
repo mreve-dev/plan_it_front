@@ -28,9 +28,28 @@ const EventDetailPage = () => {
     const { data: event } = useGetOneEvent(id)
     if (!event) return null
 
-    const volunteers = event.missions.flatMap((mission: IMission) => mission.missionSlots.flatMap(slot => slot.userHasMissions ?? []))
+    const allRegistrations = event.missions.flatMap((mission: IMission) =>
+        mission.missionSlots.flatMap(slot => slot.userHasMissions ?? [])
+    )
+
+    // Regroupe par utilisateur, en comptant le nombre d'inscriptions
+    const volunteersMap = new Map<number, { user: IUserHasMission['user'], count: number }>()
+    allRegistrations.forEach(uHm => {
+        const existing = volunteersMap.get(uHm.userId)
+        if (existing) {
+            existing.count += 1
+        } else {
+            volunteersMap.set(uHm.userId, { user: uHm.user, count: 1 })
+        }
+    })
+
+
+    const volunteers = Array.from(volunteersMap.values())
 
     const totalPlaces = event.missions.reduce((acc: number, mission: IMission) => acc + mission.missionSlots.reduce((a, slot) => a + slot.max_volunteers, 0), 0)
+
+
+
 
     return (
         <div className="flex flex-col h-full p-3 gap-3 bg-[#ecece6] dark:bg-[#161b27] flex-1">
@@ -314,20 +333,45 @@ const EventDetailPage = () => {
 
                     </section>
 
-                    <section className="hidden flex-1 bg-[#e6dabb] dark:bg-[#1e2433] md:flex md:gap-2 justify-between flex-col h-full p-4 rounded-2xl font-bold">
+                    <section className="hidden flex-1 bg-[#e6dabb] dark:bg-[#1e2433] md:flex md:gap-4 flex-col h-full p-4 rounded-2xl font-bold">
                         <h4 className="text-lg text-[#104e64] dark:text-[#e6dabb] font-bold">
                             Bénévole(s) inscrit(s)
                         </h4>
 
                         {volunteers.length > 0 ? (
-                            volunteers.map((uHm: IUserHasMission) => (
-                                <div key={uHm.userId}>
-                                    <div>
-                                        {uHm.user.firstname[0]}{uHm.user.lastname[0]}
+                            volunteers.map(({ user, count }) => {
+                                const isUserAdmin = user.role === 'admin'
+
+                                // Avatar : couleurs vives qui changent selon le mode
+                                const avatarBg = isUserAdmin ? 'bg-[#534AB7] dark:bg-[#AFA9EC]' : 'bg-[#D85A30] dark:bg-[#F0997B]'
+                                const avatarText = isUserAdmin ? 'text-white dark:text-[#26215C]' : 'text-white dark:text-[#4A1B0C]'
+
+                                // Badge : pastels existants, inchangés
+                                const badgeBg = isUserAdmin ? 'bg-[#CECBF6] dark:bg-[#3C3489]' : 'bg-[#F5C4B3] dark:bg-[#712B13]'
+                                const badgeText = isUserAdmin ? 'text-[#3C3489] dark:text-[#CECBF6]' : 'text-[#712B13] dark:text-[#F5C4B3]'
+
+
+
+                                return (
+                                    <div key={user.id} className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white shrink-0 ${avatarBg} ${avatarText}`}
+                                            >
+                                                {user.firstname[0]}{user.lastname[0]}
+                                            </div>
+
+                                            <p className="flex-1 font-semibold text-[#104e64] dark:text-[#e6dabb]">
+                                                {user.firstname} {user.lastname}
+                                            </p>
+                                        </div>
+
+                                        <p className={`text-sm font-bold px-3 py-1 rounded-full ${badgeBg} ${badgeText}`}>
+                                            {count} créneau{count > 1 ? 'x' : ''}
+                                        </p>
                                     </div>
-                                    <p>{uHm.user.firstname} {uHm.user.lastname}</p>
-                                </div>
-                            ))
+                                )
+                            })
                         ) : (
                             <div className="flex justify-center items-center h-full">
                                 <div>

@@ -1,7 +1,9 @@
 import { useState } from "react"
-import type { IMission } from "../../types/mission.type"
+import type { IMission, IMissionSlot } from "../../types/mission.type"
 import ManageSlotView from "./ManageSlotView"
 import CreateMissionSlotView from "./CreateMissionSlotView"
+import UpdateMissionSlotView from "./UpdateMissionSlotView"
+import DeleteMissionSlotView from "./DeleteMissionSlotView"
 
 interface IMissionSlotsModalProps {
     mission: IMission
@@ -9,16 +11,15 @@ interface IMissionSlotsModalProps {
     onClose: () => void
 }
 
-// Composant orchestrateur : une SEULE <dialog>, qui change de contenu selon "view".
-// Ça évite d'avoir 2 <dialog> séparées qui se ferment/rouvrent (transition saccadée).
 const MissionSlotsModal = ({ mission, eventId, onClose }: IMissionSlotsModalProps) => {
 
-    // 'manage' = liste des créneaux existants, 'create' = formulaire d'ajout
-    const [view, setView] = useState<'manage' | 'create'>('manage')
+    const [view, setView] = useState<'manage' | 'create' | 'update' | 'delete'>('manage')
+    const [selectedSlot, setSelectedSlot] = useState<IMissionSlot | null>(null) // ✅ ajouté
 
     const handleClose = () => {
         (document.getElementById(`mission_slots_modal_${mission.id}`) as HTMLDialogElement).close()
-        setView('manage') // remet la vue par défaut pour la prochaine ouverture
+        setView('manage')
+        setSelectedSlot(null) // ✅ remet aussi le slot sélectionné à zéro
         onClose()
     }
 
@@ -30,15 +31,40 @@ const MissionSlotsModal = ({ mission, eventId, onClose }: IMissionSlotsModalProp
                     <ManageSlotView
                         mission={mission}
                         onAddSlot={() => setView('create')}
+                        onUpdateSlot={(slot) => {
+                            setSelectedSlot(slot)
+                            setView('update')
+                        }}
+                        onDeleteSlot={(slot) => {
+                            setSelectedSlot(slot)
+                            setView('delete')
+                        }}
                         onClose={handleClose}
                     />
-                ) : (
+                ) : view === 'create' ? (
                     <CreateMissionSlotView
                         missionId={mission.id}
                         eventId={eventId}
                         onBack={() => setView('manage')}
                     />
-                )}
+                ) : view === 'update' ? (
+                    selectedSlot && (
+                        <UpdateMissionSlotView
+                            slot={selectedSlot}
+                            eventId={eventId}
+                            onBack={() => setView('manage')}
+                        />
+                    )
+                )
+             : (
+                selectedSlot && (
+                        <DeleteMissionSlotView
+                            slot={selectedSlot}
+                            eventId={eventId}
+                            onBack={() => setView('manage')}
+                        />
+                    )
+             )}
 
             </div>
 

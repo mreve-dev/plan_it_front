@@ -1,3 +1,5 @@
+import type { Role } from "./user.type"
+
 export interface IMission {
     id: number
     name: string
@@ -30,6 +32,7 @@ export interface IUserHasMission {
         id: number
         firstname: string
         lastname: string
+        role: Role
     }
     createdAt: Date
 }

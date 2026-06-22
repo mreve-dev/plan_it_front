@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import z from "zod"
 import { Controller } from "react-hook-form"
@@ -25,12 +26,53 @@ interface ICreateMissionSlotViewProps {
 // quand le parent (MissionSlotsModal) bascule sur view === 'create'
 const CreateMissionSlotView = ({ missionId, eventId, onBack }: ICreateMissionSlotViewProps) => {
 
+    // ✅ nouveau : toggle entre mode manuel (1 créneau via le formulaire) et automatique (plusieurs créneaux générés)
+    const [autoMode, setAutoMode] = useState(false)
+    const [autoConfig, setAutoConfig] = useState({
+        date: undefined as Date | undefined,
+        start_hour: '',
+        duration: 60, // en minutes
+        count: 2,
+        max_volunteers: 1
+    })
+
     // dans le useForm, ajoute control:
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm({
         resolver: zodResolver(createSlotSchema)
     })
 
-    const { create } = useMissionSlotMutation(eventId)
+    const { create, createMany } = useMissionSlotMutation(eventId)
+
+    // ✅ génère le tableau de slots à partir de autoConfig, puis les envoie tous d'un coup
+    const generateAndSubmit = async () => {
+        if (!autoConfig.date || !autoConfig.start_hour) return
+
+        const [h, m] = autoConfig.start_hour.split(':').map(Number)
+        const generatedSlots = []
+
+        for (let i = 0; i < autoConfig.count; i++) {
+            const startMinutes = h * 60 + m + i * autoConfig.duration
+            const endMinutes = startMinutes + autoConfig.duration
+            const toHHmm = (minutes: number) => {
+                const hh = Math.floor(minutes / 60).toString().padStart(2, '0')
+                const mm = (minutes % 60).toString().padStart(2, '0')
+                return `${hh}:${mm}`
+            }
+            generatedSlots.push({
+                date: autoConfig.date,
+                start_hour: toHHmm(startMinutes),
+                end_hour: toHHmm(endMinutes),
+                max_volunteers: autoConfig.max_volunteers
+            })
+        }
+
+        try {
+            await createMany.mutateAsync({ missionId, slots: generatedSlots })
+            onBack()
+        } catch (error) {
+            console.log("Erreur lors de la création groupée:", error)
+        }
+    }
 
     return (
         <>
@@ -38,85 +80,174 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack }: ICreateMissionSlo
                 Ajouter un créneau
             </h3>
 
-            <form onSubmit={handleSubmit(async (data) => {
-                try {
-                    await create.mutateAsync({ ...data, missionId })
-                    reset()
-                    onBack() // ✅ retourne à la vue gestion après succès, plus de showModal/close manuel
-                } catch (error) {
-                    console.log(`Erreur lors de la création du créneau:`, error);
-                }
-            })} className="flex flex-col gap-4">
+            {/* Toggle Manuel / Automatique, comme dans CreateMissionModal */}
+            <div className="flex gap-2 bg-[#d5d0b8] dark:bg-[#2a3142] rounded-xl p-1">
+                <button type="button" onClick={() => setAutoMode(false)}
+                    className={`flex-1 py-1 rounded-lg text-sm font-semibold transition-colors ${!autoMode ? 'bg-white dark:bg-[#3a4150] text-[#104e64] dark:text-[#e6dabb]' : 'text-[#104e64]/50 dark:text-[#e6dabb]/50'}`}>
+                    Manuel
+                </button>
+                <button type="button" onClick={() => setAutoMode(true)}
+                    className={`flex-1 py-1 rounded-lg text-sm font-semibold transition-colors ${autoMode ? 'bg-white dark:bg-[#3a4150] text-[#104e64] dark:text-[#e6dabb]' : 'text-[#104e64]/50 dark:text-[#e6dabb]/50'}`}>
+                    Automatique
+                </button>
+            </div>
 
-                <div className="flex flex-col gap-2">
-                    <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date</label>
-                    <Controller
-                        name="date"
-                        control={control}
-                        render={({ field }) => (
-                            <>
-                                <button type="button" popoverTarget="rdp-popover-slot"
-                                    className="bg-white dark:bg-[#2a3142] rounded-xl input w-full py-2 text-left text-[#104e64] dark:text-[#e6dabb]"
-                                    style={{ anchorName: "--rdp-slot" } as React.CSSProperties}>
-                                    {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
-                                </button>
-                                <div popover="auto" id="rdp-popover-slot" className="dropdown"
-                                    style={{ positionAnchor: "--rdp-slot" } as React.CSSProperties}>
-                                    <DayPicker className="react-day-picker" mode="single"
-                                        selected={field.value}
-                                        onSelect={(date) => {
-                                            field.onChange(date)
-                                            document.getElementById('rdp-popover-slot')?.hidePopover()
-                                        }} />
+            {/* Mode automatique */}
+            {autoMode ? (
+                <div className="flex flex-col gap-3">
+
+                    <div className="bg-[#d5d0b8] dark:bg-[#2a3142] rounded-xl p-3 flex flex-col gap-3">
+
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Date</label>
+                            <button type="button" popoverTarget="rdp-auto"
+                                className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl input w-full py-2 text-left"
+                                style={{ anchorName: '--rdp-auto' } as React.CSSProperties}>
+                                {autoConfig.date ? new Date(autoConfig.date).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
+                            </button>
+                            <div popover="auto" id="rdp-auto" className="dropdown"
+                                style={{ positionAnchor: '--rdp-auto' } as React.CSSProperties}>
+                                <DayPicker className="react-day-picker" mode="single"
+                                    selected={autoConfig.date}
+                                    onSelect={(date) => {
+                                        setAutoConfig(prev => ({ ...prev, date }))
+                                        document.getElementById('rdp-auto')?.hidePopover()
+                                    }} />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de début</label>
+                            <input type="time" value={autoConfig.start_hour}
+                                onChange={(e) => setAutoConfig(prev => ({ ...prev, start_hour: e.target.value }))}
+                                className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] input rounded-xl w-full scheme-light" />
+                        </div>
+
+                        <div className="flex gap-2">
+                            <div className="flex-1 flex flex-col gap-2">
+                                <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Durée (minutes)</label>
+                                <input type="number" min={15} step={15} value={autoConfig.duration}
+                                    onChange={(e) => setAutoConfig(prev => ({ ...prev, duration: parseInt(e.target.value) }))}
+                                    className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl input w-full" />
+                            </div>
+                            <div className="flex-1 flex flex-col gap-2">
+                                <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Nombre de créneaux</label>
+                                <input type="number" min={1} max={20} value={autoConfig.count}
+                                    onChange={(e) => setAutoConfig(prev => ({ ...prev, count: parseInt(e.target.value) }))}
+                                    className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl input w-full" />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Bénévoles max par créneau</label>
+                            <input type="number" min={1} value={autoConfig.max_volunteers}
+                                onChange={(e) => setAutoConfig(prev => ({ ...prev, max_volunteers: parseInt(e.target.value) }))}
+                                className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl input w-full" />
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                        <button
+                            type="button"
+                            onClick={generateAndSubmit}
+                            disabled={createMany.isPending}
+                            className="btn w-full flex items-center justify-center gap-2 rounded-xl border-none bg-[#9b6581] dark:bg-[#7a4f63] text-white transition-transform active:scale-95">
+                            {createMany.isPending ? "Création..." : `Créer ${autoConfig.count} créneaux`}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onBack}
+                            className="rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
+                            Annuler
+                        </button>
+                    </div>
+
+                </div>
+            ) : (
+                // mode manuel
+                <form onSubmit={handleSubmit(async (data) => {
+                    try {
+                        await create.mutateAsync({ ...data, missionId })
+                        reset()
+                        onBack() // retourne à la vue gestion après succès, plus de showModal/close manuel
+                    } catch (error) {
+                        console.log(`Erreur lors de la création du créneau:`, error);
+                    }
+                })} className="flex flex-col gap-4">
+                    <div className="bg-[#d5d0b8] dark:bg-[#2a3142] rounded-xl p-3 flex flex-col gap-3">
+
+                        
+                            <div className="flex flex-col gap-3">
+                                <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date</label>
+                                <Controller
+                                    name="date"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <>
+                                            <button type="button" popoverTarget="rdp-popover-slot"
+                                                className="bg-white dark:bg-[#2a3142] rounded-xl input w-full py-2 text-left text-[#104e64] dark:text-[#e6dabb]"
+                                                style={{ anchorName: "--rdp-slot" } as React.CSSProperties}>
+                                                {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
+                                            </button>
+                                            <div popover="auto" id="rdp-popover-slot" className="dropdown"
+                                                style={{ positionAnchor: "--rdp-slot" } as React.CSSProperties}>
+                                                <DayPicker className="react-day-picker" mode="single"
+                                                    selected={field.value}
+                                                    onSelect={(date) => {
+                                                        field.onChange(date)
+                                                        document.getElementById('rdp-popover-slot')?.hidePopover()
+                                                    }} />
+                                            </div>
+                                        </>
+                                    )}
+                                />
+                            </div>
+
+                            <div className="flex gap-2">
+                                <div className="flex-1 flex flex-col gap-2">
+                                    <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Début</label>
+                                    <input {...register("start_hour")} type="time" className="bg-white dark:bg-[#2a3142] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
+                                    {errors.start_hour && <p className="text-red-800 dark:text-red-400 text-xs">{errors.start_hour.message}</p>}
                                 </div>
-                            </>
-                        )}
-                    />
-                </div>
+                                <div className="flex-1 flex flex-col gap-2">
+                                    <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Fin</label>
+                                    <input {...register("end_hour")} type="time" className="bg-white dark:bg-[#2a3142] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
+                                    {errors.end_hour && <p className="text-red-800 dark:text-red-400 text-xs">{errors.end_hour.message}</p>}
+                                </div>
+                            </div>
 
-                <div className="flex gap-2">
-                    <div className="flex-1 flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Début</label>
-                        <input {...register("start_hour")} type="time" className="bg-white dark:bg-[#2a3142] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
-                        {errors.start_hour && <p className="text-red-800 dark:text-red-400 text-xs">{errors.start_hour.message}</p>}
-                    </div>
-                    <div className="flex-1 flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Fin</label>
-                        <input {...register("end_hour")} type="time" className="bg-white dark:bg-[#2a3142] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
-                        {errors.end_hour && <p className="text-red-800 dark:text-red-400 text-xs">{errors.end_hour.message}</p>}
-                    </div>
-                </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Bénévoles max</label>
+                                <input {...register("max_volunteers")} type="number" min={1} className="bg-white dark:bg-[#2a3142] rounded-xl input w-full text-[#104e64] dark:text-[#e6dabb]" />
+                                {errors.max_volunteers && <p className="text-red-800 dark:text-red-400 text-xs">{errors.max_volunteers.message}</p>}
+                            </div>
 
-                <div className="flex flex-col gap-2">
-                    <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Bénévoles max</label>
-                    <input {...register("max_volunteers")} type="number" min={1} className="bg-white dark:bg-[#2a3142] rounded-xl input w-full text-[#104e64] dark:text-[#e6dabb]" />
-                    {errors.max_volunteers && <p className="text-red-800 dark:text-red-400 text-xs">{errors.max_volunteers.message}</p>}
-                </div>
+                        </div>
 
-                <div className="flex flex-col justify-center gap-3">
 
-                    {/* 
-                    - Pendant le chargement => gérer par isPending disabled={create.isPending} : empêche l'utilisateur de cliquer plusieurs fois sur "Ajouter" pendant que la requête est déjà en cours (évite les doublons, comme créer deux fois le même créneau si quelqu'un clique frénétiquement)
+
+                        <div className="flex flex-col justify-center gap-3">
+                            <button
+                                type="submit"
+                                disabled={create.isPending}
+                                className="btn w-full flex items-center justify-center gap-2 rounded-xl border-none bg-[#9b6581] dark:bg-[#7a4f63] text-white transition-transform active:scale-95">
+                                {create.isPending ? "Ajout..." : "Ajouter"}
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={onBack}
+                                className="rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
+                                Annuler
+                            </button>
+                        </div>
+
                     
-                    - Le texte change : "Ajout..." donne un retour visuel immédiat — l'utilisateur sait que quelque chose se passe, pas juste un bouton figé sans réaction*/}
-                    <button
-                        type="submit"
-                        disabled={create.isPending}
-                        className="btn w-full flex items-center justify-center gap-2 rounded-xl border-none bg-[#9b6581] dark:bg-[#7a4f63] text-white transition-transform active:scale-95">
-                        {create.isPending ? "Ajout..." : "Ajouter"}
-                    </button>
 
-                    {/* "Annuler" revient maintenant à la vue gestion, plus besoin de fermer/rouvrir 2 dialogs */}
-                    <button
-                        type="button"
-                        onClick={onBack}
-                        className="rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
-                        Annuler
-                    </button>
 
-                </div>
 
-            </form>
+                </form>
+            )}
         </>
     )
 }

@@ -31,7 +31,7 @@ const MissionListPage = () => {
             <div className="flex-1 overflow-y-auto">
                 
 
-                <div className="grid gap-5 overflow-x-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
+                <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
                     {(event?.missions ?? []).map((mission: IMission) => (
                         <MissionCard key={mission.id} mission={mission} isAdmin={isAdmin} />
                     ))}

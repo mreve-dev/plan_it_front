@@ -1,17 +1,19 @@
 import { FaRegCalendar } from "react-icons/fa"
-import type { IMission } from "../../types/mission.type"
+import type { IMission, IMissionsHasSkill, IMissionSlot } from "../../types/mission.type"
 import { FaPenToSquare, FaTrashCan } from "react-icons/fa6"
 
 interface IManageSlotViewProps {
   mission: IMission
   onAddSlot: () => void // déclenche le passage à la vue "création" dans le composant parent (plus de showModal direct)
+  onUpdateSlot: (slot: IMissionSlot) => void
+  onDeleteSlot: (slot: IMissionSlot) => void 
   onClose: () => void
 }
 
 
 // affiché à l'intérieur de la <dialog> unique gérée par le parent (MissionSlotsModal).
 // Ça évite le délai de transition entre fermeture/ouverture de deux <dialog> séparées.
-const ManageSlotView = ({ mission, onAddSlot, onClose }: IManageSlotViewProps) => {
+const ManageSlotView = ({ mission, onAddSlot, onUpdateSlot, onDeleteSlot, onClose }: IManageSlotViewProps) => {
 
   // Regroupe les slots par date (format YYYY-MM-DD comme clé)
   // acc = l'accumulateur (ce qu'on construit petit à petit)
@@ -85,18 +87,20 @@ const ManageSlotView = ({ mission, onAddSlot, onClose }: IManageSlotViewProps) =
                               ? `${placesLeft} place(s) restante(s) sur ${slot.max_volunteers}`
                               : placesLeft === 0
                                 ? `Complet — ${registered} sur ${slot.max_volunteers}`
-                                : `⚠ Dépassement : ${registered} inscrits pour ${slot.max_volunteers} places prévues`
+                                : `Dépassement : ${registered} inscrits pour ${slot.max_volunteers} places prévues`
                             }
                           </p>
                         </div>
 
                         <div className="flex items-center gap-3">
 
-                          <button onClick={() => (document.getElementById(`update_slots_modal_${slot.id}`) as HTMLDialogElement).showModal()} className="flex items-center justify-center w-10 h-10 text-white gap-2 rounded-full bg-[#4f9288] transition-transform cursor-pointer active:scale-95">
+                          <button onClick={() => onUpdateSlot(slot)} className="flex items-center justify-center w-10 h-10 text-white gap-2 rounded-full bg-[#4f9288] transition-transform cursor-pointer active:scale-95">
                             <FaPenToSquare />
                           </button>
 
-                          <button onClick={() => (document.getElementById(`delete_slots_modal_${slot.id}`) as HTMLDialogElement).showModal()} className="flex items-center justify-center rounded-full w-10 h-10 gap-2 text-red-900 dark:text-red-400 border-2 border-red-900 dark:border-red-400 cursor-pointer transition-transform active:scale-95">
+
+
+                          <button onClick={() => onDeleteSlot(slot)} className="flex items-center justify-center rounded-full w-10 h-10 gap-2 text-red-900 dark:text-red-400 border-2 border-red-900 dark:border-red-400 cursor-pointer transition-transform active:scale-95">
                             <FaTrashCan />
                           </button>
                         </div>

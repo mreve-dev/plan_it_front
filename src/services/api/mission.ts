@@ -1,12 +1,22 @@
 import type { AxiosInstance } from "axios";
 import { da } from "zod/v4/locales";
 
+// Interfaces
+
 export interface ICreateMissionSlot {
     date: Date
     start_hour: string
     end_hour: string
     max_volunteers: number
 }
+
+export interface ICreateManySlot {
+    date: Date
+    start_hour: string
+    end_hour: string
+    max_volunteers: number
+}
+
 
 export const createMission = async (
     api: AxiosInstance,
@@ -45,7 +55,7 @@ export const deleteMission = async (api: AxiosInstance, id: number) => {
 
 
 
-
+// création d'un créneau
 export const createMissionSlot = async (
     api: AxiosInstance,
     max_volunteers: number,
@@ -64,6 +74,28 @@ export const createMissionSlot = async (
 
     return response.data
 }
+
+
+
+
+// Création de plusieurs créneaux
+
+export const createManyMissionSlots = async (
+    api: AxiosInstance,
+    missionId: number,
+    slots: ICreateManySlot[]
+) => {
+    const response = await api.post(`/mission-slot/many`, {
+        missionId,
+        slots
+    })
+
+    return response.data
+}
+
+
+
+
 
 
 export const updateMissionSlot = async (

@@ -4,14 +4,14 @@ import { FaTrashCan } from "react-icons/fa6"
 import { deleteMission } from "../../services/api/mission"
 
 
-interface IDeleteEventModalProps {
+interface IDeleteMissionModalProps {
     missionId: number
     missionName: string
     onSuccess: () => void
     onClose: () => void
 }
 
-const DeleteMissionModal = ({ missionId, missionName, onClose, onSuccess }: IDeleteEventModalProps) => {
+const DeleteMissionModal = ({ missionId, missionName, onClose, onSuccess }: IDeleteMissionModalProps) => {
 
     const {id} = useParams()
     const api = useApi()
