@@ -1,23 +1,17 @@
 import EventCardDesktop from "../../components/event/EventCardDesktop"
 import EventCardMobile from "../../components/event/EventCardMobile"
-import type { IEvent } from "../../types/event.type"
 import CreateEventModal from "../../components/event/CreateEventModal"
 import { IoCloseCircleOutline } from "react-icons/io5"
-import { useApi } from "../../hook/useApi"
-import { useQuery } from "@tanstack/react-query"
-import { getEvents } from "../../services/api/event"
 import { useAuthStore } from "../../stores/authStore"
+import { useGetEvents } from "../../hook/mutation/use-event.service"
 
 const EventListPage = () => {
 
-  const api = useApi()
   const { user: currentUser } = useAuthStore()
   const isAdmin = currentUser?.role === 'admin' //Booleen pour savoir si le role de l'utilisateur est admin ou non
 
-  const { data: events } = useQuery<IEvent[]>({
-    queryKey: ['events'],
-    queryFn: () => getEvents(api)
-  })
+  const { data: events } = useGetEvents()
+
 
   const handleClose = () => {
     (document.getElementById('event_modal') as HTMLDialogElement).close()

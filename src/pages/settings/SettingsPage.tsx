@@ -55,7 +55,7 @@ const SettingsPage = () => {
 
                     {activeTab === 'apparence' && (
                         <div className="flex flex-col gap-6 bg-[#e6dabb] dark:bg-[#1e2433] p-5 rounded-xl">
-                            <div className="flex flex-col gap-5">
+                            <div className="flex flex-col gap-5 pb-6">
                                 <div className="flex flex-col">
                                     <h3 className="text-xl font-bold">Position du menu mobile</h3>
                                     <p>
@@ -141,7 +141,7 @@ const SettingsPage = () => {
 
                             </div>
 
-                            <div className="flex flex-col gap-5">
+                            <div className="flex flex-col gap-5 border-t-2 pt-6">
                                 <div>
                                     <h3 className="text-xl font-bold">Thème</h3>
                                     <p>Choisissez l'apparence de l'application</p>

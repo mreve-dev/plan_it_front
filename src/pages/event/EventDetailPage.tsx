@@ -1,8 +1,5 @@
 import { FaArrowDown, FaArrowLeft, FaArrowRight, FaChartBar, FaFile } from "react-icons/fa"
 import { Link, useParams } from "react-router-dom"
-import { useApi } from "../../hook/useApi"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { getOneEvent } from "../../services/api/event"
 import { getCategoryBorder, getCategoryColor } from "../../components/event/eventcard.config"
 import { FaPenToSquare, FaTrashCan } from "react-icons/fa6"
 import { HiOutlineLocationMarker } from "react-icons/hi";
@@ -13,12 +10,13 @@ import DeleteEventModal from "../../components/event/DeleteEventModal"
 import UpdateEventModal from "../../components/event/UpdateEventModal"
 import CreateMissionModal from "../../components/mission/CreateMissionModal"
 import { useAuthStore } from "../../stores/authStore"
+import { useGetOneEvent } from "../../hook/mutation/use-event.service"
+import { useQueryClient } from "@tanstack/react-query"
 
 
 
 const EventDetailPage = () => {
 
-    const api = useApi()
     const { user: currentUser } = useAuthStore()
     const isAdmin = currentUser?.role === 'admin'
 
@@ -27,11 +25,7 @@ const EventDetailPage = () => {
     const queryClient = useQueryClient()
 
 
-    const { data: event } = useQuery({
-        queryKey: ['event', id],
-        queryFn: () => getOneEvent(api, +id!)
-    })
-
+    const { data: event } = useGetOneEvent(id)
     if (!event) return null
 
     const volunteers = event.missions.flatMap((mission: IMission) => mission.missionSlots.flatMap(slot => slot.userHasMissions ?? []))

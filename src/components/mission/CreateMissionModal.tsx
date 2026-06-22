@@ -5,9 +5,7 @@ import { DayPicker } from "react-day-picker";
 import z from "zod"
 import { useApi } from "../../hook/useApi";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "../../stores/authStore";
 import { createMission } from "../../services/api/mission";
-import { IoCloseCircleOutline } from "react-icons/io5";
 import { GiCheckMark } from "react-icons/gi";
 import { getSkills } from "../../services/api/skill";
 import { FaArrowLeft, FaArrowRight, FaPlus, FaTrash } from "react-icons/fa";

@@ -1,4 +1,5 @@
 import type { AxiosInstance } from "axios";
+import { da } from "zod/v4/locales";
 
 export interface ICreateMissionSlot {
     date: Date
@@ -43,6 +44,26 @@ export const deleteMission = async (api: AxiosInstance, id: number) => {
 }
 
 
+
+
+export const createMissionSlot = async (
+    api: AxiosInstance,
+    max_volunteers: number,
+    date: Date,
+    start_hour: string,
+    end_hour: string,
+    missionId: number
+) => {
+    const response = await api.post(`/mission-slot`, {
+        max_volunteers,
+        date,
+        start_hour,
+        end_hour,
+        missionId
+    })
+
+    return response.data
+}
 
 
 export const updateMissionSlot = async (

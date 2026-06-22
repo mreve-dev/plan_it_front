@@ -17,7 +17,7 @@ import EventDetailPage from "./pages/event/EventDetailPage"
 import SettingsPage from "./pages/settings/SettingsPage"
 import VolunteersPage from "./pages/volunteers/VolunteersPage"
 import MissionListPage from "./pages/mission/MissionListPage"
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 function App() {
 
@@ -57,6 +57,7 @@ function App() {
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <ReactQueryDevtools />
     </div>
   )
 }
