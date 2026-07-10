@@ -8,6 +8,7 @@ import { loginUser } from "../../services/api/auth";
 import { useAuthStore } from "../../stores/authStore";
 import { getMe } from "../../services/api/user";
 import { useApi } from "../../hook/useApi";
+import logoclassic from "../../assets/logo_classic.png"
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -29,16 +30,16 @@ const LoginPage = () => {
   const { login } = useAuthStore()
 
   return (
-    <div className="min-h-screen flex flex-col p-3 bg-white dark:bg-[#161b27]">
+    <div className="min-h-screen flex flex-col p-3 dark:bg-[#161b27]">
 
       <div className="flex justify-end items-center">
-        <MdOutlineSettings size={55} color="#4f9288" />
+        <MdOutlineSettings size={55} className="text-[#4f9288] dark:text-[#6ab5a8]" />
       </div>
 
       <div className="flex flex-col flex-1 justify-center items-center gap-8 py-4">
         <Link to={"/"}>
           <figure className="w-90">
-            <img src="./src/assets/logo_classic.png" alt="" />
+            <img src={logoclassic} alt="" />
           </figure>
         </Link>
 
@@ -61,7 +62,7 @@ const LoginPage = () => {
           }
           else console.log("Identifiants incorrects");
 
-        })} className="fieldset rounded-box outline-4 outline-dashed outline-[#52998e] w-xs gap-5 p-4 bg-[#c0a7b4] dark:bg-[#1e2433] text-black dark:text-[#e6dabb] text-md font-bold">
+        })} className="fieldset rounded-box outline-4 outline-dashed outline-[#52998e] dark:outline-[#6ab5a8] w-xs gap-5 p-4 bg-[#c0a7b4] dark:bg-[#1e2433] text-black dark:text-[#e6dabb] text-md font-bold">
 
           <div>
             <h1 className="text-2xl text-center text-[#31615a] dark:text-[#6ab5a8]">Connectez-vous</h1>
@@ -76,7 +77,7 @@ const LoginPage = () => {
           <p className="text-center text-black dark:text-[#e6dabb]">Mot de passe oublié ? <Link className="text-[#1a7768] dark:text-[#6ab5a8] font-extrabold" to={"/changepassword"}>Cliquez ici</Link></p>
 
           <div className="flex justify-center">
-            <button type="submit" className="btn btn-neutral w-[50%] bg-[#4f9288] border-2 border-[#52998e]">Se connecter</button>
+            <button type="submit" className="btn btn-neutral w-[50%] bg-[#4f9288] dark:bg-[#3f7d74] border-2 border-[#52998e] dark:border-[#6ab5a8]">Se connecter</button>
           </div>
 
         </form>

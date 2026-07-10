@@ -18,7 +18,7 @@ const EventListPage = () => {
   }
 
   return (
-    <div className="flex flex-col p-8 h-full gap-6 bg-[#ecece6] dark:bg-[#161b27] flex-1">
+    <div className="flex flex-col px-3 py-5 h-full gap-6 bg-[#ecece6] dark:bg-[#161b27] flex-1">
 
       <section className="flex justify-between items-center">
         <h3 className="text-[#104e64] dark:text-[#e6dabb] text-xl md:text-2xl font-bold">
@@ -29,8 +29,8 @@ const EventListPage = () => {
           <div>
             <button
               onClick={() => (document.getElementById('event_modal') as HTMLDialogElement).showModal()}
-              className="btn text-left text-xs md:text-sm flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#5e2c45] font-bold">
-              + Nouvel évènement
+              className="btn text-left text-sm md:text-sm flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#5e2c45] font-bold">
+              + Nouveau
             </button>
 
             <dialog id="event_modal" className="modal">

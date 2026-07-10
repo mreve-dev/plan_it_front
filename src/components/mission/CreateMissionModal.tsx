@@ -10,7 +10,7 @@ import { GiCheckMark } from "react-icons/gi";
 import { getSkills } from "../../services/api/skill";
 import { FaArrowLeft, FaArrowRight, FaPlus, FaTrash } from "react-icons/fa";
 
-const createEventSchema = z.object({
+const createMissionSchema = z.object({
     name: z.string().min(1, "Le nom est requis"),
     description: z.string().min(1, "La description est requise")
 })
@@ -95,15 +95,22 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
     // Validation des slots
     const validateSlots = () => {
         const allErrors: string[] = []
+        const errors: { date?: string, start_hour?: string, end_hour?: string } = {}
+
         slots.forEach((slot, i) => {
-            if (!slot.date) allErrors.push(`Créneau ${i + 1} : date requise`)
-            if (!slot.start_hour) allErrors.push(`Créneau ${i + 1} : heure de début requise`)
-            if (!slot.end_hour) allErrors.push(`Créneau ${i + 1} : heure de fin requise`)
+            if (!slot.date) { allErrors.push(`Créneau ${i + 1} : date requise`); errors.date = 'Date requise' }
+            if (!slot.start_hour) { allErrors.push(`Créneau ${i + 1} : heure de début requise`); errors.start_hour = 'Heure de début requise' }
+            if (!slot.end_hour) { allErrors.push(`Créneau ${i + 1} : heure de fin requise`); errors.end_hour = 'Heure de fin requise' }
             if (slot.start_hour && slot.end_hour && slot.end_hour <= slot.start_hour) {
                 allErrors.push(`Créneau ${i + 1} : l'heure de fin doit être après l'heure de début`)
+                errors.end_hour = `L'heure de fin doit être après l'heure de début`
             }
             if (slot.max_volunteers < 1) allErrors.push(`Créneau ${i + 1} : au moins 1 bénévole`)
         })
+
+        if (allErrors.length > 0) {
+            globalSetSlotErrors(errors)
+        }
         return allErrors.length === 0
     }
 
@@ -116,22 +123,40 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
         max_volunteers: 1
     })
 
+    // Message d'erreur affiché si la configuration auto ne peut pas aboutir
+    // (ex : les créneaux dépasseraient minuit)
+    const [autoError, setAutoError] = useState("")
+
 
     const generateSlots = () => {
-        if (!slots[0]?.date || !autoConfig.start_hour) return
+        if (!slots[0]?.date || !autoConfig.start_hour) {
+            setAutoError("Choisissez d'abord une date et une heure de début.")
+            return
+        }
 
         const [h, m] = autoConfig.start_hour.split(':').map(Number)
+        const startTotalMinutes = h * 60 + m
+        const endTotalMinutes = startTotalMinutes + autoConfig.count * autoConfig.duration
+
+        // Règle métier : tous les créneaux doivent tenir dans la même journée (pas de dépassement de minuit)
+        if (endTotalMinutes > 24 * 60) {
+            setAutoError("Les créneaux dépassent minuit. Réduisez la durée, le nombre de créneaux, ou commencez plus tôt.")
+            return
+        }
+
+        // Pas d'erreur : on efface un éventuel message précédent
+        setAutoError("")
+
         const generatedSlots: ISlot[] = []
+        const toHHmm = (minutes: number) => {
+            const hh = Math.floor(minutes / 60).toString().padStart(2, '0')
+            const mm = (minutes % 60).toString().padStart(2, '0')
+            return `${hh}:${mm}`
+        }
 
         for (let i = 0; i < autoConfig.count; i++) {
-            const startMinutes = h * 60 + m + i * autoConfig.duration
+            const startMinutes = startTotalMinutes + i * autoConfig.duration
             const endMinutes = startMinutes + autoConfig.duration
-            const toHHmm = (minutes: number) => {
-                const hh = Math.floor(minutes / 60).toString().padStart(2, '0')
-                const mm = (minutes % 60).toString().padStart(2, '0')
-                return `${hh}:${mm}`
-            }
-            console.log("slots[0].date avant génération", slots[0]?.date, slots[0]?.date instanceof Date)
             generatedSlots.push({
                 date: slots[0]?.date,
                 start_hour: toHHmm(startMinutes),
@@ -139,6 +164,7 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                 max_volunteers: autoConfig.max_volunteers
             })
         }
+
         setSlots(generatedSlots)
         setAutoMode(false) // Repasse en manuel pour voir et ajuster les créneaux générés
     }
@@ -151,9 +177,12 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
     // trigger permet de déclencher la validation Zod sur des champs spécifiques
     // sans soumettre le formulaire — utile pour valider étape par étape
     const { register, handleSubmit, trigger, reset, formState: { errors } } = useForm({
-        resolver: zodResolver(createEventSchema)
+        resolver: zodResolver(createMissionSchema)
     })
 
+
+
+    
     // Ferme la modale et remet tout à zéro
     const handleClose = () => {
         setStep(1)
@@ -254,6 +283,7 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                                     <div className="flex flex-col gap-2">
                                         <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Nom de la mission</label>
                                         <input {...register("name")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl text-base input border-3 border-[#dbd5b2] dark:text-[#e6dabb] w-full" placeholder="Ex: tournoi départemental" />
+                                        {errors.name && <p className="text-red-800 font-bold text-sm">{errors.name.message}</p>}
                                     </div>
 
                                     <div className="flex flex-col gap-2">
@@ -339,13 +369,13 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                                                 </div>
 
 
-                                                {/* GEstion des créneaux nombre et interval de temps */}
-                                                <div className="flex gap-2">
+                                                {/* Gestion des créneaux nombre et interval de temps */}
+                                                <div className="flex gap-2 h-full">
                                                     <div className="flex-1 flex flex-col gap-2">
-                                                        <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Durée (minutes)</label>
+                                                        <label className="text-xs flex-1  font-bold text-[#104e64] dark:text-[#e6dabb]">Durée (minutes)</label>
                                                         <input type="number" min={15} step={15} value={autoConfig.duration}
                                                             onChange={(e) => setAutoConfig(prev => ({ ...prev, duration: parseInt(e.target.value) }))}
-                                                            className="bg-white dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl border-3 border-[#dbd5b2] input w-full" />
+                                                            className="bg-white flex-1 dark:bg-[#3a4150] dark:text-[#e6dabb] rounded-xl border-3 border-[#dbd5b2] input w-full" />
                                                     </div>
                                                     <div className="flex-1 flex flex-col gap-2">
                                                         <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Nombre de créneaux</label>
@@ -364,6 +394,14 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
 
                                                 </div>
                                             </div>
+
+                                            {/* Message d'erreur si la config ne peut pas aboutir */}
+                                            {autoError && (
+                                                <p className="text-red-800 dark:text-red-400 font-bold text-xs text-center px-2">
+                                                    {autoError}
+                                                </p>
+                                            )}
+
                                             <div className="flex justify-center items-center">
                                                 <button type="button" onClick={generateSlots}
                                                     className="btn bg-[#4f9288] border-none text-white rounded-xl">

@@ -7,6 +7,7 @@ import { LuCalendar1 } from "react-icons/lu";
 import { FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 import { deleteUser } from "../services/api/user";
 import { useApi } from "../hook/useApi";
+import { useAuthStore } from "../stores/authStore";
 
 
 
@@ -22,6 +23,8 @@ const VolunteerDetailsModal = ({ user, onClose, onDelete }: IVolunteerDetailsMod
     const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
     const api = useApi()
+    const { user: currentUser } = useAuthStore()
+    const isAdmin = currentUser?.role === 'admin'
 
     useEffect(() => {
         (document.getElementById('volunteer_modal') as HTMLDialogElement).showModal()
@@ -94,14 +97,21 @@ const VolunteerDetailsModal = ({ user, onClose, onDelete }: IVolunteerDetailsMod
 
                 </div>
 
-                <div className="flex justify-between items-center gap-2">
-                    <button onClick={() => setShowConfirm(true)} className="flex-1 flex items-center justify-center rounded-xl px-3 py-2 gap-2 text-red-900 dark:text-red-400 border-2 border-red-900 dark:border-red-400 transition-transform active:scale-95">
-                        <FaTrashCan />Supprimer
-                    </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2 bg-[#4f9288] transition-transform active:scale-95">
-                        <FaPenToSquare />Modifier
-                    </button>
-                </div>
+                {
+                    isAdmin && (
+                        <div className="flex justify-between items-center gap-2">
+                            <button onClick={() => setShowConfirm(true)} className="flex-1 flex items-center justify-center rounded-xl px-3 py-2 gap-2 text-red-900 dark:text-red-400 border-2 border-red-900 dark:border-red-400 transition-transform active:scale-95">
+                                <FaTrashCan />Supprimer
+                            </button>
+                            <button className="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2 bg-[#4f9288] transition-transform active:scale-95">
+                                <FaPenToSquare />Modifier
+                            </button>
+                        </div>
+
+                    )
+                }
+
+
 
                 {showConfirm && (
                     <div className="absolute inset-0">

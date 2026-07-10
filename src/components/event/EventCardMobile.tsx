@@ -18,7 +18,7 @@ const EventCardMobile = ({ event }: IEventCardProps) => {
                         {event.name}
                     </h3>
 
-                    <p className={`${getCategoryColor(event.category.name)} rounded-full text-xs font-bold md:text-sm px-3 py-2`}>
+                    <p className={`${getCategoryColor(event.category.name)} rounded-full h-full text-xs font-bold md:text-sm px-3 py-2`}>
                         {event.category.name}
                     </p>
                 </div>
@@ -28,13 +28,13 @@ const EventCardMobile = ({ event }: IEventCardProps) => {
                         <p>Du {new Date(event.start_date).toLocaleDateString('fr-FR',
                             {
                                 day: "numeric",
-                                month: "long",
+                                month: "numeric",
                                 year: "numeric"
                             }
                         )} au {new Date(event.end_date).toLocaleDateString('fr-FR',
                             {
                                 day: "numeric",
-                                month: "long",
+                                month: "numeric",
                                 year: "numeric"
                             }
                         )}

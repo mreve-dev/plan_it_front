@@ -1,5 +1,3 @@
-import { int } from "zod"
-
 export interface ISkill {
     id: number
     name: string

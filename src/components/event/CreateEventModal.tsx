@@ -14,11 +14,17 @@ const createEventSchema = z.object({
     name: z.string().min(1, "Le nom est requis"),
     description: z.string().min(1, "La description est requise"),
     categoryId: z.coerce.number().min(1, "La catégorie est requise"),
-    date: z.date(),
+    start_date: z.string().min(1, "La date de début est requise"),
+    end_date: z.string().min(1, "La date de fin est requise"),
     start_hour: z.string().min(1, "L'heure de début est requise"),
     end_hour: z.string().min(1, "L'heure de fin est requise"),
-    location: z.string().min(1, "Le lieu est requis").optional(),
-}).refine((data) => data.end_hour > data.start_hour, {
+    location: z.string().min(1, "Le lieu est requis"),
+}).refine((data) => {
+    if (data.end_hour && data.start_hour) {
+        return data.end_hour > data.start_hour
+    }
+    return true
+}, {
     message: "L'heure de fin doit être après l'heure de début",
     path: ['end_hour']
 })
@@ -61,11 +67,11 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
                 const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
 
-                await createEvent(api, data.name, data.description, categoryId, data.date, data.start_hour, data.end_hour, data.location, user!.id);
+                await createEvent(api, data.name, data.description, categoryId, data.start_date, data.end_date, data.start_hour, data.end_hour, data.location, user!.id);
                 queryClient.invalidateQueries({ queryKey: ['events'] });
                 reset(),
 
-                (document.getElementById('event_modal') as HTMLDialogElement).close()
+                    (document.getElementById('event_modal') as HTMLDialogElement).close()
                 onSuccess?.()
                 onClose()
             },
@@ -144,41 +150,80 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                         )}
                     </div>
 
+                    <div className="flex items-center gap-3 w-full">
+                        <div className="flex flex-col gap-2 w-full">
+                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date de début</label>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date</label>
+                            <Controller
+                                name="start_date"
+                                control={control}
+                                render={({ field }) => (
+                                    <>
+                                        <button
+                                            type="button"
+                                            popoverTarget="rdp-popover-start-date"
+                                            className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
+                                            style={{ anchorName: "--rdp" } as React.CSSProperties}>
+                                            {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
 
-                        <Controller
-                            name="date"
-                            control={control}
-                            render={({ field }) => (
-                                <>
-                                    <button
-                                        type="button"
-                                        popoverTarget="rdp-popover"
-                                        className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
-                                        style={{ anchorName: "--rdp" } as React.CSSProperties}>
-                                        {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
+                                        </button>
 
-                                    </button>
-
-                                    <div popover="auto" id="rdp-popover" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
-                                        <DayPicker
-                                            className="react-day-picker"
-                                            mode="single"
-                                            selected={field.value}
-                                            onSelect={(date) => {
-                                                field.onChange(date)
-                                                document.getElementById('rdp-popover')?.hidePopover()
-                                            }}
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        />
+                                        <div popover="auto" id="rdp-popover-start-date" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
+                                            <DayPicker
+                                                className="react-day-picker"
+                                                mode="single"
+                                                selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
+                                                onSelect={(date) => {
+                                                    field.onChange(date?.toISOString())
+                                                    document.getElementById('rdp-popover-start-date')?.hidePopover()
+                                                }}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            />
 
 
+                        </div>
+
+                        <div className="flex flex-col gap-2 w-full">
+                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date de fin</label>
+
+                            <Controller
+                                name="end_date"
+                                control={control}
+                                render={({ field }) => (
+                                    <>
+                                        <button
+                                            type="button"
+                                            popoverTarget="rdp-popover-end-date"
+                                            className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
+                                            style={{ anchorName: "--rdp" } as React.CSSProperties}>
+                                            {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
+
+                                        </button>
+
+                                        <div popover="auto" id="rdp-popover-end-date" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
+                                            <DayPicker
+                                                className="react-day-picker"
+                                                mode="single"
+                                                selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
+                                                onSelect={(date) => {
+                                                    field.onChange(date?.toISOString())
+                                                    document.getElementById('rdp-popover-end-date')?.hidePopover()
+                                                }}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+                            />
+
+
+                        </div>
                     </div>
+
+
+
 
                     <div className="flex justify-between gap-3">
                         <div className="w-full flex flex-col gap-2">
@@ -210,7 +255,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                 </fieldset>
 
                 <div className="flex justify-center">
-                    <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-fit" 
+                    <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-fit"
                     >Enregistrer</button>
                 </div>
 

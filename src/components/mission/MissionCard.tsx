@@ -11,11 +11,10 @@ import SlotRegistrationModal from "../missionSlot/SlotRegistrationModal"
 interface IMissionCardProps {
     mission: IMission
     isAdmin: boolean
-    onSuccess?: () => void
-    onClose?: () => void
+    isEventPast: boolean
 }
 
-const MissionCard = ({ mission, isAdmin, onClose, onSuccess }: IMissionCardProps) => {
+const MissionCard = ({ mission, isAdmin, isEventPast }: IMissionCardProps) => {
 
 
     const { id } = useParams()
@@ -169,8 +168,6 @@ const MissionCard = ({ mission, isAdmin, onClose, onSuccess }: IMissionCardProps
 
 
 
-
-
                 {isAdmin && (
                     <div className="w-full">
 
@@ -181,6 +178,7 @@ const MissionCard = ({ mission, isAdmin, onClose, onSuccess }: IMissionCardProps
                         <MissionSlotsModal
                             mission={mission}
                             eventId={id}
+                            isEventPast={isEventPast}
                             onClose={() => { }}
                         />
 
@@ -190,18 +188,22 @@ const MissionCard = ({ mission, isAdmin, onClose, onSuccess }: IMissionCardProps
                 {mission.missionSlots.length > 0
                     ? (
                         <div className="w-full">
-                            <button onClick={() => (document.getElementById(`slot_registration_modal_${mission.id}`) as HTMLDialogElement).showModal()} className="btn w-full flex items-center justify-center gap-2 rounded-xl border-none bg-[#9b6581] text-white transition-transform active:scale-95">
-                            <FaRegCalendarCheck /> Je participe
-                        </button>
+                            <button
+                                disabled={isEventPast}
+                                onClick={() => (document.getElementById(`slot_registration_modal_${mission.id}`) as HTMLDialogElement).showModal()}
+                                className="btn w-full flex items-center justify-center gap-2 rounded-xl border-none bg-[#9b6581] text-white transition-transform active:scale-95">
+                                <FaRegCalendarCheck /> Je participe
+                            </button>
 
 
-                        <SlotRegistrationModal 
-                        mission={mission}
-                        eventId={id}
-                        onClose={() => (document.getElementById(`slot_registration_modal_${mission.id}`) as HTMLDialogElement).close()}/>
+                            <SlotRegistrationModal
+                                mission={mission}
+                                eventId={id}
+                                isEventPast={isEventPast}
+                                onClose={() => (document.getElementById(`slot_registration_modal_${mission.id}`) as HTMLDialogElement).close()} />
 
                         </div>
-                        
+
                     )
                     : (null)}
             </div>

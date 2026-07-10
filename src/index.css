@@ -31,3 +31,6 @@
     color: white;
 }
 
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

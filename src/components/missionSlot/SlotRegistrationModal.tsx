@@ -1,4 +1,3 @@
-import { FaCheckToSlot } from "react-icons/fa6"
 import { useSlotRegistration } from "../../hook/mutation/use-slot-register"
 import { useAuthStore } from "../../stores/authStore"
 import type { IMission } from "../../types/mission.type"
@@ -7,9 +6,10 @@ import { FaCheck } from "react-icons/fa"
 interface ISlotRegistrationModalProps {
     mission: IMission
     eventId: string | undefined
+    isEventPast: boolean
     onClose: () => void
 }
-const SlotRegistrationModal = ({ mission, eventId, onClose }: ISlotRegistrationModalProps) => {
+const SlotRegistrationModal = ({ mission, eventId, isEventPast, onClose }: ISlotRegistrationModalProps) => {
 
     const { user: currentUser } = useAuthStore()
     const { register, unregister } = useSlotRegistration(eventId)
@@ -73,7 +73,7 @@ const SlotRegistrationModal = ({ mission, eventId, onClose }: ISlotRegistrationM
                                         Se désinscrire
                                     </button>
                                 ) : (
-                                    <button onClick={() => register.mutate(slot.id)} disabled={isFull || register.isPending} className="bg-[#9b6581] dark:bg-[#7a4f63] text-white px-3 py-2 rounded-xl disabled:opacity-50">
+                                    <button onClick={() => register.mutate(slot.id)} disabled={isFull || register.isPending || isEventPast} className="bg-[#9b6581] dark:bg-[#7a4f63] text-white px-3 py-2 rounded-xl disabled:opacity-50">
                                         {isFull ? "Complet" : "S'inscrire"}
                                     </button>
                                 )}

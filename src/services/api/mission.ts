@@ -1,5 +1,4 @@
 import type { AxiosInstance } from "axios";
-import { da } from "zod/v4/locales";
 
 // Interfaces
 
@@ -33,6 +32,11 @@ export const createMission = async (
         slots
     })
 
+    return response.data
+}
+
+export const getAllMissions = async (api: AxiosInstance) => {
+    const response = await api.get('/mission')
     return response.data
 }
 

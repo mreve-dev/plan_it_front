@@ -10,6 +10,11 @@ import { useAuthStore } from "../../stores/authStore";
 
 const VolunteersPage = () => {
 
+
+
+
+  
+
   const api = useApi()
   const queryClient = useQueryClient()
   const { user: currentUser } = useAuthStore()
@@ -28,6 +33,14 @@ const VolunteersPage = () => {
 
   if (isLoading) return <p className="text-black dark:text-white text-2xl">Chargement...</p>
 
+
+
+
+
+
+
+
+
   return (
 
     <div className="flex flex-col h-full p-3 gap-3 bg-[#ecece6] dark:bg-[#161b27] flex-1">
@@ -42,67 +55,90 @@ const VolunteersPage = () => {
         </div>
       )}
 
-      {/* selectedUser n'est non-null que si admin (on ne le set jamais sinon), donc IUser est garanti ici */}
-      {isAdmin && selectedUser && (
-        <VolunteerDetailsModal
-          user={selectedUser}
-          onClose={() => setSelectedUser(null)}
-          onDelete={refreshUsers} />
-      )}
 
-      {users.map((volunteer) => (
-        <div
-          key={volunteer.id}
-          onClick={isAdmin ? () => setSelectedUser(volunteer as IUser) : undefined}
-          className={`flex items-center flex-col ${isAdmin ? "cursor-pointer" : ""}`}
-        >
-          <div className="flex gap-3 bg-[#e6dabb] dark:bg-[#1e2433] rounded-2xl p-4 max-w-250 w-full">
 
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 flex items-center justify-center rounded-full font-medium text-xl text-[#e6dabb] ${volunteer.role === "admin" ? "bg-[#104e64]" : "bg-[#9b6581]"}`}>
-                  {volunteer.firstname[0]}{volunteer.lastname[0]}
-                </div>
+      <div className="flex flex-col gap-3 rounded-2xl overflow-y-scroll">
 
-                <div className="flex flex-col gap-2">
-                  <p className="text-lg font-bold text-[#104e64] dark:text-[#e6dabb]">
-                    {volunteer.firstname} {volunteer.lastname}
-                  </p>
-                  <span className={`w-fit px-3 py-1 rounded-full text-sm font-bold flex justify-center items-center ${volunteer.role === "admin" ? "bg-[#4f9288] text-[#e6f4f1]" : "bg-[#c8c4a0] dark:bg-[#3a4557] text-[#104e64] dark:text-[#e6dabb]"}`}>
-                    {volunteer.role}
-                  </span>
-                </div>
-              </div>
+        {/* selectedUser n'est non-null que si admin (on ne le set jamais sinon), donc IUser est garanti ici */}
+        {isAdmin && selectedUser && (
+          <VolunteerDetailsModal
+            user={selectedUser}
+            onClose={() => setSelectedUser(null)}
+            onDelete={refreshUsers} />
+        )}
 
-              {/* email présent uniquement si IUser (admin consultant, ou son propre profil) */}
-              {'email' in volunteer && volunteer.email && (
-                <p className="text-[#5a7070] dark:text-[#a0a8a8] font-semibold">
-                  {volunteer.email}
-                </p>
-              )}
+        {users.map((volunteer) => (
+          <div
+            key={volunteer.id}
+            onClick={isAdmin ? () => setSelectedUser(volunteer as IUser) : undefined}
+            className={`flex items-center flex-col ${isAdmin ? "cursor-pointer" : ""}`}
+          >
 
-              <div className="flex gap-2">
-                {volunteer.isOnboarded ? (
-                  volunteer.userHasSkills.map(hs => (
-                    <span key={hs.skillId} className="bg-[#ecece6] dark:bg-[#2a3547] text-[#104e64] dark:text-[#e6dabb] rounded-full text-sm font-semibold px-2 py-1">
-                      {hs.skill.name}
+
+
+
+
+            <div className="bg-[#e6dabb] dark:bg-[#1e2433] rounded-2xl p-4 max-w-250 w-full">
+
+
+              <div className="flex flex-col gap-5">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 flex items-center justify-center rounded-full font-medium text-xl text-[#e6dabb] ${volunteer.role === "admin" ? "bg-[#104e64]" : "bg-[#9b6581]"}`}>
+                    {volunteer.firstname[0]}{volunteer.lastname[0]}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <p className="text-lg font-bold text-[#104e64] dark:text-[#e6dabb]">
+                      {volunteer.firstname} {volunteer.lastname}
+                    </p>
+                    <span className={`w-fit px-3 py-1 rounded-full text-sm font-bold flex justify-center items-center ${volunteer.role === "admin" ? "bg-[#4f9288] text-[#e6f4f1]" : "bg-[#c8c4a0] dark:bg-[#3a4557] text-[#104e64] dark:text-[#e6dabb]"}`}>
+                      {volunteer.role}
                     </span>
-                  ))
-                ) : (
-                  <span className="flex justify-center items-center gap-2 bg-[#f0e6c8] dark:bg-[#2e2a1a] font-semibold text-[#8a6a20] dark:text-[#c9a84c] rounded-full px-3 py-1">
-                    <GiSandsOfTime /> En attente d'onboarding
-                  </span>
+                  </div>
+                </div>
+
+
+
+
+
+
+
+                {/* email présent uniquement si IUser (admin consultant, ou son propre profil) */}
+                {'email' in volunteer && volunteer.email && (
+                  <p className="text-[#5a7070] dark:text-[#a0a8a8] font-semibold">
+                    {volunteer.email}
+                  </p>
                 )}
+
+
+
+
+
+
+                <div className="flex gap-x-6 gap-y-3 flex-wrap justify-center items-center">
+                  {volunteer.isOnboarded ? (
+                    volunteer.userHasSkills.map(hs => (
+                      <span key={hs.skillId} className="bg-[#ecece6] dark:bg-[#2a3547] text-[#104e64] h-fit dark:text-[#e6dabb] rounded-full text-sm font-semibold px-3 py-2">
+                        {hs.skill.name}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="bg-[#f0e6c8] dark:bg-[#2e2a1a] h-fit font-semibold text-[#8a6a20] dark:text-[#c9a84c] flex items-center gap-2 rounded-full px-3 py-2">
+                      <GiSandsOfTime /> En attente d'onboarding
+                    </span>
+                  )}
+                </div>
+
               </div>
+
             </div>
 
           </div>
+        ))}
 
-        </div>
-      ))}
+      </div>
 
     </div>
-
   )
 }
 

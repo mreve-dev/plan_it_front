@@ -1,19 +1,21 @@
 import { MdOutlineSettings } from "react-icons/md"
 import { Link } from "react-router-dom"
 import Footer from "../components/Footer"
+import logoclassic from "../assets/logo_classic.png"
 
 const FirstPage = () => {
     return (
-        <div className="bg-white dark:bg-[#161b27] min-h-screen">
-            <div className="h-screen flex flex-col p-3">
-                <div className="flex justify-end items-center">
-                    <MdOutlineSettings size={55} color="#4f9288" />
+        <div className="dark:bg-[#161b27] min-h-screen">
+            <div className="h-screen flex items-center justify-between flex-col p-3">
+
+                <div className="flex justify-end items-center w-full">
+                    <MdOutlineSettings size={55} className="text-[#4f9288] dark:text-[#6ab5a8]" />
                 </div>
 
-                <div className="h-[92%] flex flex-col justify-center items-center gap-8">
+                <div className="flex flex-col justify-center items-center gap-8">
 
                     <figure className="w-[90%] max-w-180 px-10">
-                        <img src="./src/assets/logo_classic.png" alt="" />
+                        <img src={logoclassic} alt="" />
                     </figure>
 
                     <Link to={"/login"}>
@@ -22,11 +24,13 @@ const FirstPage = () => {
 
                 </div>
 
+                <div className="flex justify-center">
+                    <Footer />
+                </div>
+
             </div>
 
-            <div className="flex justify-center">
-                <Footer />
-            </div>
+
 
         </div>
     )

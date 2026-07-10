@@ -47,16 +47,16 @@ const SideBar = () => {
                         </li>
 
                         <li>
-                            <Link
-                                to={""}>
-                                <MdAppRegistration size={25} /> Mes missions
+                            <Link to={"/home"}>
+                                <MdOutlineEvent size={25} /> Mes évènements
                             </Link>
+
+
                         </li>
 
                         <li>
-                            <Link
-                                to={""}>
-                                <MdOutlineEvent size={25} /> Mes évènements
+                            <Link to={"/home"}>
+                                <MdAppRegistration size={25} /> Mes missions
                             </Link>
                         </li>
 

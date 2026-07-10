@@ -4,6 +4,7 @@ import { IoMenu, IoNotificationsOutline } from "react-icons/io5";
 import { useAuthStore } from "../../stores/authStore";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"
 
 
 
@@ -14,6 +15,8 @@ const SettingsPage = () => {
     const { sidebarPosition, setSidebarPosition, theme, setTheme } = useAuthStore()
     const [showContent, setShowContent] = useState(false)
 
+    const navigate = useNavigate()
+
     const tabs = [
         { id: 'apparence', label: 'Apparence', icon: <TbLayoutSidebar /> },
         { id: 'compte', label: 'Compte', icon: <FiUser /> },
@@ -23,11 +26,26 @@ const SettingsPage = () => {
 
     return (
         <div className="flex flex-col h-full p-6 gap-5 bg-[#ecece6] dark:bg-[#111827] text-[#104e64] dark:text-[#e6dabb]">
-            <h3 className="text-2xl font-semibold">
-                Paramètres
-            </h3>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col items-start gap-2 justify-between">
+
+                <button
+                    onClick={() => {
+                        setShowContent(false)
+                        navigate(-1)
+                    }}
+                    className="flex items-center gap-3 cursor-pointer text-[#9b6581] dark:text-[#e6dabb] font-semibold ">
+                    <FaArrowLeft /> Retour
+                </button>
+
+                <h3 className="text-2xl font-semibold">
+                    Paramètres
+                </h3>
+
+            </div>
+
+
+            <div className="flex gap-3 overflow-y-scroll ">
                 <section className={`bg-[#e6dabb] dark:bg-[#1e2433] text-lg flex-1 h-fit rounded-xl p-3 ${showContent ? 'hidden md:block' : 'block'}`}>
                     <ul className="flex flex-col gap-1">
                         {tabs.map((tab) => (
@@ -47,11 +65,7 @@ const SettingsPage = () => {
 
                 <section className={`md:flex-2 lg:flex-3 rounded-xl flex flex-col gap-3 ${showContent ? 'block w-full' : 'hidden md:block'}`}>
 
-                    <button
-                        onClick={() => setShowContent(false)}
-                        className="btn text-left flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#1e2433] font-semibold md:hidden">
-                        <FaArrowLeft /> Retour
-                    </button>
+
 
                     {activeTab === 'apparence' && (
                         <div className="flex flex-col gap-6 bg-[#e6dabb] dark:bg-[#1e2433] p-5 rounded-xl">
@@ -147,10 +161,10 @@ const SettingsPage = () => {
                                     <p>Choisissez l'apparence de l'application</p>
                                 </div>
 
-                                <div className="flex justify-center gap-8">
+                                <div className="flex justify-center items-center flex-col md:flex-row gap-6 flex-wrap">
                                     <form
                                         onClick={() => setTheme('light')}
-                                        className={`p-3 rounded-xl border-2 cursor-pointer ${theme === 'light' ? 'border-[#104e64] dark:border-[#4f9288] bg-[#104e64]/5' : 'border-[#c8c4a0] dark:border-[#3a4150]'} h-40 md:h-45 flex-1 md:flex-0 flex flex-col gap-2`}>
+                                        className={`p-3 rounded-xl border-2 cursor-pointer ${theme === 'light' ? 'border-[#104e64] dark:border-[#4f9288] bg-[#104e64]/5' : 'border-[#c8c4a0] dark:border-[#3a4150]'} h-40 md:h-45 flex-1 md:flex-0 flex flex-col gap-2 w-80`}>
 
                                         <div className="bg-[#e6dabb] rounded-lg h-full p-2 md:w-60 flex flex-col gap-1">
 
@@ -173,7 +187,7 @@ const SettingsPage = () => {
 
                                     <form
                                         onClick={() => setTheme('dark')}
-                                        className={`p-3 rounded-xl border-2 cursor-pointer ${theme === 'dark' ? 'border-[#104e64] dark:border-[#4f9288] bg-[#104e64]/5' : 'border-[#c8c4a0] dark:border-[#3a4150]'} h-40 md:h-45 flex-1 md:flex-0 flex flex-col gap-2`}>
+                                        className={`p-3 rounded-xl border-2 cursor-pointer ${theme === 'dark' ? 'border-[#104e64] dark:border-[#4f9288] bg-[#104e64]/5' : 'border-[#c8c4a0] dark:border-[#3a4150]'} h-40 md:h-45 flex-1 md:flex-0 flex flex-col gap-2 w-80`}>
 
                                         <div className="bg-[#1a1f2e] rounded-lg h-full p-2 flex flex-col gap-1 md:w-60">
                                             <div className="bg-[#252b3b] h-3 rounded-full w-1/2"></div>
@@ -183,6 +197,8 @@ const SettingsPage = () => {
                                                 <div className="bg-[#3a4150] h-1.5 rounded-full w-1/2"></div>
                                             </div>
                                         </div>
+
+
                                         <div className="flex justify-between items-center">
                                             <p className="text-sm font-medium">Sombre</p>
                                             <FaCheckCircle className={theme === 'dark' ? 'text-[#104e64] dark:text-[#4f9288]' : 'text-[#c8c4a0] dark:text-[#3a4150]'} />
@@ -191,7 +207,7 @@ const SettingsPage = () => {
 
                                     <form
                                         onClick={() => setTheme('system')}
-                                        className={`p-3 rounded-xl border-2 cursor-pointer ${theme === 'system' ? 'border-[#104e64] dark:border-[#4f9288] bg-[#104e64]/5' : 'border-[#c8c4a0] dark:border-[#3a4150]'} h-40 md:h-45 flex-1 md:flex-0 flex flex-col gap-2`}>
+                                        className={`p-3 rounded-xl border-2 cursor-pointer ${theme === 'system' ? 'border-[#104e64] dark:border-[#4f9288] bg-[#104e64]/5' : 'border-[#c8c4a0] dark:border-[#3a4150]'} h-40 md:h-45 flex-1 md:flex-0 flex flex-col gap-2 w-80`}>
 
                                         <div className="rounded-lg h-full md:w-60 flex overflow-hidden">
                                             <div className="flex-1 bg-[#e6dabb] p-2 flex flex-col gap-1">

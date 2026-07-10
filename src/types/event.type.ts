@@ -5,10 +5,10 @@ export interface IEvent {
     id: number
     name: string
     description: string
-    start_date: Date
-    end_date: Date
-    start_hour: Date
-    end_hour: Date
+    start_date: string
+    end_date: string
+    start_hour: string
+    end_hour: string
     location?: string | null
     categoryId: number
     category: ICategory

@@ -1,11 +1,12 @@
-import axios, { type AxiosInstance } from "axios";
+import { type AxiosInstance } from "axios";
 
 export const createEvent = async (
     api: AxiosInstance,
     name: string,
     description: string,
     categoryId: number,
-    date: Date,
+    start_date: string,
+    end_date: string,
     start_hour: string,
     end_hour: string,
     location: string | undefined,
@@ -17,7 +18,8 @@ export const createEvent = async (
         name,
         description,
         categoryId,
-        date,
+        start_date,
+        end_date,
         start_hour,
         end_hour,
         location,
@@ -48,8 +50,8 @@ export const updateEvent = async (
     name: string | undefined,
     description: string | undefined,
     categoryId: number | undefined,
-    start_date: Date | undefined,
-    end_date: Date | undefined,
+    start_date: string | undefined,
+    end_date: string | undefined,
     start_hour: string | undefined,
     end_hour: string | undefined,
     location: string | undefined

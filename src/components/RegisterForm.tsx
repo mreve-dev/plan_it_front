@@ -24,7 +24,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
 
     const api = useApi()
 
-    const [showPwd, setShowPawd] = useState<boolean>(false)
+    const [showPwd] = useState<boolean>(false)
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(registerSchema)

@@ -13,8 +13,8 @@ const updateEventSchema = z.object({
     name: z.string().min(1, "Le nom est requis").optional(),
     description: z.string().min(1, "La description est requise").optional(),
     categoryId: z.coerce.number().min(1, "La catégorie est requise").optional(),
-    start_date: z.date().optional(),
-    end_date: z.date().optional(),
+    start_date: z.string().optional(),
+    end_date: z.string().optional(),
     start_hour: z.string().min(1, "L'heure de début est requise").optional(),
     end_hour: z.string().min(1, "L'heure de fin est requise").optional(),
     location: z.string().min(1, "Le lieu est requis").optional(),
@@ -58,8 +58,11 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
             name: event.name,
             description: event.description,
             categoryId: event.categoryId,
-            start_date: new Date(new Date(event.start_date).toISOString().substring(0, 10) + 'T12:00:00'),
-            end_date: new Date(new Date(event.end_date).toISOString().substring(0, 10) + 'T12:00:00'),
+            // CORRECTION 1 : event.start_date / end_date sont déjà des strings ISO
+            // (cohérent avec IEvent typé en string, comme IMission/IMissionSlot).
+            // Plus besoin de reconstruire un objet Date avec substring/toLocaleDateString.
+            start_date: event.start_date,
+            end_date: event.end_date,
             start_hour: new Date(event.start_hour).toLocaleTimeString('fr-FR', {
                 hour: '2-digit',
                 minute: '2-digit'
@@ -77,8 +80,9 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
             name: event.name,
             description: event.description,
             categoryId: event.categoryId,
-            start_date: new Date(new Date(event.start_date).toISOString().substring(0, 10) + 'T12:00:00'),
-            end_date: new Date(new Date(event.end_date).toISOString().substring(0, 10) + 'T12:00:00'),
+            // CORRECTION 1 (suite) : même logique ici, on garde la string telle quelle
+            start_date: event.start_date,
+            end_date: event.end_date,
             start_hour: new Date(event.start_hour).toLocaleTimeString('fr-FR', {
                 hour: '2-digit',
                 minute: '2-digit'
@@ -94,7 +98,7 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
 
     // Ferme la modale et remet tout à zéro
     const handleClose = () => {
-            ; (document.getElementById('update_event_modal') as HTMLDialogElement).close()
+        ; (document.getElementById('update_event_modal') as HTMLDialogElement).close()
     }
 
 
@@ -114,13 +118,16 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
 
 
                         const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
-                        const startDateToSend = data.start_date ? new Date(data.start_date.getTime() - data.start_date.getTimezoneOffset() * 60000) : undefined
-                        const endDateToSend = data.end_date ? new Date(data.end_date.getTime() - data.end_date.getTimezoneOffset() * 60000) : undefined
 
-                        await updateEvent(event.id, api, data.name, data.description, categoryId, startDateToSend, endDateToSend, data.start_hour, data.end_hour, data.location);
-                       
+                        // CORRECTION 4 : plus besoin du bricolage de fuseau horaire (getTimezoneOffset).
+                        // Ce calcul supposait que data.start_date / data.end_date étaient des objets Date
+                        // (d'où l'appel à .getTime()). Maintenant que tout le flux est en string ISO,
+                        // on passe directement data.start_date / data.end_date sans transformation.
+
+                        await updateEvent(event.id, api, data.name, data.description, categoryId, data.start_date, data.end_date, data.start_hour, data.end_hour, data.location);
+
                         queryClient.refetchQueries({ queryKey: ['events'] });
-                     
+
                         reset();
                         queryClient.refetchQueries({ queryKey: ['event', String(event.id)] }),
 
@@ -204,9 +211,15 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
                                                 <div popover="auto" id="rdp-popover-start" className="dropdown"
                                                     style={{ positionAnchor: "--rdp-start" } as React.CSSProperties}>
                                                     <DayPicker className="react-day-picker" mode="single"
-                                                        selected={field.value}
+                                                        // CORRECTION 3 : field.value est une string (ISO) maintenant,
+                                                        // mais DayPicker attend un vrai objet Date pour "selected".
+                                                        // On reconvertit ici, comme dans CreateEventModal.
+                                                        selected={field.value ? new Date(field.value) : undefined}
                                                         onSelect={(date) => {
-                                                            field.onChange(date)
+                                                            // CORRECTION 2 : DayPicker renvoie un objet Date brut.
+                                                            // Le schéma Zod attend une string -> on convertit en ISO
+                                                            // avant de le stocker dans le formulaire.
+                                                            field.onChange(date?.toISOString())
                                                             document.getElementById('rdp-popover-start')?.hidePopover()
                                                         }} />
                                                 </div>
@@ -230,9 +243,11 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
                                                 <div popover="auto" id="rdp-popover-end" className="dropdown"
                                                     style={{ positionAnchor: "--rdp-end" } as React.CSSProperties}>
                                                     <DayPicker className="react-day-picker" mode="single"
-                                                        selected={field.value}
+                                                        // CORRECTION 3 (suite) : même conversion string -> Date pour "selected"
+                                                        selected={field.value ? new Date(field.value) : undefined}
                                                         onSelect={(date) => {
-                                                            field.onChange(date)
+                                                            // CORRECTION 2 (suite) : même conversion Date -> string ISO
+                                                            field.onChange(date?.toISOString())
                                                             document.getElementById('rdp-popover-end')?.hidePopover()
                                                         }} />
                                                 </div>

@@ -1,28 +1,21 @@
 import { IoPersonCircleOutline } from "react-icons/io5"
 import { MdAppRegistration, MdEventAvailable, MdOutlineEvent, MdOutlineVolunteerActivism } from "react-icons/md"
 import { TiThMenu } from "react-icons/ti"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useAuthStore } from "../stores/authStore"
-import { PiSignOutBold } from "react-icons/pi"
-import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io"
 import { FaHome } from "react-icons/fa"
 import type { ReactNode } from "react"
-import { logout } from "../services/api/auth"
-import { useApi } from "../hook/useApi"
 import logo from "../assets/logo_classic1.png"
 import logoMobile from "../assets/mobile_logo.png"
 import logoMobileSmall from "../assets/logo_mobile.png"
-import { BsCalendar2Event } from "react-icons/bs";
 
 
 const NavBar = ({ children }: { children: ReactNode }) => {
 
-    const api = useApi()
-    const navigate = useNavigate()
     const closeSidebar = () => {
         (document.getElementById('my-drawer-4') as HTMLInputElement).checked = false
     }
-    const { clearAuth, user, sidebarPosition } = useAuthStore()
+    const { user, sidebarPosition } = useAuthStore()
 
     return (
         <div className={`${sidebarPosition === 'left' ? 'drawer' : 'drawer drawer-end'} lg:drawer-open bg-[#e6dabb] dark:bg-[#1e2433]`}>
@@ -44,11 +37,13 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                                 </figure>
                             </Link>
 
-                            <figure className="hidden md:flex md:w-35">
-                                <img src={logo} alt="" />
-                            </figure>
+                            <Link to={'/home'} className="hidden md:flex md:cursor-pointer">
+                                <figure className="hidden md:flex md:w-35 md:cursor-pointer">
+                                    <img src={logo} alt="" />
+                                </figure>
+                            </Link>
 
-                            <figure className="w-15 md:hidden">
+                            <figure className="w-10 md:hidden">
                                 <img src={logoMobileSmall} alt="" />
                             </figure>
                         </>
@@ -57,13 +52,16 @@ const NavBar = ({ children }: { children: ReactNode }) => {
 
                         <>
 
-                            <figure className="w-15 md:hidden">
+                            <figure className="w-10 md:hidden">
                                 <img src={logoMobileSmall} alt="" />
                             </figure>
 
-                            <figure className="hidden md:flex md:w-35">
-                                <img src={logo} alt="" />
-                            </figure>
+                            <Link to={'/home'} className="hidden md:flex md:cursor-pointer">
+                                <figure className="hidden md:flex md:w-35 md:cursor-pointer">
+                                    <img src={logo} alt="" />
+                                </figure>
+                            </Link>
+
 
                             <Link to={'/home'}>
                                 <figure className="w-30 md:hidden">
@@ -110,7 +108,11 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </li>
 
                         <li>
-                            <a><IoPersonCircleOutline size={25} />Profil</a>
+                            <Link
+                                to={'/profile'}
+                                onClick={closeSidebar}>
+                                <IoPersonCircleOutline size={25} />Compte
+                            </Link>
                         </li>
 
                         <li>
@@ -127,50 +129,23 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </li>
 
                         <li>
-                            <Link
-                                to={""}
-                                onClick={closeSidebar}>
-                                <MdOutlineEvent size={25}/> Mes évènements
+                            <Link to={"/home"}>
+                                <MdOutlineEvent size={25} /> Mes évènements
                             </Link>
+
+
                         </li>
 
                         <li>
-                            <Link
-                                to={""}
-                                onClick={closeSidebar}>
+                            <Link to={"/home"}>
                                 <MdAppRegistration size={25} /> Mes missions
                             </Link>
                         </li>
 
-                        
-
-
                     </ul>
 
 
-                    <ul className="menu w-full text-base text-cyan-900 dark:text-[#e6dabb] font-semibold flex justify-end flex-4">
-                        {/* Sidebar content here */}
 
-
-                        <li>
-                            <Link
-                                to={'/settings'}
-                                onClick={closeSidebar}>
-                                <IoMdSettings size={25} /> Paramètres
-                            </Link>
-                        </li>
-                        <li>
-                            <a>
-                                <IoMdInformationCircleOutline size={25} /> A propos
-                            </a>
-                        </li>
-
-                        <li className="text-[#D4391C]"><a onClick={async () => {
-                            await logout(api)
-                            clearAuth()
-                            navigate("/")
-                        }}><PiSignOutBold size={25} color="#D4391C" /> Se déconnecter</a></li>
-                    </ul>
                 </div>
             </div>
         </div>
