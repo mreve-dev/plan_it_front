@@ -8,6 +8,8 @@ import { FaRegCalendarCheck } from "react-icons/fa"
 import MissionSlotsModal from "../missionSlot/MissionSlotModal"
 import SlotRegistrationModal from "../missionSlot/SlotRegistrationModal"
 import { colorsAvatar } from "../card.config"
+import { capitalize, isFirstSlotOfDay } from "../../utils/slots"
+import VolunteersOnSlotModal from "../missionSlot/VolunteersOnSlotModal"
 
 interface IMissionCardProps {
     mission: IMission
@@ -37,13 +39,15 @@ const MissionCard = ({ mission, isAdmin, isEventPast }: IMissionCardProps) => {
             ? "#ffb84d" // presque complet
             : "#4f9288" // de la place
 
-   
+
 
     // Pour la barre de progression
 
     const maxDisplayedSlots = 3
     const visibleSlots = mission.missionSlots.slice(0, maxDisplayedSlots)
     const remainingCount = mission.missionSlots.length - maxDisplayedSlots
+
+
 
     return (
         <div className="bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col justify-between rounded-xl p-5">
@@ -134,7 +138,7 @@ const MissionCard = ({ mission, isAdmin, isEventPast }: IMissionCardProps) => {
                         mission.missionSlots.length > 0
                             ? (
                                 <div className="flex flex-col gap-2 items-center w-full">
-                                    {visibleSlots.map(slot => {
+                                    {visibleSlots.map((slot, index) => {
                                         const registered = slot.userHasMissions?.length ?? 0
                                         const placesLeft = slot.max_volunteers - registered
                                         const percentage = Math.min((registered / slot.max_volunteers) * 100, 100)
@@ -145,13 +149,34 @@ const MissionCard = ({ mission, isAdmin, isEventPast }: IMissionCardProps) => {
                                                 ? "bg-[#8a6a20] dark:bg-[#ffb84d]"
                                                 : "bg-red-800 dark:bg-[#ff4757]"
 
+
+
+
                                         return (
                                             <div key={slot.id} className="flex flex-col gap-1 w-full">
-                                                <div className="flex justify-between text-[#104e64] dark:text-[#e6dabb]">
-                                                    <span>
-                                                        {new Date(slot.start_hour).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} - {new Date(slot.end_hour).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                                                    </span>
-                                                    <span>{registered}/{slot.max_volunteers}</span>
+
+                                                {isFirstSlotOfDay(visibleSlots, index) && (
+                                                    <p className="text-xl font-semibold text-[#104e64] dark:text-[#e6dabb] capitalize">
+                                                        {new Date(slot.date).toLocaleDateString('fr-FR', {
+                                                            weekday: 'long',
+                                                            day: '2-digit',
+                                                            month: "long"
+                                                        })}
+                                                    </p>
+                                                )}
+
+                                                <div className="flex flex-col justify-between text-[#104e64] dark:text-[#e6dabb]">
+
+                                                    <div className="flex justify-between text-[#104e64] dark:text-[#e6dabb]">
+                                                        <p>
+                                                            {new Date(slot.start_hour).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} - {new Date(slot.end_hour).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                                                        </p>
+                                                        <p>
+                                                            {registered}/{slot.max_volunteers}
+                                                        </p>
+
+                                                    </div>
+
                                                 </div>
 
                                                 <div className="w-full h-2 bg-[#c8c4a0] dark:bg-[#3a4150] rounded-full overflow-hidden">
@@ -162,7 +187,11 @@ const MissionCard = ({ mission, isAdmin, isEventPast }: IMissionCardProps) => {
 
                                                 {
                                                     slot.userHasMissions && slot.userHasMissions.length > 0 && (
-                                                        <div className="flex flex-col gap-3 my-2">
+                                                        <div
+                                                            onClick={() => (document.getElementById(`volunteers_on_slot_modal_${slot.id}`) as HTMLDialogElement).showModal()}
+                                                            className="flex flex-col gap-3 my-2 bg-[#9b6581]/60 py-2 px-3 rounded-xl cursor-pointer shadow-md shadow-[#8b506f]">
+
+
                                                             <div className="flex -space-x-3">
                                                                 {slot.userHasMissions.slice(0, 3).map(uhm => (
                                                                     <div
@@ -181,24 +210,25 @@ const MissionCard = ({ mission, isAdmin, isEventPast }: IMissionCardProps) => {
                                                             )}
 
 
-                                                            <div className="flex">
+                                                            <div className="flex gap-2">
                                                                 {slot.userHasMissions.slice(0, 3).map(uhm => (
                                                                     <div
                                                                         key={uhm.userId}
                                                                         title={`${uhm.user.firstname}${uhm.user.lastname}`}
-                                                                        className="px-2 py-1 rounded-full bg-[#4f9288] text-white text-sm font-semibold flex items-center justify-center border-2 border-[#e6dabb] dark:border-[#1e2433]">
+                                                                        className="px-2 py-1 rounded-full bg-[#4f9288] text-white text-sm font-semibold flex items-center justify-center border-2 border-[#39756c] dark:border-[#1e2433]">
                                                                         {uhm.user.firstname} {uhm.user.lastname[0]}.
                                                                     </div>
                                                                 ))}
                                                             </div>
 
+                                                            <VolunteersOnSlotModal
+                                                                slot={slot}
+                                                                onClose={() => (document.getElementById(`volunteers_on_slot_modal_${slot.id}`) as HTMLDialogElement).close()}
+                                                            />
+
                                                         </div>
                                                     )
                                                 }
-
-
-
-
 
                                             </div>
                                         )

@@ -90,7 +90,7 @@ const MissionUserPage = () => {
 
 
 
-            <div className="overflow-y-auto flex-1 flex flex-col gap-3">
+            <div className="overflow-y-auto scrollbar-hide flex-1 flex flex-col gap-3">
                 {filteredMissions.length > 0 ? (
                     filteredMissions.map((reg: IMyMissionRegistration) => {
 
