@@ -2,12 +2,12 @@ import { IoPersonCircleOutline } from "react-icons/io5"
 import { MdAppRegistration, MdEventAvailable, MdOutlineEvent, MdOutlineVolunteerActivism } from "react-icons/md"
 import { TiThMenu } from "react-icons/ti"
 import { Link } from "react-router-dom"
-import { useAuthStore } from "../stores/authStore"
+import { useAuthStore } from "../../stores/authStore"
 import { FaHome } from "react-icons/fa"
 import type { ReactNode } from "react"
-import logo from "../assets/logo_classic1.png"
-import logoMobile from "../assets/mobile_logo.png"
-import logoMobileSmall from "../assets/logo_mobile.png"
+import logo from "../../assets/logo_classic1.png"
+import logoMobile from "../../assets/mobile_logo.png"
+import logoMobileSmall from "../../assets/logo_mobile.png"
 
 
 const NavBar = ({ children }: { children: ReactNode }) => {
@@ -129,7 +129,9 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </li>
 
                         <li>
-                            <Link to={"/myevents"}>
+                            <Link
+                                to={"/myevents"}
+                                onClick={closeSidebar}>
                                 <MdOutlineEvent size={25} /> Mes évènements
                             </Link>
 
@@ -137,7 +139,9 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </li>
 
                         <li>
-                            <Link to={"/mymissions"}>
+                            <Link
+                                to={"/mymissions"}
+                                onClick={closeSidebar}>
                                 <MdAppRegistration size={25} /> Mes missions
                             </Link>
                         </li>

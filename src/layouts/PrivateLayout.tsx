@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import NavBar from "../components/NavBar";
 import { useAuthStore } from "../stores/authStore";
 import { useEffect } from "react";
+import NavBar from "../components/navbar/NavBar";
 
 export default function PrivateLayout() {
 
