@@ -11,6 +11,10 @@ export interface IMission {
     updatedAt: string
     missionSlots: IMissionSlot[]
     missionHasSkills: IMissionsHasSkill[]
+    event: {
+        id: number
+        name: string
+    }
 }
 
 export interface IMissionSlot {
@@ -41,4 +45,21 @@ export interface IMissionsHasSkill {
     missionId: number
     skillId: number
     createdAt: string
+}
+
+
+
+export interface IMyMissionRegistration {
+    userId: number
+    slotId: number
+    createdAt: string
+    slot: {
+        id: number
+        date: string
+        start_hour: string
+        end_hour: string
+        max_volunteers: number
+        missionId: number
+        mission: IMission
+    }
 }

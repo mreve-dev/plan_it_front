@@ -40,6 +40,15 @@ export const getAllMissions = async (api: AxiosInstance) => {
     return response.data
 }
 
+export const getOneMission = async (api: AxiosInstance, id: number) => {
+    const response = await api.get(`/mission/${id}`)
+    return response.data
+}
+
+
+
+
+
 export const updateMission = async (
     api: AxiosInstance,
     id: number,

@@ -15,3 +15,8 @@ export const deleteUser = async (id: number, api: AxiosInstance) => {
     const response = await api.delete(`/user/${id}`)
     return response.data
 }
+
+export const getOneUser = async (id: number, api: AxiosInstance) => {
+    const response = await api.get(`/user/${id}`)
+    return response
+}

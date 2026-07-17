@@ -1,4 +1,5 @@
 import type { AxiosInstance } from "axios";
+import type { IMyMissionRegistration, IUserHasMission } from "../../types/mission.type";
 
 // Permet à l'utilisateur connecté de s'inscrire à un créneau (slot) précis
 export const registerToSlot = async (
@@ -19,7 +20,7 @@ export const registerToSlot = async (
 }
 
 // Récupère la liste des inscriptions de l'utilisateur actuellement connecté
-export const getMyMissions = async (api: AxiosInstance) => {
+export const getMyMissions = async (api: AxiosInstance): Promise<IMyMissionRegistration[]> => {
     // Requête GET simple, pas de body à envoyer
     // Le backend sait qui demande grâce au token (req.user.id), donc pas besoin
     // de préciser un userId ou un slotId ici
@@ -27,6 +28,13 @@ export const getMyMissions = async (api: AxiosInstance) => {
 
     return response.data
 }
+
+
+export const getMyHours = async (api: AxiosInstance) => {
+    const response = await api.get('/user-has-mission/myhours')
+    return response.data
+}
+
 
 export const unregisterFromSlot = async (
     api: AxiosInstance,
