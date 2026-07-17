@@ -1,4 +1,4 @@
-import type { IEvent } from "../../types/event.type"
+import type { IEvent } from "../types/event.type"
 
 export const getCategoryColor = (name: string | undefined): string => {
     if (!name) return "bg-[#104e64] text-[#e6dabb] dark:bg-[#4f9288] dark:text-white"
@@ -35,4 +35,23 @@ export const getCategoryBorder = (name: string | undefined): string | undefined 
 
 export interface IEventCardProps {
     event: IEvent
+}
+
+const getNumberColorsAvatar = (userId: number) => {
+    return userId % 5
+}
+
+export const colorsAvatar = (userId: number) => {
+    const number = getNumberColorsAvatar(userId)
+
+    if (number === 0)
+        return "bg-[#4f9288] dark:bg-[#5dcaa5] text-[#e6f4f1] dark:text-[#04342c]"
+    else if (number === 1)
+        return "bg-[#9b6581] dark:bg-[#d99cb7] text-white dark:text-[#701705]"
+    else if (number === 2)
+        return "bg-[#c8c4a0] dark:bg-[#e0dcc0] text-[#104e64] dark:text-[#3a3624]"
+    else if (number === 3)
+        return "bg-[#104e64] dark:bg-[#7fc7b6] text-[#e6dabb] dark:text-[#04342c]"
+    else if (number === 4)
+        return "bg-[#7a9e9f] dark:bg-[#a8c6c7] text-white dark:text-[#1c3536]"
 }
