@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "./eventcard.config"
+import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "../card.config"
 import { FaArrowRight } from "react-icons/fa"
 import { Link } from "react-router-dom"
 

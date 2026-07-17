@@ -1,6 +1,6 @@
 import { FaArrowRight } from "react-icons/fa"
 import type { IMission } from "../../types/mission.type"
-import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "./eventcard.config"
+import { getCategoryBorder, getCategoryColor, type IEventCardProps } from "../card.config"
 import { Link, useNavigate } from "react-router-dom"
 
 

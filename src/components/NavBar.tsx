@@ -129,7 +129,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </li>
 
                         <li>
-                            <Link to={"/home"}>
+                            <Link to={"/myevents"}>
                                 <MdOutlineEvent size={25} /> Mes évènements
                             </Link>
 
@@ -137,7 +137,7 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         </li>
 
                         <li>
-                            <Link to={"/home"}>
+                            <Link to={"/mymissions"}>
                                 <MdAppRegistration size={25} /> Mes missions
                             </Link>
                         </li>
