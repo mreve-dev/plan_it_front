@@ -54,7 +54,7 @@ const MissionSlotsModal = ({ mission, eventId, isEventPast, onClose }: IMissionS
 
     return (
         <dialog id={`mission_slots_modal_${mission.id}`} className="modal">
-            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-8">
+            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] p-4 flex flex-col gap-8">
 
                 {view === 'manage' ? (
                     <ManageSlotView

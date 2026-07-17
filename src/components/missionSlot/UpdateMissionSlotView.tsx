@@ -87,7 +87,11 @@ const UpdateMissionSlotView = ({ slot, eventId, onBack }: IUpdateMissionSlotView
                                         <DayPicker className="react-day-picker" mode="single"
                                             selected={field.value}
                                             onSelect={(date) => {
-                                                field.onChange(date)
+                                                if (date) {
+                                                    const normalized = new Date(date)
+                                                    normalized.setHours(12, 0, 0, 0)
+                                                    field.onChange(normalized)
+                                                }
                                                 document.getElementById('rdp-popover-update-slot')?.hidePopover()
                                             }} />
                                     </div>

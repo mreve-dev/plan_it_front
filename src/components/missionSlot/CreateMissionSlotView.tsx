@@ -114,18 +114,24 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
 
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-bold text-[#104e64] dark:text-[#e6dabb]">Date</label>
-                            <button type="button" popoverTarget="rdp-auto"
+
+
+                            <button type="button" popoverTarget="rdp-popover-create-slot"
                                 className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] rounded-xl input w-full py-2 text-left text-[#104e64] dark:text-[#e6dabb]"
                                 style={{ anchorName: '--rdp-auto' } as React.CSSProperties}>
                                 {autoConfig.date ? new Date(autoConfig.date).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
                             </button>
-                            <div popover="auto" id="rdp-auto" className="dropdown"
+                            <div popover="auto" id="rdp-popover-create-slot" className="dropdown"
                                 style={{ positionAnchor: '--rdp-auto' } as React.CSSProperties}>
                                 <DayPicker className="react-day-picker" mode="single"
                                     selected={autoConfig.date}
                                     onSelect={(date) => {
-                                        setAutoConfig(prev => ({ ...prev, date }))
-                                        document.getElementById('rdp-auto')?.hidePopover()
+                                        if (date) {
+                                            const normalized = new Date(date)
+                                            normalized.setHours(12, 0, 0, 0)
+                                            setAutoConfig(prev => ({ ...prev, date: normalized }))
+                                        }
+                                        document.getElementById("rdp-popover-create-slot")?.hidePopover()
                                     }} />
                             </div>
                         </div>
@@ -167,7 +173,7 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
                             onClick={generateAndSubmit}
                             disabled={createMany.isPending}
                             className="btn w-full flex items-center justify-center gap-2 rounded-xl border-none bg-[#9b6581] dark:bg-[#7a4f63] text-white transition-transform active:scale-95">
-                            {createMany.isPending ? "Création..." : `Créer ${autoConfig.count} créneaux`}
+                            {createMany.isPending ? "Création..." : `Créer les créneaux`}
                         </button>
                         <button
                             type="button"
@@ -199,7 +205,7 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
                                 control={control}
                                 render={({ field }) => (
                                     <>
-                                        <button type="button" popoverTarget="rdp-popover-slot"
+                                        <button type="button" popoverTarget="rdp-popover_create-slot"
                                             className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] rounded-xl input w-full py-2 text-left text-[#104e64] dark:text-[#e6dabb]"
                                             style={{ anchorName: "--rdp-slot" } as React.CSSProperties}>
                                             {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
@@ -209,8 +215,12 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
                                             <DayPicker className="react-day-picker" mode="single"
                                                 selected={field.value}
                                                 onSelect={(date) => {
-                                                    field.onChange(date)
-                                                    document.getElementById('rdp-popover-slot')?.hidePopover()
+                                                    if (date) {
+                                                        const normalized = new Date(date)
+                                                        normalized.setHours(12, 0, 0, 0)
+                                                        field.onChange(normalized)
+                                                    }
+                                                    document.getElementById('rdp-popover-create-slot')?.hidePopover()
                                                 }} />
                                         </div>
                                     </>
@@ -221,12 +231,12 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
                         <div className="flex gap-2">
                             <div className="flex-1 flex flex-col gap-2">
                                 <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Début</label>
-                                <input {...register("start_hour")} type="time" className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb]" />
+                                <input {...register("start_hour")} type="time" className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
                                 {errors.start_hour && <p className="text-red-800 dark:text-red-400 text-xs">{errors.start_hour.message}</p>}
                             </div>
                             <div className="flex-1 flex flex-col gap-2">
                                 <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Fin</label>
-                                <input {...register("end_hour")} type="time" className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb]" />
+                                <input {...register("end_hour")} type="time" className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
                                 {errors.end_hour && <p className="text-red-800 dark:text-red-400 text-xs">{errors.end_hour.message}</p>}
                             </div>
                         </div>

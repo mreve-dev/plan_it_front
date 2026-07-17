@@ -34,7 +34,7 @@ const ManageSlotView = ({ mission, isEventPast, onAddSlot, onUpdateSlot, onDelet
         Gérer les créneaux — <span className="text-[#9b6581] dark:text-[#c48aaa]">{mission.name}</span>
       </h3>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 overflow-y-auto scrollbar-hide">
 
         {mission.missionSlots.length > 0
 
@@ -46,7 +46,7 @@ const ManageSlotView = ({ mission, isEventPast, onAddSlot, onUpdateSlot, onDelet
                 <div className="flex items-center gap-2 mb-2">
                   <FaRegCalendar size={14} className="text-[#5a7070] dark:text-[#a0a8a8]" />
 
-                  <p className="text-sm font-semibold text-[#104e64] dark:text-[#e6dabb]">
+                  <p className="text-lg sm:text-xl capitalize font-semibold text-[#104e64] dark:text-[#e6dabb]">
                     {new Date(dateKey).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
                   </p>
                 </div>
@@ -72,8 +72,8 @@ const ManageSlotView = ({ mission, isEventPast, onAddSlot, onUpdateSlot, onDelet
                         : "border-l-red-800 dark:border-l-[#ff4757]"
 
                     return (
-                      <div key={slot.id} className={`border-2 border-[#dbd5b2] dark:border-[#3a4150] border-l-4 text-[#104e64] dark:text-[#e6dabb] rounded-xl bg-white/50 dark:bg-white/10 p-3 flex justify-between items-center ${borderColor} gap-3`}>
-                        <div>
+                      <div key={slot.id} className={`border-2 border-[#dbd5b2] dark:border-[#3a4150] border-l-4 text-[#104e64] dark:text-[#e6dabb] rounded-xl bg-white/50 dark:bg-white/10 p-3 flex flex-col w-full justify-between items-center ${borderColor} gap-3 sm:flex-row`}>
+                        <div className="w-full">
                           <p>
                             {new Date(slot.start_hour).toLocaleTimeString('fr-FR', {
                               hour: '2-digit',
