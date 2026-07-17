@@ -17,6 +17,8 @@ import EventDetailPage from "./pages/event/EventDetailPage"
 import SettingsPage from "./pages/settings/SettingsPage"
 import VolunteersPage from "./pages/volunteers/VolunteersPage"
 import MissionListPage from "./pages/mission/MissionListPage"
+import EventUserPage from "./pages/event/EventUserPage"
+import MissionUserPage from "./pages/mission/MissionUserPage"
 
 function App() {
 
@@ -36,6 +38,8 @@ function App() {
           <Route path="/onboarding" element={<OnboardingPage />} />
           <Route element={<PrivateLayout />}>
             <Route path="/event/:id" element={<EventDetailPage />} />
+            <Route path="/myevents" element={<EventUserPage />} />
+            <Route path="/mymissions" element={<MissionUserPage />} />
             <Route path="/profile" element={<ProfileDetailsPage />} />
             <Route path="/profile/edit" element={<ProfileEditPage />} />
             <Route path="/home" element={<HomePage />} />

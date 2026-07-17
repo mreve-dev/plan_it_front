@@ -6,6 +6,7 @@
     themes: light --default;
 }
 @source inline("drawer-end");
+@config "../tailwind.config.js";
 
 
 .label-register {
@@ -34,3 +35,6 @@
 .dark input[type="time"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
+
+
+
