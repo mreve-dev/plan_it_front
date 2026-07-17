@@ -1,6 +1,6 @@
 import { FaArrowDown, FaArrowLeft, FaArrowRight, FaChartBar, FaFile } from "react-icons/fa"
 import { Link, useParams } from "react-router-dom"
-import { getCategoryBorder, getCategoryColor } from "../../components/event/eventcard.config"
+import { colorsAvatar, getCategoryBorder, getCategoryColor } from "../../components/card.config"
 import { FaPenToSquare, FaTrashCan } from "react-icons/fa6"
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { LuCalendar1 } from "react-icons/lu"
@@ -11,8 +11,10 @@ import UpdateEventModal from "../../components/event/UpdateEventModal"
 import CreateMissionModal from "../../components/mission/CreateMissionModal"
 import { useAuthStore } from "../../stores/authStore"
 import { useGetOneEvent } from "../../hook/mutation/use-event.service"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { isEventPast } from "../../utils/EventPastDisableFunction";
+import { getOneMission } from "../../services/api/mission";
+import { useApi } from "../../hook/useApi";
 
 
 
@@ -50,6 +52,8 @@ const EventDetailPage = () => {
     const totalPlaces = event.missions.reduce((acc: number, mission: IMission) => acc + mission.missionSlots.reduce((a, slot) => a + slot.max_volunteers, 0), 0)
 
     const eventPast = event ? isEventPast(event) : false
+
+
 
 
     return (
@@ -165,12 +169,14 @@ const EventDetailPage = () => {
 
 
 
-                <div className="min-h-0 flex flex-col gap-4 h-full">
+                <div className="min-h-0 flex flex-col gap-4 h-full overflow-y-auto md:overflow-y-hidden scrollbar-hide">
+
+
                     <section className={`bg-[#e6dabb] dark:bg-[#1e2433] flex gap-2 justify-between flex-col p-4 rounded-2xl font-bold border border-[#104e64]/10  dark:border-[#e6dabb]/10 border-l-4 ${getCategoryBorder(event.category.name)} md:flex-row `}>
 
 
 
-                        <div className="flex flex-col justify-between h-full md:flex-4 w-full">
+                        <div className="flex flex-col gap-4 justify-between h-full md:flex-4 w-full">
 
                             <div className="flex items-center justify-between">
                                 <p className={`${getCategoryColor(event.category.name)} rounded-full px-5 py-1 text-sm font-semibold text-center shadow-sm shadow-black/10 dark:shadow-black/30`}>
@@ -242,7 +248,7 @@ const EventDetailPage = () => {
 
                                     <div className="hidden md:flex md:items-center gap-2 text-sm">
                                         <div className="hidden md:flex items-center">
-                                            <LuCalendar1  size={18}/>
+                                            <LuCalendar1 size={18} />
 
                                         </div>
 
@@ -311,61 +317,137 @@ const EventDetailPage = () => {
 
 
 
-                    <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 xl:min-h-0 xl:flex-1 h-full">
-                        <section className="bg-[#e6dabb] dark:bg-[#1e2433] flex gap-4 justify-between flex-col h-full p-4 rounded-2xl font-bold">
+                    <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-3 md:min-h-0 xl:flex-1 h-full">
+                        <section className="bg-[#e6dabb] dark:bg-[#1e2433] flex gap-4 justify-between flex-col p-4 rounded-2xl font-bold md:min-h-0">
 
-                            <div className="flex justify-between items-center">
-                                <Link to={`/event/${id}/missions`}>
+                            <div className="flex flex-col justify-between items-center gap-5 w-full h-full min-h-0">
+
+                                <div className="flex justify-between items-center w-full ">
+
+
                                     <h4 className="text-lg text-[#104e64] dark:text-[#e6dabb] font-bold">
                                         Missions(s)
                                     </h4>
-                                </Link>
 
-                                {isAdmin && (
-                                    <div>
-                                        <button
-                                            disabled={eventPast}
-                                            onClick={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).showModal()}
-                                            className="btn border-none text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95 shadow-sm shadow-black/20 dark:shadow-black/40">
-                                            + Nouvelle mission
-                                        </button>
-
-                                        <CreateMissionModal
-                                            eventId={event.id}
-                                            onClose={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).close}
-                                            onSuccess={() => queryClient.refetchQueries({ queryKey: ['event', id] })} />
-                                    </div>
-
-                                )}
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-3">
-                                {event.missions.length > 0 ? (
-                                    <>
-                                        {event.missions.slice(0, 3).map((mission: IMission) => {
-                                            const registered = mission.missionSlots.reduce((a, slot) => a + (slot.userHasMissions?.length ?? 0), 0)
-                                            const total = mission.missionSlots.reduce((a, slot) => a + slot.max_volunteers, 0)
-                                            return (
-                                                <div key={mission.id} className="bg-[#9b6581]/40 dark:bg-[#9b6581]/20 p-2 rounded-xl flex justify-between items-center shadow-sm shadow-black/10 dark:shadow-black/30">
-                                                    <div>
-                                                        <p>{mission.name}</p>
-                                                        <p>{mission.missionSlots.length} créneau(x)</p>
-                                                    </div>
-                                                    <p className="text-lg">{registered} / {total}</p>
-                                                </div>
-                                            )
-                                        })}
-                                    </>
-                                ) : (
-                                    <div className="flex justify-center items-center h-full">
+                                    {isAdmin && (
                                         <div>
-                                            <p className="text-xs text-[#4f9288] font-bold pt-2 mt-auto cursor-pointer">
-                                                Aucune mission pour le moment
-                                            </p>
+                                            <button
+                                                disabled={eventPast}
+                                                onClick={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).showModal()}
+                                                className="btn border-none text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95 shadow-sm shadow-black/20 dark:shadow-black/40">
+                                                + Nouvelle mission
+                                            </button>
+
+                                            <CreateMissionModal
+                                                eventId={event.id}
+                                                onClose={() => (document.getElementById('create_mission_modal') as HTMLDialogElement).close}
+                                                onSuccess={() => queryClient.refetchQueries({ queryKey: ['event', id] })} />
                                         </div>
-                                    </div>
-                                )}
+
+                                    )}
+
+                                </div>
+
+
+                                <div className="flex-1 flex flex-col w-full min-h-0 md:overflow-y-auto ">
+                                    {event.missions.length > 0 ? (
+                                        <div className="flex flex-col gap-3">
+                                            {event.missions.slice(0, 3).map((mission: IMission) => {
+                                                const registered = mission.missionSlots.reduce((a, slot) => a + (slot.userHasMissions?.length ?? 0), 0)
+                                                const total = mission.missionSlots.reduce((a, slot) => a + slot.max_volunteers, 0)
+
+                                                // On rassemble les inscrits de TOUS les créneaux de cette mission
+                                                const missionRegistrations = mission.missionSlots.flatMap(slot => slot.userHasMissions ?? [])
+
+                                                // On déduplique : une personne inscrite sur plusieurs créneaux n'apparaît qu'une fois
+                                                const uniqueVolunteers = Array.from(
+                                                    new Map(missionRegistrations.map(uhm => [uhm.userId, uhm])).values()
+                                                )
+
+
+                                                return (
+                                                    <div
+                                                        key={mission.id}
+                                                        className="bg-[#9b6581]/40 dark:bg-[#9b6581]/20 p-3 rounded-xl flex flex-col justify-between shadow-sm shadow-black/10 dark:shadow-black/30">
+
+                                                        <div className="flex justify-between">
+                                                            <div>
+                                                                <p>{mission.name}</p>
+                                                                <p>{mission.missionSlots.length} créneau(x)</p>
+                                                            </div>
+                                                            <p className="text-lg">{registered} / {total}</p>
+
+                                                        </div>
+
+
+                                                        {
+                                                            uniqueVolunteers.length > 0 && (
+                                                                <div className="flex flex-col gap-3 my-2">
+
+                                                                    <div className="flex items-center">
+
+                                                                        <div className="flex -space-x-3">
+                                                                            {uniqueVolunteers.slice(0, 3).map(uhm => (
+                                                                                <div
+                                                                                    key={uhm.userId}
+                                                                                    title={`${uhm.user.firstname}${uhm.user.lastname}`}
+                                                                                    className={`w-8 h-8 p-4 rounded-full ${colorsAvatar(uhm.userId)} text-base font-bold flex items-center justify-center border-2 border-[#e6dabb] dark:border-[#1e2433]`}>
+                                                                                    {uhm.user.firstname[0]}{uhm.user.lastname[0]}
+                                                                                </div>
+                                                                            ))}
+
+                                                                        </div>
+
+
+
+                                                                        {uniqueVolunteers.length > 3 && (
+                                                                            <span>
+                                                                                +{uniqueVolunteers.length - 3}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+
+
+
+
+
+                                                                    <div className="flex gap-2 items-center flex-wrap">
+                                                                        {uniqueVolunteers.slice(0, 3).map(uhm => (
+                                                                            <div
+                                                                                key={uhm.userId}
+                                                                                title={`${uhm.user.firstname}${uhm.user.lastname}`}
+                                                                                className="px-2 py-1 rounded-full bg-[#4f9288] text-white text-sm font-semibold flex items-center justify-center shadow-2xs shadow-[#]">
+                                                                                {uhm.user.firstname} {uhm.user.lastname[0]}.
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+
+                                                                </div>
+                                                            )
+                                                        }
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-center items-center h-full">
+                                            <div>
+                                                <p className="text-xs text-[#4f9288] font-bold pt-2 mt-auto cursor-pointer">
+                                                    Aucune mission pour le moment
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <Link
+                                    to={`/event/${id}/missions`}
+                                    className="flex items-center gap-3 cursor-pointer border-dashed border-2 rounded-2xl px-4 py-2">
+                                    Voir toutes les missions <FaArrowRight />
+                                </Link>
                             </div>
+
+
 
                         </section>
 

@@ -57,7 +57,7 @@ const VolunteersPage = () => {
 
 
 
-      <div className="flex flex-col gap-3 rounded-2xl overflow-y-scroll">
+      <div className="flex flex-col gap-3 rounded-2xl overflow-y-scroll scrollbar-hide">
 
         {/* selectedUser n'est non-null que si admin (on ne le set jamais sinon), donc IUser est garanti ici */}
         {isAdmin && selectedUser && (
@@ -123,9 +123,13 @@ const VolunteersPage = () => {
                       </span>
                     ))
                   ) : (
-                    <span className="bg-[#f0e6c8] dark:bg-[#2e2a1a] h-fit font-semibold text-[#8a6a20] dark:text-[#c9a84c] flex items-center gap-2 rounded-full px-3 py-2">
+                    <div className="w-full">
+                      <span className="bg-[#f0e6c8] dark:bg-[#524925] h-fit font-semibold text-[#8a6a20] dark:text-[#ebc763] flex items-center gap-2 rounded-full px-3 py-2 w-fit">
                       <GiSandsOfTime /> En attente d'onboarding
                     </span>
+
+                    </div>
+                    
                   )}
                 </div>
 

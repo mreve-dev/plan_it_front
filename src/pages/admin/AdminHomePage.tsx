@@ -7,7 +7,7 @@ import type { IMission, IMissionSlot } from "../../types/mission.type"
 import { GrLocation } from "react-icons/gr";
 import { FaChartBar, FaPercentage, FaRegCalendarAlt, FaRegClock } from "react-icons/fa"
 import { LuCalendar1 } from "react-icons/lu"
-import { getCategoryBorder } from "../../components/event/eventcard.config"
+import { getCategoryBorder } from "../../components/card.config"
 import { getAllUsers } from "../../services/api/user"
 import type { IUser } from "../../types/user.type"
 import { getAllMissions } from "../../services/api/mission"
@@ -319,6 +319,11 @@ const AdminHomePage = () => {
 
         </div>
       </div>
+
+
+
+
+
 
 
       <div className="flex gap-3 md:flex-col w-full h-full overflow-y-scroll">
