@@ -30,8 +30,6 @@ const FirstPage = () => {
 
             </div>
 
-
-
         </div>
     )
 }

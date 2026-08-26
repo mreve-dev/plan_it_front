@@ -19,18 +19,19 @@ import VolunteersPage from "./pages/volunteers/VolunteersPage"
 import MissionListPage from "./pages/mission/MissionListPage"
 import EventUserPage from "./pages/event/EventUserPage"
 import MissionUserPage from "./pages/mission/MissionUserPage"
+import AboutPage from "./pages/AboutPage"
 
 function App() {
 
   return (
-    <div className="bg-[#f8f8eb]">
+    <div className="bg-[#f8f8eb] h-screen">
       <Routes>
 
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/changepassword" element={<ChangePasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-
+          <Route path="/aboutpage" element={<AboutPage />} />
           <Route path="/" element={<FirstPage />} />
         </Route>
 

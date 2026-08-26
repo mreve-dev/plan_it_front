@@ -28,7 +28,7 @@ const ProfileDetailsPage = () => {
   if (isError) return <p>Impossible de charger le profil.</p>
 
   return (
-    <div className="bg-[#ecece6] dark:bg-[#161b27] flex flex-col items-center h-full p-5 gap-5 overflow-y-auto text-base">
+    <div className="bg-[#ecece6] dark:bg-[#161b27] flex flex-col items-center h-full p-5 gap-5 overflow-y-auto scrollbar-hide text-base">
 
       <div className="flex flex-col items-center gap-4 bg-[#e6dabb] dark:bg-[#1e2433] w-full rounded-xl py-6">
 
@@ -47,8 +47,8 @@ const ProfileDetailsPage = () => {
         </span>
 
         <button
-        onClick={() => navigate('/profile/edit')}
-        className="flex items-center gap-2 rounded-xl px-6 py-3 my-2 bg-[#9b6581] text-white">
+          onClick={() => navigate('/profile/edit')}
+          className="flex items-center gap-2 rounded-xl px-6 py-3 my-2 bg-[#9b6581] text-white">
           <FaPenToSquare /> Modifier mon profil
         </button>
 
@@ -121,19 +121,19 @@ const ProfileDetailsPage = () => {
 
 
         <li className="border-y-2 py-4">
-          <a className="flex items-center gap-5">
+          <Link to={'/aboutpage'} className="flex items-center gap-5">
             <IoMdInformationCircleOutline size={25} /> A propos
-          </a>
+          </Link>
         </li>
 
         <li className="text-[#D4391C]">
-          <a 
-          onClick={async () => {
-            await logout(api)
-            clearAuth()
-            navigate("/")
-          }}
-          className="flex items-center gap-5 py-2">
+          <a
+            onClick={async () => {
+              await logout(api)
+              clearAuth()
+              navigate("/")
+            }}
+            className="flex items-center gap-5 py-2">
             <PiSignOutBold size={25} color="#D4391C" /> Se déconnecter
           </a>
         </li>

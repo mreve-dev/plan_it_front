@@ -164,10 +164,11 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                                     <IoMdSettings size={20} /> Paramètres
                                 </Link>
                             </li>
+                            
                             <li>
-                                <a>
+                                <Link to={'/aboutpage'}>
                                     <IoMdInformationCircleOutline size={20} /> A propos
-                                </a>
+                                </Link>
                             </li>
 
                             <li className="text-[#D4391C]">

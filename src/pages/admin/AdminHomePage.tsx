@@ -494,7 +494,12 @@ const AdminHomePage = () => {
 
                 </div>
               ) : (
-                <p>Aucun évènement à venir</p>
+                <div className="flex justify-center items-center h-full text-[#5a7070] dark:text-[#a0a8a8]">
+                  <p>
+                    Aucun évènement à venir
+                  </p>
+                </div>
+
               )}
             </div>
 
@@ -506,8 +511,9 @@ const AdminHomePage = () => {
 
 
 
-            <div className="flex-1 bg-[#e6dabb] dark:bg-[#1e2433] rounded-xl p-4">
-              <p className="text-lg font-semibold text-[#104e64] dark:text-[#e6dabb] mb-3">
+            <div className="flex-1 flex gap-3 justify-between flex-col bg-[#e6dabb] dark:bg-[#1e2433] text-[#104e64] dark:text-[#e6dabb] rounded-xl p-4">
+
+              <p className="text-lg font-semibold text-[#104e64] dark:text-[#e6dabb]">
                 Alertes
               </p>
 
@@ -531,9 +537,11 @@ const AdminHomePage = () => {
                 </div>
               ) : (
                 // Aucune mission urgente/sous-remplie : on rassure plutôt qu'afficher du vide
-                <p className="text-xs text-[#5a7070] dark:text-[#a0a8a8] text-center">
-                  Aucune alerte pour le moment
-                </p>
+                <div className="flex justify-center items-center h-full text-[#5a7070] dark:text-[#a0a8a8]">
+                  <p>
+                    Pas d'alertes
+                  </p>
+                </div>
               )}
             </div>
 
@@ -558,6 +566,7 @@ const AdminHomePage = () => {
               <h3 className="text-lg font-semibold text-[#104e64] dark:text-[#e6dabb] mb-3">
                 Missions
               </h3>
+              
               {nextEvent && nextEvent.missions.length > 0
                 ? (
                   <Link to={`/event/${nextEvent.id}/missions`}>
@@ -596,11 +605,10 @@ const AdminHomePage = () => {
                   </Link>
                 )
                 : (
-                  <div className="flex-1 flex items-center justify-center">
-                    <p className="text-xs text-[#5a7070] dark:text-[#a0a8a8] text-center">
-                      Aucune mission pour cet évènement
+                  <div className="flex justify-center items-center h-full text-[#5a7070] dark:text-[#a0a8a8]">
+                    <p>
+                      Aucun évènement à venir
                     </p>
-
                   </div>
 
                 )}
@@ -611,7 +619,7 @@ const AdminHomePage = () => {
 
 
             {/* Anniversaire champs */}
-            <div className="flex-1 bg-[#e6dabb] dark:bg-[#1e2433] rounded-xl p-4">
+            <div className="flex-1 flex flex-col bg-[#e6dabb] dark:bg-[#1e2433] rounded-xl p-4">
               <p className="text-lg font-semibold text-[#104e64] dark:text-[#e6dabb] mb-3">
                 Anniversaires à venir
               </p>
@@ -642,9 +650,12 @@ const AdminHomePage = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-[#5a7070] dark:text-[#a0a8a8] text-center">
-                  Aucun anniversaire dans les 30 prochains jours
-                </p>
+                <div className="text-[#5a7070] dark:text-[#a0a8a8] h-full flex justify-center text-center items-center">
+                  <p>
+                    Aucun anniversaire dans les 30 prochains jours
+                  </p>
+                </div>
+
               )}
             </div>
 

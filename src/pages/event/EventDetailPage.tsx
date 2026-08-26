@@ -440,11 +440,17 @@ const EventDetailPage = () => {
                                     )}
                                 </div>
 
-                                <Link
-                                    to={`/event/${id}/missions`}
-                                    className="flex items-center gap-3 cursor-pointer border-dashed border-2 rounded-2xl px-4 py-2">
-                                    Voir toutes les missions <FaArrowRight />
-                                </Link>
+                                {event.missions.length > 0 ? (
+                                    <Link
+                                        to={`/event/${id}/missions`}
+                                        className="flex items-center gap-3 cursor-pointer border-dashed border-2 rounded-2xl px-4 py-2">
+                                        Voir toutes les missions <FaArrowRight />
+                                    </Link>
+                                ) : (
+                                    <span className="flex items-center gap-3 cursor-not-allowed opacity-40 border-dashed border-2 rounded-2xl px-4 py-2">
+                                        Voir toutes les missions <FaArrowRight />
+                                    </span>
+                                )}
                             </div>
 
 

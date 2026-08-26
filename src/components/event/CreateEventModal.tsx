@@ -9,7 +9,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createCategory, getCategories } from "../../services/api/category";
 import type { ICategory } from "../../types/event.type";
 import { useAuthStore } from "../../stores/authStore";
-import { IoCloseCircleOutline } from "react-icons/io5";
 
 const createEventSchema = z.object({
     name: z.string().min(1, "Le nom est requis"),
@@ -67,11 +66,10 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
     return (
 
         <dialog id="create_event_modal" className="modal">
-            <div className="modal-box max-w-none flex flex-col gap-2 bg-[#e6dabb] dark:bg-[#1e2433] w-full md:w-150 md:h-160 md:rounded-xl rounded-none scrollbar-hide">
+            
+            <div className="modal-box max-w-none flex flex-col gap-2 bg-[#e6dabb] dark:bg-[#1e2433] w-full md:w-150 md:h-180 md:rounded-xl rounded-none scrollbar-hide">
 
-                <button onClick={handleClose} className="btn btn-sm btn-circle btn-ghost w-full flex justify-end text-[#104e64] dark:text-[#e6dabb] md:hidden">
-                    <IoCloseCircleOutline size={30} />
-                </button>
+
 
 
                 <form noValidate onSubmit={handleSubmit(async (data) => {
@@ -91,10 +89,11 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                     (errors) => {
                         console.log("error", errors);
 
-                    })} className="w-full p-3 flex flex-col gap-3">
+                    })} className="w-full p-3 flex flex-col justify-between h-fit gap-3">
 
-                    <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 w-full">
-                        <legend className="fieldset-legend text-2xl text-cyan-900 dark:text-[#e6dabb]">Créer un évènement</legend>
+                    <fieldset className="fieldset flex flex-col justify-evenly h-fit gap-5 rounded-box p-4 w-full">
+
+                        <legend className="fieldset-legend text-2xl text-cyan-900 dark:text-[#e6dabb] text-center">Créer un évènement</legend>
 
 
                         <div className="flex flex-col gap-2">
@@ -131,7 +130,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                             </select>
 
                             {!showNewCategory ? (
-                                <div className="flex justify-center">
+                                <div className="flex justify-center py-3">
                                     <button type="button" onClick={() => {
                                         setShowNewCategory(true)
                                     }}
@@ -256,6 +255,8 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
                             </div>
 
+
+
                         </div>
 
                         <div className="flex flex-col gap-2">
@@ -267,9 +268,14 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
                     </fieldset>
 
-                    <div className="flex justify-center">
-                        <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-fit"
+
+                    <div className="flex flex-col justify-center gap-3">
+                        <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-full"
                         >Enregistrer</button>
+
+                        <button onClick={handleClose} className="btn bg-transparent shadow-none w-full flex text-[#104e64] border-gray-500/30 dark:text-[#e6dabb]">
+                            Annuler
+                        </button>
                     </div>
 
 

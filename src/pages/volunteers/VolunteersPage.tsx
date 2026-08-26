@@ -48,7 +48,7 @@ const VolunteersPage = () => {
       {isAdmin && (
         <div>
           <button
-            className="btn text-left flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#1e2433] font-semibold"
+            className="btn text-left flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#1e2433] font-bold"
             onClick={() => (document.getElementById('register_modal') as HTMLDialogElement).showModal()}>Créer un utilisateur</button>
 
           <RegisterForm onSuccess={refreshUsers} />
