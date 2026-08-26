@@ -1,13 +1,15 @@
 import { IoPersonCircleOutline } from "react-icons/io5"
 import { MdAppRegistration, MdEventAvailable, MdOutlineEvent, MdOutlineVolunteerActivism } from "react-icons/md"
 import { TiThMenu } from "react-icons/ti"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "../../stores/authStore"
 import { FaHome } from "react-icons/fa"
 import type { ReactNode } from "react"
 import logo from "../../assets/logo_classic1.png"
 import logoMobile from "../../assets/mobile_logo.png"
 import logoMobileSmall from "../../assets/logo_mobile.png"
+import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io"
+import { PiSignOutBold } from "react-icons/pi"
 
 
 const NavBar = ({ children }: { children: ReactNode }) => {
@@ -16,6 +18,8 @@ const NavBar = ({ children }: { children: ReactNode }) => {
         (document.getElementById('my-drawer-4') as HTMLInputElement).checked = false
     }
     const { user, sidebarPosition } = useAuthStore()
+    const navigate = useNavigate()
+    const { clearAuth } = useAuthStore()
 
     return (
         <div className={`${sidebarPosition === 'left' ? 'drawer' : 'drawer drawer-end'} lg:drawer-open bg-[#e6dabb] dark:bg-[#1e2433]`}>
@@ -97,56 +101,91 @@ const NavBar = ({ children }: { children: ReactNode }) => {
                         <img src={logo} alt="Logo de l'application plan'it avec un volant de badminton rose à la place du A" className="w-50" />
                     </figure>
 
-                    <ul className="menu w-full text-base text-cyan-900 dark:text-[#e6dabb] font-semibold flex justify-start">
-                        {/* Sidebar content here */}
+                    <div className="flex-1 flex flex-col justify-between">
 
-                        <li >
-                            <Link to={'/home'}
-                                onClick={closeSidebar}><FaHome size={25} />Accueil
-                            </Link>
+                        <ul className="menu w-full text-base text-cyan-900 dark:text-[#e6dabb] font-semibold flex justify-start">
+                            {/* Sidebar content here */}
 
-                        </li>
+                            <li >
+                                <Link to={'/home'}
+                                    onClick={closeSidebar}><FaHome size={25} />Accueil
+                                </Link>
 
-                        <li>
-                            <Link
-                                to={'/profile'}
-                                onClick={closeSidebar}>
-                                <IoPersonCircleOutline size={25} />Compte
-                            </Link>
-                        </li>
+                            </li>
 
-                        <li>
-                            <Link to={'/volunteers'}
-                                onClick={closeSidebar}><MdOutlineVolunteerActivism size={25} /> {user?.role === "admin" ? " Gérer les bénévoles" : " Liste des bénévoles"}</Link>
-                        </li>
+                            <li>
+                                <Link
+                                    to={'/profile'}
+                                    onClick={closeSidebar}>
+                                    <IoPersonCircleOutline size={25} />Compte
+                                </Link>
+                            </li>
 
-                        <li>
-                            <Link
-                                to={"/event"}
-                                onClick={closeSidebar}>
-                                <MdEventAvailable size={25} /> Evènements du club
-                            </Link>
-                        </li>
+                            <li>
+                                <Link to={'/volunteers'}
+                                    onClick={closeSidebar}><MdOutlineVolunteerActivism size={25} /> {user?.role === "admin" ? " Gérer les bénévoles" : " Liste des bénévoles"}</Link>
+                            </li>
 
-                        <li>
-                            <Link
-                                to={"/myevents"}
-                                onClick={closeSidebar}>
-                                <MdOutlineEvent size={25} /> Mes évènements
-                            </Link>
+                            <li>
+                                <Link
+                                    to={"/event"}
+                                    onClick={closeSidebar}>
+                                    <MdEventAvailable size={25} /> Evènements du club
+                                </Link>
+                            </li>
+
+                            <li>
+                                <Link
+                                    to={"/myevents"}
+                                    onClick={closeSidebar}>
+                                    <MdOutlineEvent size={25} /> Mes évènements
+                                </Link>
 
 
-                        </li>
+                            </li>
 
-                        <li>
-                            <Link
-                                to={"/mymissions"}
-                                onClick={closeSidebar}>
-                                <MdAppRegistration size={25} /> Mes missions
-                            </Link>
-                        </li>
+                            <li>
+                                <Link
+                                    to={"/mymissions"}
+                                    onClick={closeSidebar}>
+                                    <MdAppRegistration size={25} /> Mes missions
+                                </Link>
+                            </li>
 
-                    </ul>
+
+
+                        </ul>
+
+
+
+                        <ul className="hidden lg:menu lg:w-full lg:text-base lg:text-cyan-900 dark:text-[#e6dabb] lg:font-semibold lg:flex lg:justify-start">
+                            <li>
+                                <Link to={'/settings'}>
+                                    <IoMdSettings size={20} /> Paramètres
+                                </Link>
+                            </li>
+                            <li>
+                                <a>
+                                    <IoMdInformationCircleOutline size={20} /> A propos
+                                </a>
+                            </li>
+
+                            <li className="text-[#D4391C]">
+                                <Link
+                                    to={'/'}
+                                    onClick={() => {
+                                        clearAuth()
+                                        navigate("/")
+                                    }}>
+                                    <PiSignOutBold size={20} color="#D4391C" /> Se déconnecter
+                                </Link>
+                            </li>
+
+                        </ul>
+
+
+                    </div>
+
 
 
 

@@ -15,18 +15,19 @@ const DeleteMissionSlotView = ({ slot, eventId, onBack }: IDeleteMissionSlotView
     const {remove} =  useMissionSlotMutation(eventId)
 
     return (
-        <div className="dark:bg-[#1e2433] flex flex-col gap-4 items-center">
-            <div className="bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-8 justify-between items-center rounded-lg p-6 h-full">
+        <div className="dark:bg-[#1e2433] flex flex-col gap-4 items-center justify-between h-full">
+
+            <div className="bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-8 justify-between items-center rounded-lg h-full w-full">
 
 
-                <div className="flex-1 flex items-center">
+                <div className="flex-1 flex items-end">
                     <div className="rounded-full h-fit bg-[#ece3e3] dark:bg-[#2a3142] p-7">
                         <FaTrashCan color="#751C0D" size={30} />
                     </div>
                 </div>
 
 
-                <div className="flex flex-col gap-3 text-center text-[#104e64] dark:text-[#e6dabb]">
+                <div className="flex-2 h-full flex flex-col text-center text-[#104e64] dark:text-[#e6dabb] justify-center gap-5">
                     <p className="text-xl font-semibold">Supprimer ce créneau ?</p>
                     <p className="text-red-900 dark:text-red-400">
                         Cette action est irréversible.
@@ -58,9 +59,11 @@ const DeleteMissionSlotView = ({ slot, eventId, onBack }: IDeleteMissionSlotView
                 </div>
 
                 <div className="flex items-center w-full gap-2">
-                    <button onClick={() => onBack()} className="flex-1 rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 cursor-pointer text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
+
+                    <button onClick={() => onBack()} className="flex-1 rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 cursor-pointer text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95 w-full">
                         Annuler
                     </button>
+
                     <button 
                     onClick={async () => {
                         try {
@@ -72,7 +75,7 @@ const DeleteMissionSlotView = ({ slot, eventId, onBack }: IDeleteMissionSlotView
                         }
                     }}
                     disabled={remove.isPending} 
-                    className="flex-1 px-3 py-2 rounded-xl font-semibold bg-red-900 text-white transition-transform active:scale-95">
+                    className="flex-1 px-3 py-2 rounded-xl font-semibold bg-red-900 text-white transition-transform active:scale-95 w-full">
                         {remove.isPending ? "Suppression..." : "Supprimer"}
                     </button>
                 </div>

@@ -1,17 +1,13 @@
 import { FaHome } from "react-icons/fa"
 import { FaListUl, FaRegUser } from "react-icons/fa6"
-import { IoMdInformationCircleOutline, IoMdSettings } from "react-icons/io"
 import { MdAppRegistration, MdEventAvailable, MdOutlineEvent } from "react-icons/md"
-import { useNavigate } from "react-router-dom"
-import { useAuthStore } from "../stores/authStore"
-import { PiSignOutBold } from "react-icons/pi"
 import { TiThMenu } from "react-icons/ti";
 import { Link } from "react-router-dom"
+import { useAuthStore } from "../../stores/authStore"
 
 const SideBar = () => {
 
-    const navigate = useNavigate()
-    const { clearAuth } = useAuthStore()
+    
     const { user } = useAuthStore()
 
     return (
@@ -61,29 +57,6 @@ const SideBar = () => {
                         </li>
 
 
-
-
-                        <li>
-                            <Link to={'/settings'}>
-                                <IoMdSettings size={20} /> Paramètres
-                            </Link>
-                        </li>
-                        <li>
-                            <a>
-                                <IoMdInformationCircleOutline size={20} /> A propos
-                            </a>
-                        </li>
-
-                        <li className="text-[#D4391C]">
-                            <Link
-                                to={'/'}
-                                onClick={() => {
-                                    clearAuth()
-                                    navigate("/")
-                                }}>
-                                <PiSignOutBold size={20} color="#D4391C" /> Se déconnecter
-                            </Link>
-                        </li>
                     </ul>
                 </div>
             </div>

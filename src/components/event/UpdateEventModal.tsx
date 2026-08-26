@@ -105,13 +105,15 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
 
     return (
         <dialog id="update_event_modal" className="modal">
-            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433]">
+            <div className="modal-box max-w-none rounded-none bg-[#e6dabb] w-full h-full md:w-120 md:h-150 md:rounded-xl overflow-y-scroll scrollbar-hide p-2 md:px-4 md:py-6 dark:bg-[#1e2433]">
 
-                <div className="flex items-center justify-end lg:hidden px-2">
+                <div className="flex items-center justify-end md:hidden px-2">
                     <button onClick={handleClose} className="btn btn-sm bg-transparent text-base btn-ghost text-[#104e64] dark:text-[#e6dabb] ">
                         Fermer
                     </button>
                 </div>
+
+
 
                 <div>
                     <form noValidate onSubmit={handleSubmit(async (data) => {
@@ -137,9 +139,10 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
                     },
                         (errors) => {
                             console.log("error", errors);
-                        })} className="w-full text-[#5f2040] dark:text-[#e6dabb]">
+                        })} className="w-full text-[#5f2040] dark:text-[#e6dabb] flex flex-col gap-4">
 
-                        <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 w-full">
+                        <fieldset className="fieldset flex flex-col gap-6 rounded-box p-4 w-full">
+
                             <legend className="fieldset-legend text-center text-2xl lg:text-3xl text-[#9b6581] dark:text-[#c48aaa]">Modifier cet évènement</legend>
 
                             <div className="flex flex-col gap-2">
@@ -149,12 +152,12 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
 
                             <div className="flex flex-col gap-2">
                                 <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Description</label>
-                                <textarea {...register("description")} className="bg-white dark:bg-[#2a3142] resize-none whitespace-pre-wrap rounded-xl input text-[#104e64] dark:text-[#e6dabb] w-full h-15 py-2" placeholder="Décrivez l'évènement">
+                                <textarea {...register("description")} className="bg-white dark:bg-[#2a3142] resize-none whitespace-pre-wrap rounded-xl input text-[#104e64] dark:text-[#e6dabb] w-full h-25 py-2" placeholder="Décrivez l'évènement">
                                 </textarea>
                                 {errors.description && <p className="text-red-800 dark:text-red-400 font-bold text-sm">{errors.description.message}</p>}
                             </div>
 
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-4">
                                 <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Catégorie</label>
 
                                 <div className="flex gap-2 justify-between items-center">
@@ -281,19 +284,23 @@ const UpdateEventModal = ({ event, onClose, onSuccess }: IEventDetailsProps) => 
 
                         </fieldset>
 
-                        <div className="flex justify-center item-center gap-3">
+                        <div className="flex justify-between item-center gap-3">
+
                             <button onClick={() => {
                                 (document.getElementById('update_event_modal') as HTMLDialogElement).close()
-                            }} className="rounded-xl px-3 py-2 border-2 border-zinc-400/30 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95 md:hidden">
+                            }} className="rounded-xl flex-1 px-3 py-2 border-2 border-zinc-400/30 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
                                 Annuler
                             </button>
 
-                            <div className="flex justify-center">
-                                <button type="submit" className="btn btn-neutral bg-[#9b6581] rounded-xl border-2 border-[#9b6581] w-fit">Modifier</button>
-                            </div>
+
+                            <button type="submit" className="btn btn-neutral bg-[#9b6581] flex-1 rounded-xl border-2 border-[#9b6581]">Modifier</button>
+
                         </div>
 
                     </form>
+
+
+
                 </div>
             </div>
 

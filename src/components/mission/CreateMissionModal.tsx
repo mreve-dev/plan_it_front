@@ -207,9 +207,9 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
 
         <dialog id="create_mission_modal" className="modal">
 
-            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-5">
+            <div className="modal-box h-full md:h-fit w-full max-w-none md:w-100 rounded-none md:rounded-xl bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col justify-between gap-8 py-8">
 
-                <div className="flex items-center justify-end lg:hidden px-2">
+                <div className="flex items-center justify-end md:hidden px-2">
                     <button onClick={handleClose} className="btn btn-sm bg-transparent text-base btn-ghost text-[#104e64] dark:text-[#e6dabb] ">
                         Fermer
                     </button>
@@ -217,7 +217,7 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
 
 
 
-                <div>
+                <div className="flex-1">
 
                     <form
                         noValidate
@@ -250,9 +250,9 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                             (errors) => {
                                 console.log("error", errors);
 
-                            })} className="w-full flex flex-col gap-3">
+                            })} className="w-full flex flex-col gap-6 justify-between h-full">
 
-                        <div className="flex items-center gap-2 mb-4 px-2">
+                        <div className="flex items-center gap-2 px-2">
                             {[1, 2, 3].map((s, i) => (
                                 <React.Fragment key={s}>
                                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0
@@ -272,7 +272,7 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                             ))}
                         </div>
 
-                        <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 text-[#9b6581] dark:text-[#c48aaa] w-full">
+                        <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 text-[#9b6581] dark:text-[#c48aaa] w-full h-full">
 
 
                             {step === 1 && (
@@ -504,7 +504,7 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                             )}
 
                             {step === 3 && (
-                                <React.Fragment>
+                                <div className="flex flex-col justify-start gap-5 h-full">
 
                                     <legend className="fieldset-legend text-center text-2xl text-[#9b6581] dark:text-[#c48aaa]">
                                         Choix des compétences
@@ -537,12 +537,12 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                                         </p>
                                     )}
 
-                                </React.Fragment>
+                                </div>
                             )}
 
                         </fieldset>
 
-                        <div className="flex justify-between px-4 pb-4">
+                        <div className="flex justify-between px-4">
                             {step > 1 ? (
                                 <button type="button" onClick={prevStep} className="btn rounded-xl border-[#b6b290] dark:border-[#3a4150] bg-[#c8c4a0] dark:bg-[#3a4150] text-[#104e64] dark:text-[#e6dabb]">
                                     <FaArrowLeft /> Retour

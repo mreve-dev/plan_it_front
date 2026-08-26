@@ -30,7 +30,7 @@ interface ICreateMissionSlotViewProps {
 
 // ce composant est le contenu affiché
 // quand le parent (MissionSlotsModal) bascule sur view === 'create'
-const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: ICreateMissionSlotViewProps) => {
+const CreateOrDuplicateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: ICreateMissionSlotViewProps) => {
 
     // ✅ nouveau : toggle entre mode manuel (1 créneau via le formulaire) et automatique (plusieurs créneaux générés)
     const [autoMode, setAutoMode] = useState(false)
@@ -84,7 +84,8 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
     const isDuplicate = !!initialValues
 
     return (
-        <>
+        <div className="flex flex-col gap-3 h-full">
+
             <h3 className="text-lg font-bold text-[#104e64] dark:text-[#e6dabb]">
                 {isDuplicate ? "Dupliquer un créneau" : "Ajouter un créneau"}
             </h3>
@@ -194,8 +195,9 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
                     } catch (error) {
                         console.log(`Erreur lors de la création du créneau:`, error);
                     }
-                })} className="flex flex-col gap-4">
-                    <div className="bg-[#d5d0b8] dark:bg-[#2a3142] rounded-xl p-3 flex flex-col gap-3">
+                })} className="flex flex-col gap-4 h-full justify-between">
+
+                    <div className="bg-[#d5d0b8] dark:bg-[#2a3142] rounded-xl p-5 flex flex-col gap-6">
 
 
                         <div className="flex flex-col gap-3">
@@ -228,12 +230,14 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
                             />
                         </div>
 
+
                         <div className="flex gap-2">
                             <div className="flex-1 flex flex-col gap-2">
                                 <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Début</label>
                                 <input {...register("start_hour")} type="time" className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
                                 {errors.start_hour && <p className="text-red-800 dark:text-red-400 text-xs">{errors.start_hour.message}</p>}
                             </div>
+
                             <div className="flex-1 flex flex-col gap-2">
                                 <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Fin</label>
                                 <input {...register("end_hour")} type="time" className="bg-white dark:bg-[#3a4150] border-2 border-[#dbd5b2] dark:border-[#4a5365] input rounded-xl w-full text-[#104e64] dark:text-[#e6dabb] scheme-light" />
@@ -252,6 +256,7 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
 
 
                     <div className="flex flex-col justify-center gap-3">
+
                         <button
                             type="submit"
                             disabled={create.isPending}
@@ -261,22 +266,21 @@ const CreateMissionSlotView = ({ missionId, eventId, onBack, initialValues }: IC
                                 : (isDuplicate ? "Dupliquer" : "Ajouter")}
                         </button>
 
+
+
                         <button
                             type="button"
                             onClick={onBack}
                             className="rounded-xl px-3 py-2 border-2 border-zinc-400/30 dark:border-zinc-600 text-[#104e64] dark:text-[#e6dabb] transition-transform active:scale-95">
                             Annuler
                         </button>
+
                     </div>
-
-
-
-
 
                 </form>
             )}
-        </>
+        </div>
     )
 }
 
-export default CreateMissionSlotView
+export default CreateOrDuplicateMissionSlotView

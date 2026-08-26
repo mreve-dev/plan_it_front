@@ -430,7 +430,7 @@ const AdminHomePage = () => {
             {/* Prochain evenement --------------------------------------------------------------------------------------------------------------------------------------- */}
 
 
-            <div className="flex-1 flex gap-2 justify-between flex-col bg-[#e6dabb] dark:bg-[#1e2433] text-[#104e64] dark:text-[#e6dabb] rounded-xl p-4 ">
+            <div className="flex-1 flex gap-3 justify-between flex-col bg-[#e6dabb] dark:bg-[#1e2433] text-[#104e64] dark:text-[#e6dabb] rounded-xl p-4 ">
 
               <h3 className="text-lg font-semibold">
                 Prochain Evènement :
@@ -439,7 +439,7 @@ const AdminHomePage = () => {
               {nextEvent ? (
                 <div
                   onClick={() => navigate(`/event/${nextEvent.id}`)}
-                  className={`flex flex-col border-l-4 ${getCategoryBorder(nextEvent.category.name)} px-2`}>
+                  className={`flex-1 flex flex-col justify-evenly border-l-4 ${getCategoryBorder(nextEvent.category.name)} px-2`}>
 
                   <p className="text-2xl text-[#9b6581] font-bold">
                     {nextEvent.name}
@@ -481,7 +481,7 @@ const AdminHomePage = () => {
 
                   </div>
 
-                  <div className="border-t-2 py-2 border-t-black/10 dark:border-t-white/10">
+                  <div className="border-t-2 flex flex-col gap-2 justify-between py-2 border-t-black/10 dark:border-t-white/10">
                     <p>
                       Bénévoles inscrits :
                     </p>
@@ -554,7 +554,7 @@ const AdminHomePage = () => {
 
 
 
-            <div className="flex-1 bg-[#e6dabb] dark:bg-[#1e2433] text-[#104e64] dark:text-[#e6dabb] rounded-2xl p-4">
+            <div className="flex-1 flex flex-col bg-[#e6dabb] dark:bg-[#1e2433] text-[#104e64] dark:text-[#e6dabb] rounded-2xl p-4">
               <h3 className="text-lg font-semibold text-[#104e64] dark:text-[#e6dabb] mb-3">
                 Missions
               </h3>
@@ -596,9 +596,13 @@ const AdminHomePage = () => {
                   </Link>
                 )
                 : (
-                  <p className="text-xs text-[#5a7070] dark:text-[#a0a8a8] text-center">
-                    Aucune mission pour cet évènement
-                  </p>
+                  <div className="flex-1 flex items-center justify-center">
+                    <p className="text-xs text-[#5a7070] dark:text-[#a0a8a8] text-center">
+                      Aucune mission pour cet évènement
+                    </p>
+
+                  </div>
+
                 )}
             </div>
 

@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthStore>()(
             user: null,
             accessToken: null,
             sidebarPosition: 'left',
-            theme: 'light',
+            theme: 'system',
 
             login: (user, token) =>
                 set({

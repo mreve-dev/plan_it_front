@@ -50,13 +50,6 @@ function App() {
           </Route>
         </Route>
 
-        {/* Routes réservées aux admins uniquement
-          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-            <Route element={<PrivateLayout />}>
-            </Route>
-          </Route>
-        */}
-
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

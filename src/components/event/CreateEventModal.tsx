@@ -9,6 +9,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createCategory, getCategories } from "../../services/api/category";
 import type { ICategory } from "../../types/event.type";
 import { useAuthStore } from "../../stores/authStore";
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 const createEventSchema = z.object({
     name: z.string().min(1, "Le nom est requis"),
@@ -58,212 +59,231 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
     })
 
 
+    const handleClose = () => {
+        (document.getElementById('create_event_modal') as HTMLDialogElement).close()
+    }
+
 
     return (
-        <div>
-            <form noValidate onSubmit={handleSubmit(async (data) => {
 
-                console.log("✅ data", data)
+        <dialog id="create_event_modal" className="modal">
+            <div className="modal-box max-w-none flex flex-col gap-2 bg-[#e6dabb] dark:bg-[#1e2433] w-full md:w-150 md:h-160 md:rounded-xl rounded-none scrollbar-hide">
 
-                const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
-
-                await createEvent(api, data.name, data.description, categoryId, data.start_date, data.end_date, data.start_hour, data.end_hour, data.location, user!.id);
-                queryClient.invalidateQueries({ queryKey: ['events'] });
-                reset(),
-
-                    (document.getElementById('event_modal') as HTMLDialogElement).close()
-                onSuccess?.()
-                onClose()
-            },
-                (errors) => {
-                    console.log("error", errors);
-
-                })} className="w-full">
-
-                <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 w-full">
-                    <legend className="fieldset-legend text-2xl text-cyan-900 dark:text-[#e6dabb]">Créer un évènement</legend>
+                <button onClick={handleClose} className="btn btn-sm btn-circle btn-ghost w-full flex justify-end text-[#104e64] dark:text-[#e6dabb] md:hidden">
+                    <IoCloseCircleOutline size={30} />
+                </button>
 
 
-                    <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Nom de l'évènement</label>
-                        <input {...register("name")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full" placeholder="Ex: tournoi départemental" />
-                    </div>
+                <form noValidate onSubmit={handleSubmit(async (data) => {
+
+                    console.log("✅ data", data)
+
+                    const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
+
+                    await createEvent(api, data.name, data.description, categoryId, data.start_date, data.end_date, data.start_hour, data.end_hour, data.location, user!.id);
+                    queryClient.invalidateQueries({ queryKey: ['events'] });
+                    reset(),
+
+                        (document.getElementById('event_modal') as HTMLDialogElement).close()
+                    onSuccess?.()
+                    onClose()
+                },
+                    (errors) => {
+                        console.log("error", errors);
+
+                    })} className="w-full p-3 flex flex-col gap-3">
+
+                    <fieldset className="fieldset flex flex-col gap-4 rounded-box p-4 w-full">
+                        <legend className="fieldset-legend text-2xl text-cyan-900 dark:text-[#e6dabb]">Créer un évènement</legend>
+
+
+                        <div className="flex flex-col gap-2">
+                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Nom de l'évènement</label>
+                            <input {...register("name")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full" placeholder="Ex: tournoi départemental" />
+                        </div>
 
 
 
-                    <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Description</label>
-                        <textarea {...register("description")} className="bg-white dark:bg-[#2a3142] resize-none whitespace-pre-wrap rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full h-15 py-2" placeholder="Décrivez l'évènement" >
-                        </textarea>
-                        {errors.description && <p className="text-red-800 font-bold text-sm">{errors.description.message}</p>}
-                    </div>
+                        <div className="flex flex-col gap-2">
+                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Description</label>
+                            <textarea {...register("description")} className="bg-white dark:bg-[#2a3142] resize-none whitespace-pre-wrap rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full h-15 py-2" placeholder="Décrivez l'évènement" >
+                            </textarea>
+                            {errors.description && <p className="text-red-800 font-bold text-sm">{errors.description.message}</p>}
+                        </div>
 
 
-                    <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Catégorie</label>
-                        <select {...register("categoryId")}
-                            onChange={(e) => {
-                                if (e.target.value === "new") {
-                                    setShowNewCategory(true)
-                                } else {
-                                    setShowNewCategory(false)
-                                }
-                                register("categoryId").onChange(e)
-                            }}
-                            defaultValue="Sélectionner une catégorie" className="select bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black/50 dark:text-[#e6dabb]/50 w-full">
-                            <option disabled={true} className="text-[#e6e3e3d7]">Sélectionner une catégorie</option>
-                            {categories?.map((cat) => (
-                                <option key={cat.id} value={cat.id} className="text-[#9b6581] font-semibold">{cat.name}</option>
-                            ))}
-                        </select>
-
-                        {!showNewCategory ? (
-                            <div className="flex justify-center">
-                                <button type="button" onClick={() => {
-                                    setShowNewCategory(true)
+                        <div className="flex flex-col gap-2">
+                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Catégorie</label>
+                            <select {...register("categoryId")}
+                                onChange={(e) => {
+                                    if (e.target.value === "new") {
+                                        setShowNewCategory(true)
+                                    } else {
+                                        setShowNewCategory(false)
+                                    }
+                                    register("categoryId").onChange(e)
                                 }}
-                                    className="text-white bg-[#9b6581] btn btn-neutral border-none w-50 text-xs  self-start hover:underline">
-                                    ＋ Nouvelle catégorie
-                                </button>
+                                defaultValue="Sélectionner une catégorie" className="select bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black/50 dark:text-[#e6dabb]/50 w-full">
+                                <option disabled={true} className="text-[#e6e3e3d7]">Sélectionner une catégorie</option>
+                                {categories?.map((cat) => (
+                                    <option key={cat.id} value={cat.id} className="text-[#9b6581] font-semibold">{cat.name}</option>
+                                ))}
+                            </select>
+
+                            {!showNewCategory ? (
+                                <div className="flex justify-center">
+                                    <button type="button" onClick={() => {
+                                        setShowNewCategory(true)
+                                    }}
+                                        className="text-white bg-[#9b6581] btn btn-neutral border-none w-50 text-xs  self-start hover:underline">
+                                        ＋ Nouvelle catégorie
+                                    </button>
 
 
-                            </div>
+                                </div>
 
-                        ) : (
-                            <div className="flex gap-2 items-center">
+                            ) : (
+                                <div className="flex gap-2 items-center">
 
-                                <input
-                                    type="text"
-                                    value={newCategoryName}
-                                    onChange={(e) => setNewCategoryName(e.target.value)}
-                                    className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full "
-                                    placeholder="Nom de la nouvelle catégorie"
+                                    <input
+                                        type="text"
+                                        value={newCategoryName}
+                                        onChange={(e) => setNewCategoryName(e.target.value)}
+                                        className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full "
+                                        placeholder="Nom de la nouvelle catégorie"
+                                    />
+
+                                    <button type="button"
+                                        onClick={() => setShowNewCategory(false)}
+                                        className="btn bg-[#104e64] dark:bg-[#4f9288] text-white rounded-xl px-4">
+                                        ✕
+                                    </button>
+
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex items-center gap-3 w-full">
+                            <div className="flex flex-col gap-2 w-full">
+                                <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date de début</label>
+
+                                <Controller
+                                    name="start_date"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <>
+                                            <button
+                                                type="button"
+                                                popoverTarget="rdp-popover-start-date"
+                                                className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
+                                                style={{ anchorName: "--rdp" } as React.CSSProperties}>
+                                                {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
+
+                                            </button>
+
+                                            <div popover="auto" id="rdp-popover-start-date" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
+                                                <DayPicker
+                                                    className="react-day-picker"
+                                                    mode="single"
+                                                    selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
+                                                    onSelect={(date) => {
+                                                        field.onChange(date?.toISOString())
+                                                        document.getElementById('rdp-popover-start-date')?.hidePopover()
+                                                    }}
+                                                />
+                                            </div>
+                                        </>
+                                    )}
                                 />
 
-                                <button type="button"
-                                    onClick={() => setShowNewCategory(false)}
-                                    className="btn bg-[#104e64] dark:bg-[#4f9288] text-white rounded-xl px-4">
-                                    ✕
-                                </button>
 
                             </div>
-                        )}
-                    </div>
 
-                    <div className="flex items-center gap-3 w-full">
-                        <div className="flex flex-col gap-2 w-full">
-                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date de début</label>
+                            <div className="flex flex-col gap-2 w-full">
+                                <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date de fin</label>
 
-                            <Controller
-                                name="start_date"
-                                control={control}
-                                render={({ field }) => (
-                                    <>
-                                        <button
-                                            type="button"
-                                            popoverTarget="rdp-popover-start-date"
-                                            className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
-                                            style={{ anchorName: "--rdp" } as React.CSSProperties}>
-                                            {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
+                                <Controller
+                                    name="end_date"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <>
+                                            <button
+                                                type="button"
+                                                popoverTarget="rdp-popover-end-date"
+                                                className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
+                                                style={{ anchorName: "--rdp" } as React.CSSProperties}>
+                                                {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
 
-                                        </button>
+                                            </button>
 
-                                        <div popover="auto" id="rdp-popover-start-date" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
-                                            <DayPicker
-                                                className="react-day-picker"
-                                                mode="single"
-                                                selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
-                                                onSelect={(date) => {
-                                                    field.onChange(date?.toISOString())
-                                                    document.getElementById('rdp-popover-start-date')?.hidePopover()
-                                                }}
-                                            />
-                                        </div>
-                                    </>
-                                )}
-                            />
+                                            <div popover="auto" id="rdp-popover-end-date" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
+                                                <DayPicker
+                                                    className="react-day-picker"
+                                                    mode="single"
+                                                    selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
+                                                    onSelect={(date) => {
+                                                        field.onChange(date?.toISOString())
+                                                        document.getElementById('rdp-popover-end-date')?.hidePopover()
+                                                    }}
+                                                />
+                                            </div>
+                                        </>
+                                    )}
+                                />
 
 
+                            </div>
                         </div>
 
-                        <div className="flex flex-col gap-2 w-full">
-                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Date de fin</label>
-
-                            <Controller
-                                name="end_date"
-                                control={control}
-                                render={({ field }) => (
-                                    <>
-                                        <button
-                                            type="button"
-                                            popoverTarget="rdp-popover-end-date"
-                                            className={`bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full py-2 ${field.value ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`}`}
-                                            style={{ anchorName: "--rdp" } as React.CSSProperties}>
-                                            {field.value ? new Date(field.value).toLocaleDateString('fr-FR') : "jj/mm/aaaa"}
-
-                                        </button>
-
-                                        <div popover="auto" id="rdp-popover-end-date" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
-                                            <DayPicker
-                                                className="react-day-picker"
-                                                mode="single"
-                                                selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
-                                                onSelect={(date) => {
-                                                    field.onChange(date?.toISOString())
-                                                    document.getElementById('rdp-popover-end-date')?.hidePopover()
-                                                }}
-                                            />
-                                        </div>
-                                    </>
-                                )}
-                            />
-
-
-                        </div>
-                    </div>
 
 
 
-
-                    <div className="flex justify-between gap-3">
-                        <div className="w-full flex flex-col gap-2">
-                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de début</label>
-                            <input {...register('start_hour')} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
-
-
-                        </div>
-
-                        <div className="w-full flex flex-col gap-2">
+                        <div className="flex justify-between gap-3">
                             <div className="w-full flex flex-col gap-2">
-                                <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de fin</label>
-                                <input {...register("end_hour")} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
+                                <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de début</label>
+                                <input {...register('start_hour')} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
+
 
                             </div>
-                            {errors.end_hour && <p className="text-red-800 font-bold text-sm">{errors.end_hour.message}</p>}
+
+                            <div className="w-full flex flex-col gap-2">
+                                <div className="w-full flex flex-col gap-2">
+                                    <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de fin</label>
+                                    <input {...register("end_hour")} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
+
+                                </div>
+                                {errors.end_hour && <p className="text-red-800 font-bold text-sm">{errors.end_hour.message}</p>}
+
+                            </div>
 
                         </div>
 
+                        <div className="flex flex-col gap-2">
+                            <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Lieu</label>
+                            <input {...register("location")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full" placeholder="Ex: Gymnase Leclerc" />
+                            {errors.location && <p className="text-red-800 font-bold text-sm">{errors.location.message}</p>}
+                        </div>
+
+
+                    </fieldset>
+
+                    <div className="flex justify-center">
+                        <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-fit"
+                        >Enregistrer</button>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Lieu</label>
-                        <input {...register("location")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full" placeholder="Ex: Gymnase Leclerc" />
-                        {errors.location && <p className="text-red-800 font-bold text-sm">{errors.location.message}</p>}
-                    </div>
 
 
-                </fieldset>
-
-                <div className="flex justify-center">
-                    <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-fit"
-                    >Enregistrer</button>
-                </div>
+                </form>
 
 
 
+            </div>
+
+            <form method="dialog" className="modal-backdrop">
+                <button className="text-cyan-700"></button>
             </form>
-
-        </div>
+        </dialog>
 
     )
 }

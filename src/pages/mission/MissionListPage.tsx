@@ -29,7 +29,7 @@ const MissionListPage = () => {
 
 
     return (
-        <div className="h-full py-4 pl-4 bg-[#ecece6] dark:bg-[#161b27] flex-1 flex flex-col gap-5">
+        <div className="h-full py-4 px-4 bg-[#ecece6] dark:bg-[#161b27] flex-1 flex flex-col gap-5">
 
             {eventPast && (
                 <div className="flex flex-col gap-1 text-center rounded-xl p-3 shrink-0
@@ -41,7 +41,7 @@ const MissionListPage = () => {
                 </div>
             )}
 
-            <div className="flex items-center justify-between pr-2">
+            <div className="flex items-center justify-between ">
                 <Link to={`/event/${id}`} className="flex items-center gap-2 font-semibold text-[#104e64] dark:text-[#e6dabb] shrink-0">
                     <FaArrowLeft size={12} /> Retour à l'évènement
                 </Link>

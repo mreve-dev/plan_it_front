@@ -11,10 +11,8 @@ import UpdateEventModal from "../../components/event/UpdateEventModal"
 import CreateMissionModal from "../../components/mission/CreateMissionModal"
 import { useAuthStore } from "../../stores/authStore"
 import { useGetOneEvent } from "../../hook/mutation/use-event.service"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { isEventPast } from "../../utils/EventPastDisableFunction";
-import { getOneMission } from "../../services/api/mission";
-import { useApi } from "../../hook/useApi";
 
 
 
@@ -95,7 +93,7 @@ const EventDetailPage = () => {
                             </button>
 
                             <dialog id="stats_modal" className="modal xl:hidden">
-                                <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-5">
+                                <div className="modal-box bg-[#e6dabb] h-full w-full max-w-none rounded-none md:w-120 md:h-80 md:rounded-xl dark:bg-[#1e2433] flex flex-col justify-between  gap-5">
 
                                     <div>
                                         <h3 className="text-lg font-bold text-[#104e64] dark:text-[#e6dabb] mb-4">Statistiques</h3>
@@ -116,10 +114,12 @@ const EventDetailPage = () => {
                                     <div className="flex justify-center">
                                         <button
                                             onClick={() => (document.getElementById('stats_modal') as HTMLDialogElement).close()}
-                                            className="btn btn-sm w-fit bg-[#104e64] text-white rounded-xl border-none lg:hidden shadow-sm shadow-black/20 dark:shadow-black/40">
+                                            className="btn btn-sm w-fit bg-[#104e64] text-white rounded-xl border-none text-lg px-7 py-5 lg:hidden shadow-sm shadow-black/20 dark:shadow-black/40">
                                             Fermer
                                         </button>
                                     </div>
+
+
                                 </div>
                                 <form method="dialog" className="modal-backdrop">
                                     <button></button>
@@ -135,7 +135,7 @@ const EventDetailPage = () => {
                             </button>
 
                             <dialog id="docs_modal" className="modal">
-                                <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col gap-5">
+                                <div className="modal-box h-full w-full max-w-none md:h-80 md:w-100 rounded-none md:rounded-xl bg-[#e6dabb] dark:bg-[#1e2433] flex flex-col justify-between gap-5">
                                     <h3 className="text-lg font-bold text-[#104e64] dark:text-[#e6dabb] mb-4">Documents</h3>
                                     {event.eventHasDocument.length > 0 ? (
                                         <div className="flex flex-col gap-2">
@@ -152,7 +152,7 @@ const EventDetailPage = () => {
                                     <div className="flex justify-center">
                                         <button
                                             onClick={() => (document.getElementById('docs_modal') as HTMLDialogElement).close()}
-                                            className="btn btn-sm cursor-pointer w-fit bg-[#104e64] text-white border-none mt-3 lg:hidden shadow-sm shadow-black/20 dark:shadow-black/40">
+                                            className="btn btn-sm cursor-pointer w-fit bg-[#104e64] text-white border-none text-base px-7 py-5 mt-3 lg:hidden shadow-sm shadow-black/20 dark:shadow-black/40">
                                             Fermer
                                         </button>
                                     </div>
@@ -185,7 +185,7 @@ const EventDetailPage = () => {
 
                                 {isAdmin && (
                                     <div className="flex items-center justify-center gap-3">
-                                        <button onClick={() => (document.getElementById('update_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center  p-2 w-10 md:w-40 h-10 text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95 shadow-sm shadow-black/20 dark:shadow-black/40">
+                                        <button onClick={() => (document.getElementById('update_event_modal') as HTMLDialogElement).showModal()} className="flex items-center justify-center  p-2 w-10 md:w-40 h-10 text-white gap-2 rounded-xl bg-[#4f9288] transition-transform active:scale-95 shadow-sm shadow-black/20 dark:shadow-black/40">
                                             <FaPenToSquare />
                                             <p className="hidden md:block">Modifier</p>
                                         </button>

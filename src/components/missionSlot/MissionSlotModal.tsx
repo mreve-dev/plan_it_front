@@ -1,9 +1,9 @@
 import { useState } from "react"
 import type { IMission, IMissionSlot } from "../../types/mission.type"
 import ManageSlotView from "./ManageSlotView"
-import CreateMissionSlotView from "./CreateMissionSlotView"
 import UpdateMissionSlotView from "./UpdateMissionSlotView"
 import DeleteMissionSlotView from "./DeleteMissionSlotView"
+import CreateOrDuplicateMissionSlotView from "./CreateOrDuplicateMissionSlotView"
 
 interface IMissionSlotsModalProps {
     mission: IMission
@@ -54,7 +54,7 @@ const MissionSlotsModal = ({ mission, eventId, isEventPast, onClose }: IMissionS
 
     return (
         <dialog id={`mission_slots_modal_${mission.id}`} className="modal">
-            <div className="modal-box bg-[#e6dabb] dark:bg-[#1e2433] p-4 flex flex-col gap-8">
+            <div className="modal-box max-w-none w-full h-full rounded-none md:w-120 md:h-fit md:rounded-xl bg-[#e6dabb] dark:bg-[#1e2433] p-7 flex flex-col gap-8">
 
                 {view === 'manage' ? (
                     <ManageSlotView
@@ -73,7 +73,7 @@ const MissionSlotsModal = ({ mission, eventId, isEventPast, onClose }: IMissionS
                         onClose={handleClose}
                     />
                 ) : view === 'create' ? (
-                    <CreateMissionSlotView
+                    <CreateOrDuplicateMissionSlotView
                         missionId={mission.id}
                         eventId={eventId}
                         initialValues={duplicateValues ?? undefined}
@@ -104,8 +104,9 @@ const MissionSlotsModal = ({ mission, eventId, isEventPast, onClose }: IMissionS
             </div>
 
             <form method="dialog" className="modal-backdrop">
-                <button></button>
+                <button onClick={handleClose}></button>
             </form>
+            
         </dialog>
     )
 }

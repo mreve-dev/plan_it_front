@@ -28,7 +28,7 @@ const ProfileDetailsPage = () => {
   if (isError) return <p>Impossible de charger le profil.</p>
 
   return (
-    <div className="bg-[#ecece6] dark:bg-[#161b27] flex flex-col items-center h-full p-5 gap-5 overflow-y-auto text-xl">
+    <div className="bg-[#ecece6] dark:bg-[#161b27] flex flex-col items-center h-full p-5 gap-5 overflow-y-auto text-base">
 
       <div className="flex flex-col items-center gap-4 bg-[#e6dabb] dark:bg-[#1e2433] w-full rounded-xl py-6">
 
@@ -46,7 +46,9 @@ const ProfileDetailsPage = () => {
           {user.role}
         </span>
 
-        <button className="flex items-center gap-2 rounded-xl px-6 py-3 my-2 bg-[#9b6581] text-white">
+        <button
+        onClick={() => navigate('/profile/edit')}
+        className="flex items-center gap-2 rounded-xl px-6 py-3 my-2 bg-[#9b6581] text-white">
           <FaPenToSquare /> Modifier mon profil
         </button>
 
@@ -93,7 +95,7 @@ const ProfileDetailsPage = () => {
 
           <div className="flex flex-wrap gap-3 justify-center items-center">
             {user.userHasSkills.map((hs) => (
-              <span key={hs.skillId} className="bg-[#ecece6] dark:bg-[#2a3547] text-[#104e64] dark:text-[#e6dabb] font-semibold rounded-full text-lg px-3 py-2">
+              <span key={hs.skillId} className="bg-[#ecece6] dark:bg-[#2a3547] text-[#104e64] dark:text-[#e6dabb] font-semibold rounded-full px-3 py-2">
                 {hs.skill.name}
               </span>
             ))}
@@ -105,20 +107,20 @@ const ProfileDetailsPage = () => {
 
 
 
-      <ul className="bg-[#e6dabb] dark:bg-[#1e2433] w-full rounded-xl text-2xl text-cyan-900 dark:text-[#e6dabb] font-semibold flex flex-col self-start px-5 py-3 gap-3 lg:hidden">
+      <ul className="bg-[#e6dabb] dark:bg-[#1e2433] w-full rounded-xl text-lg text-cyan-900 dark:text-[#e6dabb] font-semibold flex flex-col self-start px-5 py-3 gap-3 lg:hidden">
 
 
 
         <li >
           <Link
             to={'/settings'}
-            className="flex items-center gap-5 py-3">
+            className="flex items-center gap-5 py-2">
             <IoMdSettings size={25} /> Paramètres
           </Link>
         </li>
 
 
-        <li className="border-y-2 py-6">
+        <li className="border-y-2 py-4">
           <a className="flex items-center gap-5">
             <IoMdInformationCircleOutline size={25} /> A propos
           </a>
@@ -131,7 +133,7 @@ const ProfileDetailsPage = () => {
             clearAuth()
             navigate("/")
           }}
-          className="flex items-center gap-5 py-3">
+          className="flex items-center gap-5 py-2">
             <PiSignOutBold size={25} color="#D4391C" /> Se déconnecter
           </a>
         </li>

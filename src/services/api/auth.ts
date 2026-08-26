@@ -14,12 +14,12 @@ export const loginUser = async (email: string, password: string) => {
         password
     })
 
-    return response.data
+    return response.data.data
 }
 
 export const refreshToken = async () => {
     const response = await publicApi.post(`/auth/refresh`, {})
-    return response.data
+    return response.data.data
 }
 
 export const forgotPassword = async (email: string) => {

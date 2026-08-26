@@ -47,12 +47,12 @@ const LoginPage = () => {
 
           const token = await loginUser(data.email, data.password)
 
-          useAuthStore.getState().setAccessToken(token.data.accessToken)
+          useAuthStore.getState().setAccessToken(token.accessToken)
 
           const userData = await getMe(api)
 
           if (userData) {
-            login(userData, token.data.accessToken)
+            login(userData, token.accessToken)
 
             if (userData.mustChangePassword || !userData.isOnboarded) {
               navigate("/onboarding")

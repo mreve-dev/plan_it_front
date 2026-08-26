@@ -46,7 +46,9 @@ const UpdateMissionSlotView = ({ slot, eventId, onBack }: IUpdateMissionSlotView
     const registeredCount = slot.userHasMissions?.length ?? 0
 
     return (
-        <>
+        <div className="flex flex-col gap-6 h-full">
+
+
             <h3 className="text-lg font-bold text-[#104e64] dark:text-[#e6dabb]">
                 Modifier le créneau
             </h3>
@@ -66,7 +68,7 @@ const UpdateMissionSlotView = ({ slot, eventId, onBack }: IUpdateMissionSlotView
                 } catch (error) {
                     console.log(`Erreur lors de la modification du créneau:`, error);
                 }
-            })} className="flex flex-col gap-4 ">
+            })} className="flex flex-col gap-4 justify-between h-full">
 
                 <div className="flex flex-col gap-3 bg-[#d5d0b8] dark:bg-[#2a3142] p-4 rounded-xl">
 
@@ -140,7 +142,7 @@ const UpdateMissionSlotView = ({ slot, eventId, onBack }: IUpdateMissionSlotView
                 </div>
 
             </form>
-        </>
+        </div>
     )
 }
 
