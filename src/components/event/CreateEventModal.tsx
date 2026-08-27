@@ -67,7 +67,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
         <dialog id="create_event_modal" className="modal">
             
-            <div className="modal-box max-w-none flex flex-col gap-2 bg-[#e6dabb] dark:bg-[#1e2433] w-full md:w-150 md:h-180 md:rounded-xl rounded-none scrollbar-hide">
+            <div className="modal-box max-w-none gap-2 bg-[#e6dabb] dark:bg-[#1e2433] w-full h-full md:w-150 md:max-h-130 md:rounded-xl rounded-none scrollbar-hide">
 
 
 
@@ -89,7 +89,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                     (errors) => {
                         console.log("error", errors);
 
-                    })} className="w-full p-3 flex flex-col justify-between h-fit gap-3">
+                    })} className="w-full p-3 flex flex-col justify-between">
 
                     <fieldset className="fieldset flex flex-col justify-evenly h-fit gap-5 rounded-box p-4 w-full">
 
@@ -275,9 +275,6 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                             Annuler
                         </button>
                     </div>
-
-
-
                 </form>
 
 

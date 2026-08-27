@@ -13,7 +13,7 @@ const VolunteersPage = () => {
 
 
 
-  
+
 
   const api = useApi()
   const queryClient = useQueryClient()
@@ -34,6 +34,7 @@ const VolunteersPage = () => {
   if (isLoading) return <p className="text-black dark:text-white text-2xl">Chargement...</p>
 
 
+  const adminCount = users?.filter(u => u.role === 'admin').length ?? 0
 
 
 
@@ -48,7 +49,7 @@ const VolunteersPage = () => {
       {isAdmin && (
         <div>
           <button
-            className="btn text-left flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#1e2433] font-bold"
+            className="btn text-base flex items-center bg-[#e6dabb] gap-2 w-fit rounded-xl cursor-pointer text-[#9b6581] dark:text-[#1e2433] font-bold"
             onClick={() => (document.getElementById('register_modal') as HTMLDialogElement).showModal()}>Créer un utilisateur</button>
 
           <RegisterForm onSuccess={refreshUsers} />
@@ -63,6 +64,7 @@ const VolunteersPage = () => {
         {isAdmin && selectedUser && (
           <VolunteerDetailsModal
             user={selectedUser}
+            adminCount={adminCount}
             onClose={() => setSelectedUser(null)}
             onDelete={refreshUsers} />
         )}
@@ -125,11 +127,11 @@ const VolunteersPage = () => {
                   ) : (
                     <div className="w-full">
                       <span className="bg-[#f0e6c8] dark:bg-[#524925] h-fit font-semibold text-[#8a6a20] dark:text-[#ebc763] flex items-center gap-2 rounded-full px-3 py-2 w-fit">
-                      <GiSandsOfTime /> En attente d'onboarding
-                    </span>
+                        <GiSandsOfTime /> En attente d'onboarding
+                      </span>
 
                     </div>
-                    
+
                   )}
                 </div>
 
