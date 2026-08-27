@@ -9,7 +9,7 @@ const publicApi = axios.create({
 
 export const loginUser = async (email: string, password: string) => {
 
-    const response = await publicApi.post(`/auth/login`, {
+    const response = await publicApi.post(`/authentification/login`, {
         email,
         password
     })
@@ -18,12 +18,12 @@ export const loginUser = async (email: string, password: string) => {
 }
 
 export const refreshToken = async () => {
-    const response = await publicApi.post(`/auth/refresh`, {})
+    const response = await publicApi.post(`/authentification/refresh`, {})
     return response.data.data
 }
 
 export const forgotPassword = async (email: string) => {
-    const response = await publicApi.post(`/auth/forgot-password`, {
+    const response = await publicApi.post(`/authentification/forgot-password`, {
         email
     })
 
@@ -31,7 +31,7 @@ export const forgotPassword = async (email: string) => {
 }
 
 export const resetPassword = async (token: string, newPassword: string) => {
-    const response = await publicApi.post(`/auth/reset-password`, {
+    const response = await publicApi.post(`/authentification/reset-password`, {
         token,
         newPassword
     })
@@ -40,7 +40,7 @@ export const resetPassword = async (token: string, newPassword: string) => {
 }
 
 export const signup = async (api: AxiosInstance, lastname: string, firstname: string, email: string, password: string, role: string) => {
-    const response = await api.post(`/auth/signup`, {
+    const response = await api.post(`/authentification/signup`, {
         firstname,
         lastname,
         email,
@@ -52,7 +52,7 @@ export const signup = async (api: AxiosInstance, lastname: string, firstname: st
 }
 
 export const changePassword = async (api: AxiosInstance, password: string, newpassword: string) => {
-    const response = await api.patch(`/auth/newpassword`,
+    const response = await api.patch(`/authentification/newpassword`,
         {
             password, newpassword
         })// headers: envoyer le token dans le header de la requête pour mettre à jour le token automatiquement. C'est le authguard qui lit ce token et extrait l'id de l'utilisateur du token
@@ -62,7 +62,7 @@ export const changePassword = async (api: AxiosInstance, password: string, newpa
 
 // Pour axios : .post(`url`, {}: pour le body, {}: config header)
 export const logout = async (api: AxiosInstance) => {
-    const response = await api.post(`/auth/logout`, {})
+    const response = await api.post(`/authentification/logout`, {})
     return response.data
 }
 
