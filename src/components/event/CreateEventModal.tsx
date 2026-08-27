@@ -52,8 +52,9 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
     const [showNewCategory, setShowNewCategory] = useState(false)
     const [newCategoryName, setNewCategoryName] = useState("")
+    const [newCategoryError, setNewCategoryError] = useState<string | null>(null)
 
-    const { register, handleSubmit, reset, control, watch, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, control, watch, getValues, trigger, formState: { errors } } = useForm({
         resolver: zodResolver(createEventSchema)
     })
 
@@ -62,34 +63,50 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
         (document.getElementById('create_event_modal') as HTMLDialogElement).close()
     }
 
+    const submitEvent = async (categoryId: number) => {
+        const data = getValues()
+
+        await createEvent(api, data.name, data.description, categoryId, data.start_date, data.end_date, data.start_hour, data.end_hour, data.location, user!.id);
+        queryClient.invalidateQueries({ queryKey: ['events'] });
+        reset()
+        handleClose()
+        onSuccess?.()
+        onClose()
+    }
+
+    const onSubmitExistingCategory = handleSubmit(async (data) => {
+        await submitEvent(data.categoryId)
+    })
+
+    const onSubmitNewCategory = async () => {
+
+        if (!newCategoryName.trim()) {
+            setNewCategoryError("Le nom de la catégorie est requis")
+            return
+        }
+        setNewCategoryError(null)
+
+        const isValid = await trigger(["name", "description", "start_date", "end_date", "start_hour", "end_hour", "location"])
+        if (!isValid) return
+
+        const newCategory = await createCategory(api, newCategoryName)
+        await submitEvent(newCategory.id)
+    }
 
     return (
 
         <dialog id="create_event_modal" className="modal">
-            
+
             <div className="modal-box max-w-none gap-2 bg-[#e6dabb] dark:bg-[#1e2433] w-full h-full md:w-150 md:max-h-130 md:rounded-xl rounded-none scrollbar-hide">
 
-
-
-
-                <form noValidate onSubmit={handleSubmit(async (data) => {
-
-            
-
-                    const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
-
-                    await createEvent(api, data.name, data.description, categoryId, data.start_date, data.end_date, data.start_hour, data.end_hour, data.location, user!.id);
-                    queryClient.invalidateQueries({ queryKey: ['events'] });
-                    reset(),
-
-                        (document.getElementById('event_modal') as HTMLDialogElement).close()
-                    onSuccess?.()
-                    onClose()
-                },
-                    (errors) => {
-                        console.log("error", errors);
-
-                    })} className="w-full p-3 flex flex-col justify-between">
+                <form noValidate onSubmit={(e) => {
+                    e.preventDefault()
+                    if (showNewCategory) {
+                        onSubmitNewCategory()
+                    } else {
+                        onSubmitExistingCategory()
+                    }
+                }} className="w-full p-3 flex flex-col justify-between">
 
                     <fieldset className="fieldset flex flex-col justify-evenly h-fit gap-5 rounded-box p-4 w-full">
 
@@ -99,6 +116,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                         <div className="flex flex-col gap-2">
                             <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Nom de l'évènement</label>
                             <input {...register("name")} type="text" className="bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black dark:text-[#e6dabb] w-full" placeholder="Ex: tournoi départemental" />
+                            {errors.name && <p className="text-red-800 font-bold text-sm">{errors.name.message}</p>}
                         </div>
 
 
@@ -113,34 +131,27 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
                         <div className="flex flex-col gap-2">
                             <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Catégorie</label>
-                            <select {...register("categoryId")}
-                                onChange={(e) => {
-                                    if (e.target.value === "new") {
-                                        setShowNewCategory(true)
-                                    } else {
-                                        setShowNewCategory(false)
-                                    }
-                                    register("categoryId").onChange(e)
-                                }}
-                                defaultValue="Sélectionner une catégorie" className="select bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black/50 dark:text-[#e6dabb]/50 w-full">
-                                <option disabled={true} className="text-[#e6e3e3d7]">Sélectionner une catégorie</option>
-                                {categories?.map((cat) => (
-                                    <option key={cat.id} value={cat.id} className="text-[#9b6581] font-semibold">{cat.name}</option>
-                                ))}
-                            </select>
 
                             {!showNewCategory ? (
-                                <div className="flex justify-center py-3">
-                                    <button type="button" onClick={() => {
-                                        setShowNewCategory(true)
-                                    }}
-                                        className="text-white bg-[#9b6581] btn btn-neutral border-none w-50 text-xs  self-start hover:underline">
-                                        ＋ Nouvelle catégorie
-                                    </button>
+                                <>
+                                    <select {...register("categoryId")}
+                                        defaultValue="" className="select bg-white dark:bg-[#2a3142] rounded-xl border-2 border-[#9b6581] text-base input text-black/50 dark:text-[#e6dabb]/50 w-full">
+                                        <option value="" disabled>Sélectionner une catégorie</option>
+                                        {categories?.map((cat) => (
+                                            <option key={cat.id} value={cat.id} className="text-[#9b6581] font-semibold">{cat.name}</option>
+                                        ))}
+                                    </select>
+                                    {errors.categoryId && <p className="text-red-800 font-bold text-sm">{errors.categoryId.message}</p>}
 
-
-                                </div>
-
+                                    <div className="flex justify-center py-3">
+                                        <button type="button" onClick={() => {
+                                            setShowNewCategory(true)
+                                        }}
+                                            className="text-white bg-[#9b6581] btn btn-neutral border-none w-50 text-xs self-start hover:underline">
+                                            ＋ Nouvelle catégorie
+                                        </button>
+                                    </div>
+                                </>
                             ) : (
                                 <div className="flex gap-2 items-center">
 
@@ -153,12 +164,19 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                     />
 
                                     <button type="button"
-                                        onClick={() => setShowNewCategory(false)}
+                                        onClick={() => {
+                                            setShowNewCategory(false)
+                                            setNewCategoryName("")
+                                            setNewCategoryError(null)
+                                        }}
                                         className="btn bg-[#104e64] dark:bg-[#4f9288] text-white rounded-xl px-4">
                                         ✕
                                     </button>
 
                                 </div>
+                            )}
+                            {showNewCategory && newCategoryError && (
+                                <p className="text-red-800 font-bold text-sm">{newCategoryError}</p>
                             )}
                         </div>
 
@@ -184,7 +202,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                                 <DayPicker
                                                     className="react-day-picker"
                                                     mode="single"
-                                                    selected={field.value ? new Date(field.value as string) : undefined} // convertis en date brut pour envoyer une string
+                                                    selected={field.value ? new Date(field.value as string) : undefined}
                                                     onSelect={(date) => {
                                                         field.onChange(date?.toISOString())
                                                         document.getElementById('rdp-popover-start-date')?.hidePopover()
@@ -194,7 +212,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                         </>
                                     )}
                                 />
-
+                                {errors.start_date && <p className="text-red-800 font-bold text-sm">{errors.start_date.message}</p>}
 
                             </div>
 
@@ -219,7 +237,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                                 <DayPicker
                                                     className="react-day-picker"
                                                     mode="single"
-                                                    selected={field.value ? new Date(field.value as string) : undefined} // convertis en date brut pour envoyer une string
+                                                    selected={field.value ? new Date(field.value as string) : undefined}
                                                     onSelect={(date) => {
                                                         field.onChange(date?.toISOString())
                                                         document.getElementById('rdp-popover-end-date')?.hidePopover()
@@ -229,6 +247,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                         </>
                                     )}
                                 />
+                                {errors.end_date && <p className="text-red-800 font-bold text-sm">{errors.end_date.message}</p>}
                             </div>
                         </div>
 
@@ -238,9 +257,8 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                         <div className="flex justify-between gap-3">
                             <div className="w-full flex flex-col gap-2">
                                 <label className="label text-sm font-bold text-[#104e64] dark:text-[#e6dabb]">Heure de début</label>
-                                <input {...register('start_hour')} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("end_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
-
-
+                                <input {...register('start_hour')} type="time" className={`bg-white dark:bg-[#2a3142] input rounded-xl border-2 border-[#9b6581] w-full ${watch("start_hour") ? `text-black dark:text-[#e6dabb]` : `text-black/50 dark:text-[#e6dabb]/50`} scheme-light`} />
+                                {errors.start_hour && <p className="text-red-800 font-bold text-sm">{errors.start_hour.message}</p>}
                             </div>
 
                             <div className="w-full flex flex-col gap-2">
@@ -271,7 +289,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                         <button type="submit" className="btn btn-neutral bg-[#9b6581] border-2 border-[#9b6581] w-full"
                         >Enregistrer</button>
 
-                        <button onClick={handleClose} className="btn bg-transparent shadow-none w-full flex text-[#104e64] border-gray-500/30 dark:text-[#e6dabb]">
+                        <button type="button" onClick={handleClose} className="btn bg-transparent shadow-none w-full flex text-[#104e64] border-gray-500/30 dark:text-[#e6dabb]">
                             Annuler
                         </button>
                     </div>
