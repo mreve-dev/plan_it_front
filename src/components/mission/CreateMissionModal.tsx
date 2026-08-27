@@ -216,7 +216,6 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                 </div>
 
 
-
                 <div className="flex-1">
 
                     <form
@@ -229,13 +228,10 @@ const CreateMissionModal = ({ eventId, onClose, onSuccess }: IMissionDetailsProp
                                 max_volunteers: slot.max_volunteers
                             }))
 
-                            console.log("slotsToSend", slotsToSend)
-                            console.log("data", data)
 
                             try {
                                 await createMission(api, data.name, data.description, eventId, slotsToSend)
                             } catch (error: any) {
-                                console.log("erreur back", error.response?.data)
                                 return
                             }
                             queryClient.invalidateQueries({ queryKey: ['events'] });

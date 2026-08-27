@@ -1,5 +1,5 @@
 import type { AxiosInstance } from "axios";
-import type { IMyMissionRegistration, IUserHasMission } from "../../types/mission.type";
+import type { IMyMissionRegistration } from "../../types/mission.type";
 
 // Permet à l'utilisateur connecté de s'inscrire à un créneau (slot) précis
 export const registerToSlot = async (

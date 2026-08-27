@@ -4,7 +4,6 @@ import z from "zod"
 import { useState } from "react"
 import { signup } from "../services/api/auth"
 import { useApi } from "../hook/useApi"
-import { IoCloseCircleOutline } from "react-icons/io5"
 
 
 const registerSchema = z.object({

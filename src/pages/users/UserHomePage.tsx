@@ -240,7 +240,7 @@ const UserHomePage = () => {
                         {missionForSelectedDay.length > 0
                             ? (
                                 missionForSelectedDay.map((m: IMyMissionRegistration) => (
-                                    <div className="bg-[#e6dabb] dark:bg-[#1e2433]">
+                                    <div key={m.slotId} className="bg-[#e6dabb] dark:bg-[#1e2433]">
                                         <div>
                                             <p className="text-[#104e64] dark:text-[#e6dabb]">
                                                 bla

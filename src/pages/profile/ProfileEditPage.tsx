@@ -34,7 +34,7 @@ const ProfileEditPage = () => {
       lastname: user?.lastname,
       date_of_birth: user?.date_of_birth
         ? new Date(user.date_of_birth).toISOString().split('T')[0]
-        : ''
+        : undefined
     }
   })
 

@@ -8,7 +8,7 @@ import { FaRegCalendarCheck } from "react-icons/fa"
 import MissionSlotsModal from "../missionSlot/MissionSlotModal"
 import SlotRegistrationModal from "../missionSlot/SlotRegistrationModal"
 import { colorsAvatar } from "../card.config"
-import { capitalize, isFirstSlotOfDay } from "../../utils/slots"
+import { isFirstSlotOfDay } from "../../utils/slots"
 import VolunteersOnSlotModal from "../missionSlot/VolunteersOnSlotModal"
 
 interface IMissionCardProps {

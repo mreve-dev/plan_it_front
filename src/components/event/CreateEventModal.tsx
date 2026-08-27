@@ -74,7 +74,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
 
                 <form noValidate onSubmit={handleSubmit(async (data) => {
 
-                    console.log("✅ data", data)
+            
 
                     const categoryId = showNewCategory ? (await createCategory(api, newCategoryName)).id : data.categoryId as number
 
@@ -184,7 +184,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                                 <DayPicker
                                                     className="react-day-picker"
                                                     mode="single"
-                                                    selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
+                                                    selected={field.value ? new Date(field.value as string) : undefined} // convertis en date brut pour envoyer une string
                                                     onSelect={(date) => {
                                                         field.onChange(date?.toISOString())
                                                         document.getElementById('rdp-popover-start-date')?.hidePopover()
@@ -219,7 +219,7 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                                 <DayPicker
                                                     className="react-day-picker"
                                                     mode="single"
-                                                    selected={field.value ? new Date(field.value) : undefined} // convertis en date brut pour envoyer une string
+                                                    selected={field.value ? new Date(field.value as string) : undefined} // convertis en date brut pour envoyer une string
                                                     onSelect={(date) => {
                                                         field.onChange(date?.toISOString())
                                                         document.getElementById('rdp-popover-end-date')?.hidePopover()
@@ -229,8 +229,6 @@ const CreateEventModal = ({ onClose, onSuccess }: IEventDetailsProps) => {
                                         </>
                                     )}
                                 />
-
-
                             </div>
                         </div>
 

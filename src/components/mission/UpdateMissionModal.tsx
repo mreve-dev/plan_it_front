@@ -64,10 +64,7 @@ const UpdateMissionModal = ({ mission, eventId, onClose, onSuccess }: IUpdateMis
                         handleClose()
                         onSuccess?.()
                         onClose()
-                    },
-                        (errors) => {
-                            console.log("error", errors);
-                        })} className="w-full text-[#5f2040] dark:text-[#e6dabb] h-full justify-between">
+                    })} className="w-full text-[#5f2040] dark:text-[#e6dabb] h-full justify-between">
 
                         <fieldset className="fieldset flex flex-col gap-4 rounded-box p-2 w-full h-full justify-between">
 
